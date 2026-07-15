@@ -221,14 +221,11 @@ def paparan_menu_invoice(sheet):
                 }
             )
 
-        # 8. PAPARAN PREVIU RINGKASAN SEBENAR DI SKRIN Streamlit
-        st.write("---")
-        st.subheader("👀 Previu Ringkasan Invois")
+    # # 8. PAPARAN PREVIU RINGKASAN SEBENAR DI SKRIN STREAMLIT
+    st.write("---")
+    st.subheader("👀 Previu Ringkasan Invois")
 
-        tarikh_inv = str(
-            row_utama.get("TARIKH", row_utama.get("Tarikh", "-"))
-        ).strip()
-        
+    tarikh_inv = str(row_utama.get("TARIKH", row_utama.get("Tarikh", "-"))).strip()
     status_inv = str(row_utama.get("STATUS", row_utama.get("Status", "PENDING"))).strip()
 
     # 1. AMBIL DATA DARI TAB PAYMENT (PASTIKAN EJAAN 'Payment' BETUL)
@@ -256,7 +253,6 @@ def paparan_menu_invoice(sheet):
     except Exception as e:
         deposit_nilai = 0.0
         v_baki_bersih = float(sub_jumlah_akhir)
-
 
 
 
