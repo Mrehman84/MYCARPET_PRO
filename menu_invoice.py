@@ -228,12 +228,11 @@ def paparan_menu_invoice(sheet):
         tarikh_inv = str(
             row_utama.get("TARIKH", row_utama.get("Tarikh", "-"))
         ).strip()
-        status_inv = str(
-            row_utama.get("STATUS", row_utama.get("Status", "PENDING"))
-        ).strip()
+        
+    status_inv = str(row_utama.get("STATUS", row_utama.get("Status", "PENDING"))).strip()
+
     # 1. AMBIL DATA DARI TAB PAYMENT (PASTIKAN EJAAN 'Payment' BETUL)
     try:
-        # Mengambil data dari fungsi pembacaan sheet sedia ada
         data_payment_mentah = sheet["Payment"] if "Payment" in sheet else sheet.get("Payment")
         import pandas as pd
         df_payment = pd.DataFrame(data_payment_mentah[1:], columns=data_payment_mentah)
@@ -257,6 +256,8 @@ def paparan_menu_invoice(sheet):
     except Exception as e:
         deposit_nilai = 0.0
         v_baki_bersih = float(sub_jumlah_akhir)
+
+
 
 
         with st.container(border=True):
