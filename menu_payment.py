@@ -113,39 +113,52 @@ def papar_menu_payment():
         if not df_terpilih.empty:
             st.success(f"✅ Data Invois {v_no_invoice} Berjaya Ditemui!")
             
-            # 1. PAPAR MAKLUMAT PELANGGAN & INVOIS
-            col1, col2 = st.columns(2)
-            with col1:
-                st.markdown(f"**Nama Pelanggan:** {v_nama}")
-                st.markdown(f"**No. Telefon:** {v_no_tel}")
-                st.markdown(f"**Alamat:** {v_alamat}")
-            with col2:
-                st.markdown(f"**Tarikh Tempahan:** {v_tarikh_masuk}")
-                st.markdown(f"### **Jumlah Invois: RM {v_jumlah_invoice:.2f}**")
+        # AMBIL DATA DEPOSIT DAN BAKI DARI TAB PAYMENT UNTUK DIPAPARKAN DI ATAS
+        try:
+            p_match_payment = df_payment[df_payment['INV NO'] == v_no_invoice]
+            if not p_match_payment.empty:
+                v_deposit_papar = p_match_payment.iloc[-1].get('AMAUN DIBAYAR', 0.0)
+                v_baki_papar = p_match_payment.iloc[-1].get('BAKI', 0.0)
+            else:
+                v_deposit_papar = 0.0
+                v_baki_papar = v_jumlah_invoice
+        except:
+            v_deposit_papar = 0.0
+            v_baki_papar = v_jumlah_invoice
 
-            st.divider()
+        # 1. PAPAR MAKLUMAT PELANGGAN & INVOIS
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown(f"**Nama Pelangan:** {v_nama}")
+            st.markdown(f"**No. Telefon:** {v_no_tel}")
+            st.markdown(f"**Alamat:** {v_alamat}")
+        with col2:
+            st.markdown(f"**Tarikh Tempahan:** {v_tarikh_masuk}")
+            st.markdown(f"### Jumlah Invois: RM {v_jumlah_invoice:.2f}")
+            st.markdown(f"##### Deposit Dibayar: RM {float(v_deposit_papar):.2f}")
+            st.markdown(f"##### Baki Semasa: RM {float(v_baki_papar):.2f}")
+
+        st.divider()
+
 
             # 2. BORANG INPUT PEMBAYARAN BARU
-            st.subheader("💳 Borang Kemas Kini Pembayaran")
+        st.subheader("💳 Borang Kemas Kini Pembayaran")
             
-        with st.form("borang_pembayaran"):
-          v_kaedah_bayar = st.selectbox(
+    with st.form("borang_pembayaran"):
+        v_kaedah_bayar = st.selectbox(
             "Pilih Kaedah Pembayaran:",
             ["TUNAI (CASH)", "TRANSFER BANK", "QR PAY", "KAD KREDIT/DEBIT"]
         )
 
-               # 1. CARI INVOIS INI DI DALAM TAB PAYMENT UNTUK AMBIL BAKI TERKINI
+        # 1. CARI INVOIS INI DI DALAM TAB PAYMENT UNTUK AMBIL BAKI TERKINI
         try:
-            # GUNAKAN df_payment DAN v_no_invoice YANG BETUL
             p_match_payment = df_payment[df_payment['INV NO'] == v_no_invoice]
-            
             if not p_match_payment.empty:
                 v_baki_semasa = p_match_payment.iloc[-1].get('BAKI', 0.0)
             else:
                 v_baki_semasa = v_jumlah_invoice
         except Exception as e:
             v_baki_semasa = v_jumlah_invoice
-
 
         # 2. FORMAT NILAI LALAI UNTUK INPUT NOMBOR
         try:
@@ -161,7 +174,7 @@ def papar_menu_payment():
             step=0.50
         )
 
-        # 4. BUTANG SUBMIT DI DALAM FORM
+        # 4. BUTANG SUBMIT DI DALAM FORM (WAJIB MASUK 8 SPASI KE DALAM)
         butang_hantar = st.form_submit_button("Kemas Kini Pembayaran")
 
 
@@ -211,9 +224,7 @@ def papar_menu_payment():
                         
                 except Exception as e:
                     st.error(f"❌ Gagal menyimpan data ke Google Sheets. Ralat: {e}")
-        else:
-            st.error("❌ Tiada data tempahan dijumpai untuk nombor invois ini.")
-
+ 
 
                 
        
