@@ -220,6 +220,32 @@ def paparan_menu_invoice(sheet):
             )
 
         # 8. PAPARAN PREVIU RINGKASAN SEBENAR DI SKRIN Streamlit
+    # 1. CARI DATA BAYARAN TERKINI DARI TAB PAYMENT SECARA DINAMIK
+    try:
+        # Menarik data mentah dari lembaran kerja Google Sheets bernama 'Payment'
+        data_payment_mentah = sheet["Payment"] if "Payment" in sheet else sheet.get("Payment")
+        import pandas as pd
+        df_p = pd.DataFrame(data_payment_mentah[1:], columns=data_payment_mentah)
+        df_p.columns = [str(c).upper().strip() for c in df_p.columns]
+        
+        # Menapis baris data berdasarkan pemboleh ubah 'inv_no_aktif'
+        p_match_p = df_p[df_p['INV NO'] == inv_no_aktif]
+        
+        if not p_match_p.empty:
+            # Lajur E: 'AMAUN DIBAYAR' sebagai deposit yang telah direkodkan
+            deposit_nilai = float(p_match_p.iloc[-1].get('AMAUN DIBAYAR', 0.0))
+            # Lajur F: 'BAKI' sebagai baki muktamad akhir
+            v_baki_bersih = float(p_match_p.iloc[-1].get('BAKI', 0.0))
+        else:
+            # Jika invois baru langsung tiada sejarah dalam tab Payment
+            deposit_nilai = 0.0
+            v_baki_bersih = float(sub_jumlah_akhir)
+    except Exception as e:
+            
+        print(f"Nota: Data payment gagal dibaca, menggunakan nilai lalai: {e}")
+
+
+      
         st.write("---")
         st.subheader("👀 Previu Ringkasan Invois")
 
@@ -248,7 +274,8 @@ def paparan_menu_invoice(sheet):
                 f"💰 **Sub Jumlah Keseluruhan:** RM {sub_jumlah_akhir:.2f} | **Deposit Ditolak:** RM {deposit_nilai:.2f}"
             )
             st.info(
-                f"🔴 **BAKI JUMLAH BERSIH (PERLU DIBAYAR): RM {jumlah_bersih_akhir:.2f}**"
+                    f"🔴 **BAKI JUMLAH BERSIH (PERLU DIBAYAR):** RM {v_baki_bersih:.2f}"""
+
             )
 
         data_pdf_input = {
