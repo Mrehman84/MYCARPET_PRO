@@ -135,16 +135,18 @@ def papar_menu_payment():
                 )
                 
 
+            with st.form("borang_pembayaran"):
+        v_kaedah_bayar = st.selectbox(
+            "Pilih Kaedah Pembayaran:",
+            ["TUNAI (CASH)", "TRANSFER BANK", "QR PAY", "KAD KREDIT/DEBIT"]
+        )
+
         # 1. CARI INVOIS INI DI DALAM TAB PAYMENT UNTUK AMBIL BAKI TERKINI
         try:
-            # Menapis data payment mentah untuk mencari baris INV NO yang sepadan
             p_match_payment = data_payment_mentah[data_payment_mentah['INV NO'] == v_inv_no]
-            
             if not p_match_payment.empty:
-                # Ambil baris terakhir jika ada rekod berulang, dan dapatkan nilai lajur 'BAKI'
                 v_baki_semasa = p_match_payment.iloc[-1].get('BAKI', 0.0)
             else:
-                # Jika belum pernah ada rekod di tab payment, baki asal adalah jumlah invoice
                 v_baki_semasa = v_jumlah_invoice
         except Exception as e:
             v_baki_semasa = v_jumlah_invoice
@@ -155,7 +157,7 @@ def papar_menu_payment():
         except:
             nilai_baki_default = float(v_jumlah_invoice)
 
-        # 3. PAPARKAN KOTAK INPUT NOMBOR DI STREAMLIT
+        # 3. PAPARKAN KOTAK INPUT NOMBOR DI DALAM FORM
         v_amaun_dibayar = st.number_input(
             "Masukkan Amaun yang Dibayar (RM):",
             min_value=0.00,
@@ -163,12 +165,8 @@ def papar_menu_payment():
             step=0.50
         )
 
-
-                
-        v_nota = st.text_area("Nota Tambahan (Jika ada):", placeholder="Contoh: Bayaran penuh / Deposit")
-                
-                # Butang Hantar Borang
-        butang_bayar = st.form_submit_button("Sahkan & Rekod Pembayaran")
+        # 4. BUTANG SUBMIT DI DALAM FORM
+        butang_hantar = st.form_submit_button("Kemas Kini Pembayaran")
 
             # 3. PROSES SIMPAN DATA KE TAB 'PAYMENT' GOOGLE SHEETS
         if butang_bayar:
