@@ -231,6 +231,33 @@ def paparan_menu_invoice(sheet):
         status_inv = str(
             row_utama.get("STATUS", row_utama.get("Status", "PENDING"))
         ).strip()
+    # 1. AMBIL DATA DARI TAB PAYMENT (PASTIKAN EJAAN 'Payment' BETUL)
+    try:
+        # Mengambil data dari fungsi pembacaan sheet sedia ada
+        data_payment_mentah = sheet["Payment"] if "Payment" in sheet else sheet.get("Payment")
+        import pandas as pd
+        df_payment = pd.DataFrame(data_payment_mentah[1:], columns=data_payment_mentah)
+        df_payment.columns = [str(c).upper().strip() for c in df_payment.columns]
+    except Exception as e:
+        df_payment = pd.DataFrame()
+
+    # 2. CARI REKOD PEMBAYARAN DI DALAM df_payment
+    try:
+        if not df_payment.empty:
+            p_match_payment = df_payment[df_payment['INV NO'] == inv_no_aktif]
+            if not p_match_payment.empty:
+                deposit_nilai = float(p_match_payment.iloc[-1].get('AMAUN DIBAYAR', 0.0))
+                v_baki_bersih = float(p_match_payment.iloc[-1].get('BAKI', 0.0))
+            else:
+                deposit_nilai = 0.0
+                v_baki_bersih = float(sub_jumlah_akhir)
+        else:
+            deposit_nilai = 0.0
+            v_baki_bersih = float(sub_jumlah_akhir)
+    except Exception as e:
+        deposit_nilai = 0.0
+        v_baki_bersih = float(sub_jumlah_akhir)
+
 
         with st.container(border=True):
             st.write(
