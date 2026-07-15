@@ -289,6 +289,49 @@ def paparan_menu_invoice(sheet):
             use_container_width=True,
         )
 
+        # 1. BUTANG MUAT TURUN PDF (KEDUKAN ASAL)
+        st.download_button(
+            label="📥 Download PDF Invoice",
+            data=pdf_file,
+            file_name=f"Invoice_{inv_no_aktif}.pdf",
+            mime="application/pdf"
+        )
+       
+        
+
+        # 2. AUTOMATIK HANTAR WHATSAPP MENGIKUT NOMBOR TELEFON DATA PELANGGAN
+        try:
+            # Mengambil nombor telefon sebenar dari pemboleh ubah 'no_tel_pelanggan' yang sedia ada di baris atas
+            no_tel_wa = str(no_tel_pelanggan).strip()
+            
+            # Membersihkan nombor telefon daripada sebarang simbol atau spasi kosong
+            no_tel_wa = "".join(c for c in no_tel_wa if c.isdigit())
+            
+            # Memastikan format kod negara Malaysia (60) adalah betul
+            if no_tel_wa.startswith("0"):
+                no_tel_wa = "6" + no_tel_wa
+            elif not no_tel_wa.startswith("60") and no_tel_wa:
+                no_tel_wa = "60" + no_tel_wa
+
+            # Membina ayat mesej ringkasan baki automatik
+            mesej_wa = (
+                f"Salam *{nama_pelanggan}*, ini adalah maklumat baki invois rasmi dari MYCARPET PRO.\n\n"
+                f"🧾 *No. Invois:* {inv_no_aktif}\n"
+                f"💰 *Jumlah Keseluruhan:* RM {sub_jumlah_akhir:.2f}\n"
+                f"🔴 *Baki Perlu Dibayar:* RM {v_baki_bersih:.2f}\n\n"
+                f"Sila . Terima kasih! 🙏"
+            )
+            
+            import urllib.parse
+            # Menukarkan teks mesej menjadi pautan URL WhatsApp yang sah
+            link_whatsapp = f"https://wa.me/{no_tel_wa}?text={urllib.parse.quote(mesej_wa)}"
+            
+            # Memaparkan butang hijau WhatsApp secara rasmi
+            st.link_button("🟢 Hantar Invois & Mesej ke WhatsApp", link_whatsapp, use_container_width=True)
+        except Exception as wa_error:
+            st.warning(f"Nota: Butang WhatsApp gagal dibina kerana isu data nombor: {wa_error}")
+
+
     except Exception as err:
         st.error(f"Ralat sistem pemprosesan fail invoice: {err}")
 
@@ -400,7 +443,25 @@ def jana_pdf_invois_terkini(data_invois, item_list):
 
     for idx, item in enumerate(item_list, 1):
         pdf.cell(10, 6, str(idx), border=1, align="C")
-        pdf.cell(100, 6, f" {item['nama']}", border=1)
+                # === KOD AUTO-FIT FON UNTUK KETERANGAN KARPET ===
+        teks_karpet = f"{item['nama']}"
+        panjang_huruf = len(teks_karpet)
+        
+        # Mengira saiz fon secara automatik berdasarkan panjang teks
+        if panjang_huruf > 65:
+            saiz_fon_dinamik = 6.5
+        elif panjang_huruf > 50:
+            saiz_fon_dinamik = 7.5
+        else:
+            saiz_fon_dinamik = 8.5  # Mengikut saiz standard fail Anda di baris 442
+            
+        # Set fon dinamik sebelum cetak lajur keterangan
+        pdf.set_font("Helvetica", "", saiz_fon_dinamik)
+        pdf.cell(100, 6, teks_karpet, border=1)
+        
+        # Kembalikan semula saiz fon standard untuk petak lajur seterusnya
+        pdf.set_font("Helvetica", "", 8.5)
+
         pdf.cell(15, 6, str(item['unit']), border=1, align="C")
         pdf.cell(28, 6, f"{item['harga_seunit']:.2f}", border=1, align="R")
         pdf.cell(27, 6, f"{item['total']:.2f}", border=1, align="R")
@@ -441,13 +502,36 @@ def jana_pdf_invois_terkini(data_invois, item_list):
 
     pdf.set_font("Helvetica", "B", 10)
     pdf.set_text_color(0, 0, 0)
-    pdf.cell(50, 4.5, "Hong Leong Bank", ln=1)
+    pdf.cell(50, 4.5, "MAYBANK-MATI-UR REHMAN", ln=1)
 
     pdf.set_font("Helvetica", "B", 11)
     pdf.set_text_color(180, 40, 40)
-    pdf.cell(50, 4.5, "05-901-032-897", ln=1)
+    pdf.cell(50, 4.5, "15-203-142-4070", ln=1)
+
+    # === TAMBAHAN NOTA PROFESIONAL DI BAHAGIAN BAWAH INVOIS ===
+    pdf.ln(20)  # Memberi ruang kosong ke bawah supaya tidak rapat dengan jadual
+    
+    # Bahagian 1: Terma & Syarat Pembayaran
+    pdf.set_font("Helvetica", "B", 8)
+    pdf.set_text_color(100, 100, 100)  # Warna kelabu korporat
+    pdf.cell(0, 4, "TERMA & SYARAT PEMBAYARAN:", ln=1)
+    
+    pdf.set_font("Helvetica", "", 8)
+    pdf.cell(0, 4, "1. Sila jelaskan baki bayaran penuh semasa penghantaran atau pengambilan karpet dilakukan.", ln=1)
+    pdf.cell(0, 4, "2. Sila sertakan resit/bukti transaksi Online Transfer kepada pihak kami untuk pengesahan baki.", ln=1)
+    
+    pdf.ln(10)  # Jarakkan sedikit sebelum ucapan terima kasih
+    
+    # Bahagian 2: Nota Penghargaan & Terima Kasih
+    pdf.set_font("Helvetica", "BI", 9)  # Bold + Italic (BI)
+    pdf.set_text_color(40, 167, 69)     # Warna hijau kejayaan (Success Green)
+    pdf.cell(0, 5, "Thank you for your business! We look forward to serving you again.", ln=1, align="C")
+    pdf.cell(0, 5, "~~~ Terima kasih kerana memilih MYCARPET PRO! Sokongan Anda amat kami hargai ~~~", ln=1, align="C")
+    # =========================================================
 
     pdf_output = io.BytesIO()
     pdf_output.write(pdf.output())
     pdf_output.seek(0)
     return pdf_output
+
+      
