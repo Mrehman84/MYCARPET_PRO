@@ -128,15 +128,8 @@ def papar_menu_payment():
             # 2. BORANG INPUT PEMBAYARAN BARU
             st.subheader("💳 Borang Kemas Kini Pembayaran")
             
-            with st.form("borang_pembayaran"):
-                v_kaedah_bayar = st.selectbox(
-                    "Pilih Kaedah Pembayaran:",
-                    ["TUNAI (CASH)", "TRANSFER BANK", "QR PAY", "KAD KREDIT/DEBIT"]
-                )
-                
-
-            with st.form("borang_pembayaran"):
-        v_kaedah_bayar = st.selectbox(
+        with st.form("borang_pembayaran"):
+          v_kaedah_bayar = st.selectbox(
             "Pilih Kaedah Pembayaran:",
             ["TUNAI (CASH)", "TRANSFER BANK", "QR PAY", "KAD KREDIT/DEBIT"]
         )
@@ -167,6 +160,7 @@ def papar_menu_payment():
 
         # 4. BUTANG SUBMIT DI DALAM FORM
         butang_hantar = st.form_submit_button("Kemas Kini Pembayaran")
+
 
             # 3. PROSES SIMPAN DATA KE TAB 'PAYMENT' GOOGLE SHEETS
         if butang_bayar:
