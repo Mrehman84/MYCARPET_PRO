@@ -134,15 +134,18 @@ def papar_menu_payment():
             ["TUNAI (CASH)", "TRANSFER BANK", "QR PAY", "KAD KREDIT/DEBIT"]
         )
 
-        # 1. CARI INVOIS INI DI DALAM TAB PAYMENT UNTUK AMBIL BAKI TERKINI
+               # 1. CARI INVOIS INI DI DALAM TAB PAYMENT UNTUK AMBIL BAKI TERKINI
         try:
-            p_match_payment = data_payment_mentah[data_payment_mentah['INV NO'] == v_inv_no]
+            # GUNAKAN df_payment DAN v_no_invoice YANG BETUL
+            p_match_payment = df_payment[df_payment['INV NO'] == v_no_invoice]
+            
             if not p_match_payment.empty:
                 v_baki_semasa = p_match_payment.iloc[-1].get('BAKI', 0.0)
             else:
                 v_baki_semasa = v_jumlah_invoice
         except Exception as e:
             v_baki_semasa = v_jumlah_invoice
+
 
         # 2. FORMAT NILAI LALAI UNTUK INPUT NOMBOR
         try:
@@ -163,7 +166,7 @@ def papar_menu_payment():
 
 
             # 3. PROSES SIMPAN DATA KE TAB 'PAYMENT' GOOGLE SHEETS
-        if butang_bayar:
+        if butang_hantar:
                 if v_amaun_dibayar < v_jumlah_invoice:
                     st.warning(f"⚠ Amaran: Amaun dibayar (RM {v_amaun_dibayar:.2f}) kurang daripada jumlah invois (RM {v_jumlah_invoice:.2f}).")
                         
@@ -177,7 +180,7 @@ def papar_menu_payment():
                         v_deposit_lama = 0.0
 
                 # Formula baki baharu: Jumlah keseluruhan ditolak deposit lama dan ditolak amaun baharu yang dibayar sekarang
-                v_baki = v_jumlah_invoice - v_deposit_lama - v_amaun_dibayar
+                v_baki = nilai_baki_default - v_amaun_dibayar
                 v_status_bayar = "PAID" if v_baki <= 0 else "PARTIAL"
                 v_masa_sekarang = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
@@ -213,25 +216,7 @@ def papar_menu_payment():
 
 
                 
-        # SEMAK STATUS ASAL DARI TAB PAYMENT (Anti-Tindih)
-        status_asal = "PENDING"
-        kaedah_asal = "PENDING"
-        index_status_default = 0
-                
-        if not df_payment.empty and 'INV NO' in df_payment.columns:
-            p_match = df_payment[df_payment['INV NO'].astype(str).str.strip().str.upper() == str(v_no_invoice).strip().upper()]
-
-            if not p_match.empty:
-                status_asal = str(p_match.iloc[0].get('STATUS BAYARAN', 'PENDING')).upper().strip()
-                kaedah_asal = p_match.iloc[0].get('KAEDAH BAYARAN', 'PENDING')
-                v_deposit = p_match.iloc[0].get('DEPOSIT', 0)
-
-                if status_asal == "PAID":
-                    index_status_default = 1
-
-                st.markdown("---")
-                st.subheader(f"⚙️ Kawalan Status Dokumen: {v_no_invoice}")
-                
+       
                
 
         
