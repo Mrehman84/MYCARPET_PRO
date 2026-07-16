@@ -15,9 +15,12 @@ def papar_menu_payment():
         # GANTIKAN BARIS 15 DENGAN KOD INI:
         info_kredensial = st.secrets["gspread"]
         creds = Credentials.from_service_account_info(info_kredensial, scopes=scope)
-
-        # GANTIKAN BARIS 19 DENGAN PAUTAN URL SEBENAR INI:
-        url_sheet = "https://docs.google.com/spreadsheets/d/1AAszxb_8Rbvb9ruXCVL_vQN12NME0eHYEtxqMj6OIRo/edit?gid=667279755#gid=667279755"
+            
+            # PERIKSA BARIS INI: Pastikan baris di bawah ini ada dan tidak terpadam!
+        gc = gspread.authorize(creds)
+            
+            # GANTIKAN BARIS 19 DENGAN PAUTAN URL SEBENAR INI:
+        url_sheet = "https://docs.google.com/spreadsheets/d/1AAszxb_8Rbvb9ruXCVL_vQN12NME0eHYEtxqMj6OIRo/edit?gid=0#gid=0"
         sh = gc.open_by_url(url_sheet)
 
         t_tempahan = sh.worksheet("Tempahan")
