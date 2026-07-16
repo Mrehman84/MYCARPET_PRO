@@ -94,83 +94,83 @@ if semak_login():
 # ==========================================
 # === MENU 1: DASHBOARD UTAMA & Temujanji===
 # ==========================================
-if pilihan == "📊 Dashboard Utama & Temujanji":
-    st.title("📊 Papan Pemuka Aktiviti")
+    if pilihan == "📊 Dashboard Utama & Temujanji":
+        st.title("📊 Papan Pemuka Aktiviti")
 
-    # MASUKKAN BARIS INI DENGAN ANJAKAN 4 SPASI KE DALAM:
-    # Mengambil database segar Google Sheets
-    tab_harga, t_pelanggan, t_tempahan, t_karpet = inisial_database_segar()
+        # MASUKKAN BARIS INI DENGAN ANJAKAN 4 SPASI KE DALAM:
+        # Mengambil database segar Google Sheets
+        tab_harga, t_pelanggan, t_tempahan, t_karpet = inisial_database_segar()
 
-    data_mentah_t = t_tempahan.get_all_values() if t_tempahan else []
-    if len(data_mentah_t) > 1:
-        df_t = pd.DataFrame(data_mentah_t[1:], columns=data_mentah_t[0])
-        df_t.columns = [str(c).upper().strip() for c in df_t.columns]
+        data_mentah_t = t_tempahan.get_all_values() if t_tempahan else []
+        if len(data_mentah_t) > 1:
+            df_t = pd.DataFrame(data_mentah_t[1:], columns=data_mentah_t[0])
+            df_t.columns = [str(c).upper().strip() for c in df_t.columns]
 
-        hari_ini = datetime.now().strftime('%Y-%m-%d')
-        bulan_ini = datetime.now().strftime('%Y-%m')
+            hari_ini = datetime.now().strftime('%Y-%m-%d')
+            bulan_ini = datetime.now().strftime('%Y-%m')
 
-        if 'TARIKH' in df_t.columns:
-            df_t['TARIKH'] = df_t['TARIKH'].astype(str).str.strip()
-            df_hari_ini = df_t[df_t['TARIKH'] == hari_ini]
-            df_bulan_ini = df_t[df_t['TARIKH'].str.startswith(bulan_ini)]
-        else:
-            df_hari_ini = pd.DataFrame()
-            df_bulan_ini = pd.DataFrame()
+            if 'TARIKH' in df_t.columns:
+                df_t['TARIKH'] = df_t['TARIKH'].astype(str).str.strip()
+                df_hari_ini = df_t[df_t['TARIKH'] == hari_ini]
+                df_bulan_ini = df_t[df_t['TARIKH'].str.startswith(bulan_ini)]
+            else:
+                df_hari_ini = pd.DataFrame()
+                df_bulan_ini = pd.DataFrame()
 
-        jumlah_cucian_hari_ini = len(df_hari_ini)
-        total_customer_bulan_ini = len(df_bulan_ini)
+            jumlah_cucian_hari_ini = len(df_hari_ini)
+            total_customer_bulan_ini = len(df_bulan_ini)
 
-        if 'JUMLAH HARGA' in df_t.columns and not df_bulan_ini.empty:
-            siri_harga = df_bulan_ini['JUMLAH HARGA'].astype(str).str.replace(
-                'RM', '', case=False).str.replace(',', '').str.strip()
-            total_jualan = pd.to_numeric(
-                siri_harga, errors='coerce').fillna(0).sum()
-        else:
-            total_jualan = 0.0
+            if 'JUMLAH HARGA' in df_t.columns and not df_bulan_ini.empty:
+                siri_harga = df_bulan_ini['JUMLAH HARGA'].astype(str).str.replace(
+                    'RM', '', case=False).str.replace(',', '').str.strip()
+                total_jualan = pd.to_numeric(
+                    siri_harga, errors='coerce').fillna(0).sum()
+            else:
+                total_jualan = 0.0
 
-        col_kiri, col_kanan = st.columns(2)
+            col_kiri, col_kanan = st.columns(2)
+                
+            with col_kiri:
+                st.metric("Jumlah Cucian Hari Ini",
+                        f"{jumlah_cucian_hari_ini} Pelanggan")
+            with col_kanan:
+                st.metric("Total Customer Bulan Ini",
+                        f"{total_customer_bulan_ini} Pelanggan")
+
+            st.markdown("---")
+            st.metric("Jumlah Jualan Bulan Ini", f"RM {total_jualan:,.2f}")
+
+            st.markdown("---")
+            st.subheader("🗓️ Penjana Mesej Slot Janji Temu")
+
+            # 1. Kotak input manual untuk alamat
+            alamat_manual = st.text_area("Masukkan Alamat Pelanggan:", placeholder="Contoh: No 32, Jalan Seri Abadi...")
+
+            # MEMBUAT SEMULA LAJUR TARIKH DAN MASA
+            col_tarikh, col_masa = st.columns(2)
             
-        with col_kiri:
-            st.metric("Jumlah Cucian Hari Ini",
-                    f"{jumlah_cucian_hari_ini} Pelanggan")
-        with col_kanan:
-            st.metric("Total Customer Bulan Ini",
-                    f"{total_customer_bulan_ini} Pelanggan")
+            with col_tarikh:
+                tarikh_manual = st.date_input("Pilih Tarikh Ambil:", format="DD-MM-YYYY")
+                
+            with col_masa:
+                # Pilihan input teks manual seperti yang abang mahukan
+                masa_manual = st.text_input("Masukkan Masa Ambil:", placeholder="Contoh: 10:30 AM")
 
-        st.markdown("---")
-        st.metric("Jumlah Jualan Bulan Ini", f"RM {total_jualan:,.2f}")
+            # 2. Formatkan tarikh dalam bentuk teks (Contoh: 21-04-2026)
+            tarikh_format = tarikh_manual.strftime("%d-%m-%Y")
 
-        st.markdown("---")
-        st.subheader("🗓️ Penjana Mesej Slot Janji Temu")
+            # 3. Struktur draf mesej WhatsApp
+            skrip_slot = f"""*Pusat Cucian Karpet*
 
-        # 1. Kotak input manual untuk alamat
-        alamat_manual = st.text_area("Masukkan Alamat Pelanggan:", placeholder="Contoh: No 32, Jalan Seri Abadi...")
+        Slot janji temu untuk pengambilan karpet anda telah dimasukkan ke dalam sistem kami:
+        🗓️ *Tarikh:* {tarikh_format}
+        ⏰ *Masa:* {masa_manual}
+        📍 *Alamat:* {alamat_manual}
 
-        # MEMBUAT SEMULA LAJUR TARIKH DAN MASA
-        col_tarikh, col_masa = st.columns(2)
-        
-        with col_tarikh:
-            tarikh_manual = st.date_input("Pilih Tarikh Ambil:", format="DD-MM-YYYY")
-            
-        with col_masa:
-            # Pilihan input teks manual seperti yang abang mahukan
-            masa_manual = st.text_input("Masukkan Masa Ambil:", placeholder="Contoh: 10:30 AM")
+        Sila maklumkan kepada kami jika anda perlu menukar slot ini. Terima kasih kerana mempercayai perkhidmatan kami!"""
 
-        # 2. Formatkan tarikh dalam bentuk teks (Contoh: 21-04-2026)
-        tarikh_format = tarikh_manual.strftime("%d-%m-%Y")
-
-        # 3. Struktur draf mesej WhatsApp
-        skrip_slot = f"""*Pusat Cucian Karpet*
-
-    Slot janji temu untuk pengambilan karpet anda telah dimasukkan ke dalam sistem kami:
-    🗓️ *Tarikh:* {tarikh_format}
-    ⏰ *Masa:* {masa_manual}
-    📍 *Alamat:* {alamat_manual}
-
-    Sila maklumkan kepada kami jika anda perlu menukar slot ini. Terima kasih kerana mempercayai perkhidmatan kami!"""
-
-        # 4. Paparkan kotak teks yang sedia untuk disalin (Copy-Paste)
-        st.text_area("Salin Mesej di Bawah:", value=skrip_slot, height=200)
+            # 4. Paparkan kotak teks yang sedia untuk disalin (Copy-Paste)
+            st.text_area("Salin Mesej di Bawah:", value=skrip_slot, height=200)
 
 # ==========================================
 # === MENU 2: TEMPAHAN BARU ===
