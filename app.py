@@ -70,11 +70,12 @@ def inisial_database_segar():
         return None, None, None, None
 
 # MEMANGGIL SESI PANGKALAN DATA AWAL
+if semak_login():
 
 
 # 2. STRUKTUR MENU NAVIGASI UTAMA (SIDEBAR)
 # Sila pastikan Baris 51 hingga Baris 61 digantikan dengan kod bersih ini:
-pilihan = st.sidebar.radio(
+    pilihan = st.sidebar.radio(
     "Navigasi Sistem",
     [
         "📊 Dashboard Utama & Temujanji",
