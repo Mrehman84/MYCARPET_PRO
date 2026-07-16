@@ -12,7 +12,7 @@ def papar_menu_payment():
     try:
         scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
         # Menggunakan fail kunci rahsia yang sedia ada dalam projek abang
-        creds = Credentials.from_service_account_file("kunci_rahsia.json", scopes=scope)
+        creds = Credentials.from_service_account_file("kunci_google.json", scopes=scope)
         gc = gspread.authorize(creds)
         
         # GANTIKAN BARIS 19 DENGAN PAUTAN URL SEBENAR INI:
@@ -25,7 +25,7 @@ def papar_menu_payment():
         t_karpet = sh.worksheet("Karpet")
 
     except Exception as e:
-        st.error(f"⚠️ Gagal bersambung ke Google Sheets. Sila pastikan nama fail 'MYCARPET_PRO' dan 'kunci rahsia.json' adalah betul. Ralat: {e}")
+        st.error(f"⚠️ Gagal bersambung ke Google Sheets. Sila pastikan nama fail 'MYCARPET_PRO' dan 'kunci_google.json' adalah betul. Ralat: {e}")
         st.stop()
 
         # # 2. AMBIL DATA MENTAH DARI 4 TAB GOOGLE SHEETS
