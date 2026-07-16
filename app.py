@@ -27,9 +27,12 @@ def inisial_database_segar():
         skop = ["https://www.googleapis.com/auth/spreadsheets",
                 "https://www.googleapis.com/auth/drive"]
 
-        kredensial = Credentials.from_service_account_file(
-            "kunci_rahsia.json", scopes=skop)
-
+         # GANTIKAN BARIS 30-33 DENGAN KOD INI:
+        info_kredensial = st.secrets["gspread"]
+        kredensial = Credentials.from_service_account_info(
+            info_kredensial, scopes=skop
+        )
+        
         gc = gspread.authorize(kredensial)
 
         # Buka fail utama menggunakan URL aktif anda
