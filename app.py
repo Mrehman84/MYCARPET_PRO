@@ -28,18 +28,23 @@ def semak_login():
     if not st.session_state["log_masuk"]:
         st.title("🔒 Sistem Pengurusan MyCarpet")
         st.subheader("Sila Log Masuk")
-        username = st.text_input("Nama Pengguna (Username)")
-        password = st.text_input("Kata Laluan (Password)", type="password")
         
-        if st.button("Masuk"):
-            # Sila tukar 'admin' & 'Karpet2026' mengikut kehendak anda
-            if username == "tengku_mann" and password == "Dotcom@84":
-                st.session_state["log_masuk"] = True
-                st.rerun()
-            else:
-                st.error("Username atau Password salah!")
+        # Menggunakan st.form supaya data input dihantar serentak dalam sekali klik
+        with st.form("borang_login"):
+            username = st.text_input("Nama Pengguna (Username)")
+            password = st.text_input("Kata Laluan (Password)", type="password")
+            butang_masuk = st.form_submit_button("Masuk")
+            
+            if butang_masuk:
+                if username == "tengku_mann" and password == "Carpet2026":
+                    st.session_state["log_masuk"] = True
+                    st.success("Log masuk berjaya! Memuatkan sistem...")
+                    st.rerun() # Ini akan terus membuka dashboard utama
+                else:
+                    st.error("Username atau Password salah!")
         return False
     return True
+
 
 
 def inisial_database_segar():
