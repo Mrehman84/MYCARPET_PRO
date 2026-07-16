@@ -388,11 +388,17 @@ def jana_pdf_invois_terkini(data_invois, item_list):
     pdf.cell(100, 4, "WESTBERRY ENTERPRISE", ln=1)
     pdf.set_font("Helvetica", "", 8)
     pdf.set_text_color(80, 80, 80)
-    pdf.multi_cell(
-        100,
-        3.5,
-        "LOT 52 JALAN PERUSAHAAN, KG SIAM,\nPAYA BESAR 09600 LUNAS KEDAH.\nTEL: 017-4050336",
-    )
+        # GANTIKAN BARIS 391 HINGGA 395 DENGAN KOD BERSIH INI:
+    pdf.set_xy(15, 30)  # Menetapkan kedudukan awal teks info kedai
+    pdf.cell(100, 4, "LOT 52 JALAN PERUSAHAAN, KG SIAM,", ln=1)
+    
+    pdf.set_x(15)       # Kekalkan ke kiri untuk baris kedua
+    pdf.cell(100, 4, "PAYA BESAR 09600 LUNAS KEDAH.", ln=1)
+    
+    pdf.set_x(15)       # Kekalkan ke kiri untuk baris ketiga
+    pdf.cell(100, 4, "TEL: 017-4050336", ln=1)
+
+    
     pdf.ln(4)
 
     # Banner "INVOICE TO"
