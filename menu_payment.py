@@ -12,9 +12,10 @@ def papar_menu_payment():
     try:
         scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
         # Menggunakan fail kunci rahsia yang sedia ada dalam projek abang
-        creds = Credentials.from_service_account_file("kunci_google.json", scopes=scope)
-        gc = gspread.authorize(creds)
-        
+        # GANTIKAN BARIS 15 DENGAN KOD INI:
+        info_kredensial = st.secrets["gspread"]
+        creds = Credentials.from_service_account_info(info_kredensial, scopes=scope)
+
         # GANTIKAN BARIS 19 DENGAN PAUTAN URL SEBENAR INI:
         url_sheet = "https://docs.google.com/spreadsheets/d/1AAszxb_8Rbvb9ruXCVL_vQN12NME0eHYEtxqMj6OIRo/edit?gid=667279755#gid=667279755"
         sh = gc.open_by_url(url_sheet)
