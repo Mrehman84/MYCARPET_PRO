@@ -355,8 +355,11 @@ def jana_pdf_invois_terkini(data_invois, item_list):
     pdf.set_font("Helvetica", "B", 34)
     pdf.set_text_color(242, 242, 242)
         # GANTIKAN BARIS 357 & 358 DENGAN KOD INI:
-    with pdf.local_context(rotation=25, rotation_x=100, rotation_y=150):
-     pdf.text(35, 150, "WESTBERRY\n     CUCI CUCI CARPET")
+        # GANTIKAN BARIS 357 & 358 DENGAN KOD INI:
+    pdf.rotate(25, x=100, y=150)
+    pdf.text(35, 150, "WESTBERRY\n     CUCI CUCI CARPET")
+    pdf.rotate(0)  # SANGAT PENTING: Mengembalikan sudut putaran ke asal (0) supaya kod bawah tidak senget!
+
 
 
     # Logo Rasmi PNG
