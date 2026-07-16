@@ -355,10 +355,16 @@ def jana_pdf_invois_terkini(data_invois, item_list):
     pdf.set_font("Helvetica", "B", 34)
     pdf.set_text_color(242, 242, 242)
         # GANTIKAN BARIS 357 & 358 DENGAN KOD INI:
-        # GANTIKAN BARIS 357 & 358 DENGAN KOD INI:
+        # GANTIKAN KOD SAMBUNGAN PUTARAN DENGAN KOD BERSIH INI:
     pdf.rotate(25, x=100, y=150)
-    pdf.text(35, 150, "WESTBERRY\n     CUCI CUCI CARPET")
-    pdf.rotate(0)  # SANGAT PENTING: Mengembalikan sudut putaran ke asal (0) supaya kod bawah tidak senget!
+    
+    # Baris pertama watermark
+    pdf.text(35, 150, "WESTBERRY")
+    # Baris kedua watermark (diturunkan sedikit koordinat Y ke 160)
+    pdf.text(35, 160, "     CUCI CUCI CARPET")
+    
+    pdf.rotate(0)  # Mengembalikan sudut ke asal
+
 
 
 
