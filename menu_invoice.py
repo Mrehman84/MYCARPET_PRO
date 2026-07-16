@@ -354,8 +354,10 @@ def jana_pdf_invois_terkini(data_invois, item_list):
     # Watermark
     pdf.set_font("Helvetica", "B", 34)
     pdf.set_text_color(242, 242, 242)
-    with pdf.rotation(angle=25, x=100, y=150):
-        pdf.text(35, 150, "WESTBERRY\n    CUCI CUCI CARPET")
+        # GANTIKAN BARIS 357 & 358 DENGAN KOD INI:
+    with pdf.local_context(rotation=25, rotation_x=100, rotation_y=150):
+     pdf.text(35, 150, "WESTBERRY\n     CUCI CUCI CARPET")
+
 
     # Logo Rasmi PNG
     logo_path = "logo_westberry.png"
