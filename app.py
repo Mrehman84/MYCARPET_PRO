@@ -76,18 +76,18 @@ if semak_login():
 # 2. STRUKTUR MENU NAVIGASI UTAMA (SIDEBAR)
 # Sila pastikan Baris 51 hingga Baris 61 digantikan dengan kod bersih ini:
     pilihan = st.sidebar.radio(
-    "Navigasi Sistem",
-    [
-        "📊 Dashboard Utama & Temujanji",
-        "📝 Tempahan Baru",
-        "🔍 Scan & Tracking QR",
-        "💳 Pengurusan Pembayaran",
-        "📄 Cetak Invois & Resit",
-        "💸 Perbelanjaan Bisnes",
-        "📸 Kamera Sebelum/Selepas"
-    ],
-    key="navigasi_utama_system"
-)
+        "Navigasi Sistem",
+        [
+            "📊 Dashboard Utama & Temujanji",
+            "📝 Tempahan Baru",
+            "🔍 Scan & Tracking QR",
+            "💳 Pengurusan Pembayaran",
+            "📄 Cetak Invois & Resit",
+            "💸 Perbelanjaan Bisnes",
+            "📸 Kamera Sebelum/Selepas"
+        ],
+        key="navigasi_utama_system"
+    )
     
 
 
