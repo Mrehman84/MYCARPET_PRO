@@ -21,6 +21,26 @@ if "bilangan_karpet" not in st.session_state:
 
 # 1. FUNGSI SAMBUNGAN UTAMA PANGKALAN DATA GOOGLE SHEETS
 
+def semak_login():
+    if "log_masuk" not in st.session_state:
+        st.session_state["log_masuk"] = False
+
+    if not st.session_state["log_masuk"]:
+        st.title("🔒 Sistem Pengurusan MyCarpet")
+        st.subheader("Sila Log Masuk")
+        username = st.text_input("Nama Pengguna (Username)")
+        password = st.text_input("Kata Laluan (Password)", type="password")
+        
+        if st.button("Masuk"):
+            # Sila tukar 'admin' & 'Karpet2026' mengikut kehendak anda
+            if username == "tengku_mann" and password == "Dotcom@84":
+                st.session_state["log_masuk"] = True
+                st.rerun()
+            else:
+                st.error("Username atau Password salah!")
+        return False
+    return True
+
 
 def inisial_database_segar():
     try:
