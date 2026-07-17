@@ -7,7 +7,7 @@ import gspread
 import streamlit as st
 from google.oauth2.service_account import Credentials
 import menu_invoice
-
+from streamlit_cookies_controller import CookieController
 
 
 # TENTUKAN KONFIGURASI HALAMAN UTAMA STREAMLIT
@@ -19,12 +19,22 @@ if "bilangan_karpet" not in st.session_state:
     st.session_state.bilangan_karpet = 1
 
 
+# Inisialisasi pengontrol cookie di luar fungsi
+controller = CookieController()
+
 # 1. FUNGSI SAMBUNGAN UTAMA PANGKALAN DATA GOOGLE SHEETS
 
 def semak_login():
+    # Periksa sama ada cookie "ingat_user" wujud dalam browser
+    user_saved = controller.get("ingat_user")
+    
+    # Jika ada cookie sah, terus set session_state sebagai True
+    if user_saved == "cuci carpet":
+        st.session_state["log_masuk"] = True
+    
     if "log_masuk" not in st.session_state:
         st.session_state["log_masuk"] = False
-
+        
     if not st.session_state["log_masuk"]:
         st.title("🔒 Sistem Pengurusan MyCarpet")
         st.subheader("Sila Log Masuk")
@@ -33,18 +43,27 @@ def semak_login():
         with st.form("borang_login"):
             username = st.text_input("Nama Pengguna (Username)")
             password = st.text_input("Kata Laluan (Password)", type="password")
+            
+            # TAMBAHAN: Checkbox untuk pilihan Ingat Saya
+            ingat_saya = st.checkbox("Ingat Saya (Remember Me)")
+            
             butang_masuk = st.form_submit_button("Masuk")
             
             if butang_masuk:
-                if username == "tengku_mann" and password == "Carpet2026":
+                if username == "cuci carpet" and password == "Carpet2026":
                     st.session_state["log_masuk"] = True
+                    
+                    # TAMBAHAN: Jika ditanda, simpan cookie selama 30 hari (2,592,000 saat)
+                    if ingat_saya:
+                        controller.set("ingat_user", username, max_age=2592000)
+                    
                     st.success("Log masuk berjaya! Memuatkan sistem...")
                     st.rerun() # Ini akan terus membuka dashboard utama
                 else:
                     st.error("Username atau Password salah!")
+                    
         return False
     return True
-
 
 
 def inisial_database_segar():
@@ -129,8 +148,8 @@ if semak_login():
     
             # === HAPUS KOD LAMA & GANTIKAN DARI BARIS 132 HINGGA 202 DENGAN INI ===
         #TARIKH 17/7,DATA ASAL
-#CUBA 9
-#CUBA 9
+#MASUKKAN BAHAGIAN PROSES DAN STATUS KARPET
+
             # 1. AMBIL DATA DARI TAB KARPET (MENGGUNAKAN INDEKS TETAP JALUR G)
             data_mentah_karpet = t_karpet.get_all_values() if 't_karpet' in locals() or 't_karpet' in globals() else []
 
@@ -592,12 +611,10 @@ if semak_login():
             st.info("💡 Sila klik butang ikon salin (Copy) di penjuru kanan atas kotak teks di bawah ini, kemudian buka aplikasi WhatsApp di laptop abang dan tekan 'Ctrl + V' untuk hantar kepada pelanggan.")
 
             # KOTAK TEKS BESAR UNTUK ABANG COPY MANUAL (Mempunyai butang salin otomatis di penjuru kanan kotak)
-            st.text_area(
-                label="Butiran teks resit pesanan pelanggan sedia untuk disalin:",
-                value=st.session_state.get("teks_resit_salinan", ""),
-                height=320,
-                key="kotak_salinan_resit_utama"
-            )
+            st.write("Butiran teks resit pesanan pelanggan sedia untuk disalin:")
+            st.code(st.session_state.get("teks_resit_salinan", ""), language="text")
+
+            
 
             st.markdown("---")
             # Sediakan butang reset borang manual untuk diklik apabila urusan salinan selesai

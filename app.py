@@ -8,6 +8,7 @@ import streamlit as st
 from google.oauth2.service_account import Credentials
 import menu_invoice
 from streamlit_cookies_controller import CookieController
+import menu_temujanji
 
 
 # TENTUKAN KONFIGURASI HALAMAN UTAMA STREAMLIT
@@ -103,6 +104,7 @@ if semak_login():
         "Navigasi Sistem",
         [
             "📊 Dashboard Utama & Temujanji",
+            "📅 Slot Janji Temu & Mesej",
             "📝 Tempahan Baru",
             "🔍 Scan & Tracking QR",
             "💳 Pengurusan Pembayaran",
@@ -230,37 +232,10 @@ if semak_login():
             st.markdown("---")
             st.metric("Jumlah Jualan Bulan Ini", f"RM {total_jualan:,.2f}")
 
-            st.markdown("---")
-            st.subheader("🗓️ Penjana Mesej Slot Janji Temu")
-
-            # 1. Kotak input manual untuk alamat
-            alamat_manual = st.text_area("Masukkan Alamat Pelanggan:", placeholder="Contoh: No 32, Jalan Seri Abadi...")
-
-            # MEMBUAT SEMULA LAJUR TARIKH DAN MASA
-            col_tarikh, col_masa = st.columns(2)
             
-            with col_tarikh:
-                tarikh_manual = st.date_input("Pilih Tarikh Ambil:", format="DD-MM-YYYY")
-                
-            with col_masa:
-                # Pilihan input teks manual seperti yang abang mahukan
-                masa_manual = st.text_input("Masukkan Masa Ambil:", placeholder="Contoh: 10:30 AM")
+    elif pilihan == "📅 Slot Janji Temu & Mesej":  
+           menu_temujanji.papar_menu_temujanji()
 
-            # 2. Formatkan tarikh dalam bentuk teks (Contoh: 21-04-2026)
-            tarikh_format = tarikh_manual.strftime("%d-%m-%Y")
-
-            # 3. Struktur draf mesej WhatsApp
-            skrip_slot = f"""*Pusat Cucian Karpet*
-
-        Slot janji temu untuk pengambilan karpet anda telah dimasukkan ke dalam sistem kami:
-        🗓️ *Tarikh:* {tarikh_format}
-        ⏰ *Masa:* {masa_manual}
-        📍 *Alamat:* {alamat_manual}
-
-        Sila maklumkan kepada kami jika anda perlu menukar slot ini. Terima kasih kerana mempercayai perkhidmatan kami!"""
-
-            # 4. Paparkan kotak teks yang sedia untuk disalin (Copy-Paste)
-            st.text_area("Salin Mesej di Bawah:", value=skrip_slot, height=200)
 
 # ==========================================
 # === MENU 2: TEMPAHAN BARU ===
