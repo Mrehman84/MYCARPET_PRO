@@ -198,8 +198,9 @@ def papar_menu_payment():
 
                 # Formula baki baharu: Jumlah keseluruhan ditolak deposit lama dan ditolak amaun baharu yang dibayar sekarang
                 v_baki = nilai_baki_default - v_amaun_dibayar
-                v_status_bayar = "PAID" if v_baki <= 0 else "PARTIAL"
+                v_status_bayar = "PAID" if v_baki <= 0 else "DEPOSIT"
                 v_masa_sekarang = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                v_nota = ""  # <--- TAMBAH BARIS INI (Selesaikan ralat NameError
 
                 # Susunan baris data baru untuk dimasukkan ke tab Payment
                 baris_baru = [
