@@ -107,7 +107,7 @@ def paparan_menu_invoice(sheet):
                     alamat_pelanggan = str(p_row.get("ALAMAT")).strip()
                 break
 
-        # 5. AMBIL REKOD DEPOSIT (TAB PAYMENT)
+        ## # 5. AMBIL REKOD DEPOSIT (TAB PAYMENT)
         deposit_nilai = 0.0
         for pay_row in data_payment:
             pay_inv = str(
@@ -115,19 +115,19 @@ def paparan_menu_invoice(sheet):
             ).strip()
             if pay_inv == inv_no_aktif:
                 try:
-                    nilai_str = (
-                        str(
-                            pay_row.get(
-                                "DEPOSIT", pay_row.get("JUMLAH HARGA", 0)
-                            )
-                        )
-                        .replace("RM", "")
-                        .strip()
-                    )
+                    nilai_raw = 0
+                    for k, v in pay_row.items():
+                        if "AMAUN" in k.upper() or "DEPOSIT" in k.upper():
+                            nilai_raw = v
+                            break
+                    
+                    nilai_str = str(nilai_raw).replace("RM", "").strip()
                     deposit_nilai = float(nilai_str) if nilai_str else 0.0
+                    break
                 except:
                     deposit_nilai = 0.0
-                break
+                    break
+
 
         # 6. EKSTRAK MULTI-ITEM KARPET (LAJUR JENIS & HARGA)
         senarai_karpet_invois = []
@@ -229,9 +229,14 @@ def paparan_menu_invoice(sheet):
         import pandas as pd
         df_p = pd.DataFrame(data_p_mentah[1:], columns=[str(c).upper().strip() for c in data_p_mentah[0]]) if len(data_p_mentah) > 1 else pd.DataFrame()
         
-        # 2. HITUNG DEPOSIT DAN BAKI SECARA SELAMAT DALAM SATU BARIS RATA
-        deposit_nilai = float(df_p[df_p['INV NO'] == inv_no_aktif].iloc[-1].get('AMAUN DIBAYAR', 0.0)) if not df_p.empty and inv_no_aktif in df_p['INV NO'].values else 0.0
-        v_baki_bersih = float(df_p[df_p['INV NO'] == inv_no_aktif].iloc[-1].get('BAKI', sub_jumlah_akhir)) if not df_p.empty and inv_no_aktif in df_p['INV NO'].values else float(sub_jumlah_akhir)
+                ## 2. HITUNG DEPOSIT DAN BAKI  17/7
+                # # 2. HITUNG DEPOSIT DAN BAKI SECARA SELAMAT
+                # # 2. HITUNG DEPOSIT DAN BAKI SECARA SELAMAT
+        v_baki_bersih_akhir = sub_jumlah_akhir - deposit_nilai
+        jumlah_bersih_akhir = sub_jumlah_akhir - deposit_nilai
+        v_baki_bersih = sub_jumlah_akhir - deposit_nilai  # <--- TAMBAH NAMA INI JUGA
+
+
 
       
         st.write("---")
@@ -262,7 +267,8 @@ def paparan_menu_invoice(sheet):
                 f"💰 **Sub Jumlah Keseluruhan:** RM {sub_jumlah_akhir:.2f} | **Deposit Ditolak:** RM {deposit_nilai:.2f}"
             )
             st.info(
-                    f"🔴 **BAKI JUMLAH BERSIH (PERLU DIBAYAR):** RM {v_baki_bersih:.2f}""")
+             f"🔴 **BAKI JUMLAH BERSIH (PERLU DIBAYAR):** RM {jumlah_bersih_akhir:.2f}" #DIGANTI UNUTK LIHAT BAKI DI JUMLAH INVOICE 17/7
+         )
 
             
 
@@ -275,7 +281,7 @@ def paparan_menu_invoice(sheet):
             "status": status_inv,
             "sub_jumlah": sub_jumlah_akhir,
             "deposit": deposit_nilai,
-            "jumlah_bersih": jumlah_bersih_akhir,
+            "jumlah_bersih": v_baki_bersih_akhir,#17/7 DIUBAHSUAI
         }
 
         # JANA ENGINE PDF
