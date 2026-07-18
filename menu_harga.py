@@ -1,7 +1,8 @@
 import streamlit as st
 import pandas as pd
 import re
-from database import inisial_database_segar
+from app import inisial_database_segar
+
 
 
 

@@ -13,6 +13,7 @@ import menu_scan_qr
 import menu_tempahan
 import menu_harga
 import menu_cetak_barcode
+from google.oauth2 import service_account
 
 
 
@@ -80,7 +81,7 @@ def inisial_database_segar():
 
          # GANTIKAN BARIS 30-33 DENGAN KOD INI:
         info_kredensial = st.secrets["gspread"]
-        kredensial = Credentials.from_service_account_info(
+        kredensial = service_account.Credentials.from_service_account_info(
             info_kredensial, scopes=skop
         )
         

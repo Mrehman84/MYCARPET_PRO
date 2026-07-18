@@ -5,7 +5,8 @@ from barcode.writer import ImageWriter
 import io
 import base64
 import re
-from database import inisial_database_segar
+from app import inisial_database_segar
+
 
 
 def jana_gambar_barcode_128(teks_id):
