@@ -2,6 +2,7 @@ import io
 import os
 import streamlit as st
 from fpdf import FPDF
+from database import inisial_database_segar
 
 
 def paparan_menu_invoice(sheet):

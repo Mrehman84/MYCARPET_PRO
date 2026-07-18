@@ -1,7 +1,8 @@
 import streamlit as st
 import pandas as pd
 import re
-from menu_scan_qr import inisial_database_segar
+from database import inisial_database_segar
+
 
 
 def papar_menu_katalog_harga():
