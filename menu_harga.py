@@ -15,8 +15,9 @@ def papar_menu_katalog_harga():
     df_harga = pd.DataFrame()
     
     if len(data_mentah) > 1:
-        # Gunakan baris pertama sebagai nama header lajur yang asal
-        df_harga = pd.DataFrame(data_mentah[1:], columns=data_mentah)
+        # KOD ASAL ABANG: Sangat rapat dan tiada ralat (Jangan diubah!)
+        df_harga = pd.DataFrame(data_mentah[1:], columns=data_mentah[0])
+        df_harga.columns = [str(c).upper().strip() for c in df_harga.columns]
 
     # --- BAHAGIAN TAB NAVIGASI DI DALAM MENU ---
     tab1, tab2, tab3 = st.tabs(["🔍 Senarai Katalog", "➕ Tambah Kod Baru", "🧮 Formula Pukal"])
@@ -28,6 +29,8 @@ def papar_menu_katalog_harga():
         st.markdown("### 🗂️ Senarai Kos Cucian Semasa dalam Database")
         if not df_harga.empty:
             df_paparan = df_harga.copy()
+            if 'HARGA OPEN' in df_paparan.columns:
+                df_paparan['HARGA OPEN'] = df_paparan['HARGA OPEN'].apply(lambda x: f"RM {str(x).replace('RM', '').strip()}")
             st.dataframe(df_paparan, use_container_width=True, hide_index=True)
         else:
             st.warning("⚠️ Tiada data dijumpai dalam tab 'Harga' Google Sheets anda.")
@@ -51,7 +54,7 @@ def papar_menu_katalog_harga():
             if hantar_tambah:
                 if not kod_baru or not jenis_baru:
                     st.error("❌ Sila isi ruangan Kod Baru dan Jenis Karpet terlebih dahulu!")
-                elif not df_harga.empty and kod_baru in df_harga.iloc[:, 0].values:
+                elif not df_harga.empty and kod_baru in df_harga['KOD'].values:
                     st.error(f"❌ Kod `{kod_baru}` sudah wujud! Sila guna Tab 'Formula Pukal' jika mahu ubah harga.")
                 else:
                     tab_harga.append_row([kod_baru, jenis_baru, f"{harga_baru:.2f}"])
@@ -96,8 +99,8 @@ def papar_menu_katalog_harga():
             senarai_harga_cadangan = []
 
             for idx, row in df_kalkulator.iterrows():
-                # Ambil nilai dari kolom pertama (KOD)
-                kod = str(row.iloc[0]).strip().upper()
+                # KOD ASAL ABANG: Dipulihkan sepenuhnya supaya kalis ralat KeyError
+                kod = str(row.get('KOD', '')).strip().upper()
                 
                 # Cari nilai darab gandaan mengikut urutan peta_darab
                 nilai_darab_semasa = 1.00
@@ -106,51 +109,66 @@ def papar_menu_katalog_harga():
                         nilai_darab_semasa = nilai
                         break
                 
-                # --- LOGIK EKSTRAK SAIZ PINTAR BARU (MENGGUNAKAN REGEX NOMBOR) ---
+                # --- LOGIK EKSTRAK SAIZ PINTAR MENGGUNAKAN REGEX NOMBOR ---
                 luas_sqft = 0.0
                 try:
-                    # Cari corak nombor diikuti dengan X dan nombor (Contoh: 4X6, 5X7, 8X11)
                     padanan = re.search(r'(\d+)\s*X\s*(\d+)', kod)
-                    
                     if padanan:
                         lebar = float(padanan.group(1))
                         panjang = float(padanan.group(2))
                         luas_sqft = lebar * panjang
                     else:
-                        # Jika kod adalah "TEBAL" atau tiada saiz X, kita jadikan luasnya 0 atau 1 
-                        # supaya ia bertindak sebagai kos tambahan tebal sahaja (Contoh: RM 24.00 terus)
-                        # Sila ubah nilai di bawah mengikut logik perniagaan abang:
                         luas_sqft = 24.0 if kod == "TEBAL" else 0.0
                 except:
                     luas_sqft = 0.0
 
-                # Formula: Luas (Sqft) x Harga Darab. Jika kod TEBAL, ia akan jadi Luas(24) * Nilai Darab (1.00) = RM 24.00
                 harga_kiraan_final = luas_sqft * nilai_darab_semasa
                 senarai_harga_cadangan.append(harga_kiraan_final)
 
-            # Masukkan lajur simulasi pengiraan ke dalam jadual paparan secara paksa
+            # Masukkan lajur simulasi pengiraan baharu ke dalam jadual
             df_kalkulator['HARGA BARU (DIKIRA)'] = senarai_harga_cadangan
 
             st.markdown("---")
-            st.markdown("##### 📊 Pratonton Hasil Pengiraan Sebelum Disimpan:")
+            st.markdown("##### 📊 Pratonton Hasil Pengiraan Sebelum Disimpan (Boleh Klik & Edit Lajur Kanan Sekali):")
             
-            # Guna paparan jadual
-            st.dataframe(df_kalkulator, use_container_width=True, hide_index=True)
+            # --- EDIT YANG SALAH SAHAJA DI SINI ---
+            # Menukar st.dataframe kepada st.data_editor supaya lajur kanan boleh diedit manual, 
+            # tetapi mengekalkan struktur jadual asal yang rapat dan bersih.
+            jadual_diedit = st.data_editor(df_kalkulator, use_container_width=True, hide_index=True)
 
             st.markdown("---")
             
             if st.button("🚀 Sahkan & Kemas Kini Semua Harga ke Google Sheets", use_container_width=True):
-                with st.spinner("Sedang memindahkan semua hasil pengiraan formula..."):
+                with st.spinner("Sedang memindahkan semua hasil pengiraan formula secara pukal..."):
                     try:
-                        for indeks, row in df_kalkulator.iterrows():
+                        # 1. Sediakan senarai kosong untuk kumpul semua data harga baharu
+                        senarai_kemaskini = []
+                        senarai_harga_akhir = jadual_diedit['HARGA BARU (DIKIRA)'].tolist()
+                        
+                        for indeks, harga_final in enumerate(senarai_harga_akhir):
                             baris_sheets = indeks + 2
-                            harga_hantar = f"{float(row['HARGA BARU (DIKIRA)']):.2f}"
-                            # Update terus ke lajur ke-3 (HARGA OPEN) di Google Sheets
-                            tab_harga.update_cell(baris_sheets, 3, harga_hantar)
+                            harga_hantar = f"{float(harga_final):.2f}"
                             
-                        st.success("🎉 Berjaya! Semua harga baru telah disimpan dengan selamat ke Google Sheets.")
+                            senarai_kemaskini.append({
+                                'range': f'C{baris_sheets}',
+                                'values': [[harga_hantar]]
+                            })
+                        
+                        # 2. Hantar data secara pukal ke Sheets
+                        tab_harga.batch_update(senarai_kemaskini)
+                        
+                        # 3. Simpan status berjaya ke dalam memori supaya teks tidak hilang selepas refresh
+                        st.session_state["mesej_jaya_harga"] = True
                         st.rerun()
                     except Exception as e:
                         st.error(f"❌ Ralat sistem: {e}")
-        else:
-            st.warning("⚠️ Pangkalan data tab 'Harga' kosong.")
+
+            # --- PAPARAN KOTAK TEKS BERJAYA (MUNCUL SELEPAS BUTTON DIKLIK) ---
+            if st.session_state.get("mesej_jaya_harga", False):
+                st.success("🎉 Berjaya! Semua kos katalog baharu (gandingan formula & edit manual) telah dikemas kini ke dalam Google Sheets.")
+                
+                # Sediakan butang kecil untuk tutup mesej jika abang mahu hilangkan teks tersebut
+                if st.button("✖️ Tutup Makluman"):
+                    st.session_state["mesej_jaya_harga"] = False
+                    st.rerun()
+
