@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import re
 from app import inisial_database_segar
 
 def papar_menu_katalog_harga():
@@ -14,8 +15,8 @@ def papar_menu_katalog_harga():
     df_harga = pd.DataFrame()
     
     if len(data_mentah) > 1:
-        # Guna baris pertama sebagai nama header lajur yang asal
-        df_harga = pd.DataFrame(data_mentah[1:], columns=data_mentah[0])
+        # Gunakan baris pertama sebagai nama header lajur yang asal
+        df_harga = pd.DataFrame(data_mentah[1:], columns=data_mentah)
 
     # --- BAHAGIAN TAB NAVIGASI DI DALAM MENU ---
     tab1, tab2, tab3 = st.tabs(["🔍 Senarai Katalog", "➕ Tambah Kod Baru", "🧮 Formula Pukal"])
@@ -73,13 +74,13 @@ def papar_menu_katalog_harga():
             with col_f2:
                 darab_cn = st.number_input("Prefix CN:", min_value=0.0, value=0.50, step=0.10, format="%.2f")
             with col_f3:
-                darab_cs = st.number_input("Prefix CS:", min_value=0.0, value=0.80, step=0.10, format="%.2f")
+                darab_cs = st.number_input("Prefix CS:", min_value=0.0, value=0.50, step=0.10, format="%.2f")
             with col_f4:
-                darab_hp = st.number_input("Prefix HP:", min_value=0.0, value=1.50, step=0.10, format="%.2f")
+                darab_hp = st.number_input("Prefix HP:", min_value=0.0, value=1.30, step=0.10, format="%.2f")
             with col_f5:
                 darab_lp = st.number_input("Prefix LP:", min_value=0.0, value=1.00, step=0.10, format="%.2f")
             with col_f6:
-                darab_csg = st.number_input("Prefix CSG:", min_value=0.0, value=1.50, step=0.10, format="%.2f")
+                darab_csg = st.number_input("Prefix CSG:", min_value=0.0, value=1.30, step=0.10, format="%.2f")
 
             # TURUTAN UTAMA: CSG diletakkan sebelum CS supaya pengiraan tidak bertembung
             peta_darab = {
@@ -95,7 +96,7 @@ def papar_menu_katalog_harga():
             senarai_harga_cadangan = []
 
             for idx, row in df_kalkulator.iterrows():
-                # Ambil nilai dari kolom pertama (KOD) secara index kedudukan
+                # Ambil nilai dari kolom pertama (KOD)
                 kod = str(row.iloc[0]).strip().upper()
                 
                 # Cari nilai darab gandaan mengikut urutan peta_darab
@@ -105,34 +106,25 @@ def papar_menu_katalog_harga():
                         nilai_darab_semasa = nilai
                         break
                 
-                # Logik Ekstrak Saiz Pintar
+                # --- LOGIK EKSTRAK SAIZ PINTAR BARU (MENGGUNAKAN REGEX NOMBOR) ---
                 luas_sqft = 0.0
                 try:
-                    kod_bersih = kod.upper().strip()
-                    bahagian_kod = kod_bersih.split(" ")
-                    teks_saiz = ""
+                    # Cari corak nombor diikuti dengan X dan nombor (Contoh: 4X6, 5X7, 8X11)
+                    padanan = re.search(r'(\d+)\s*X\s*(\d+)', kod)
                     
-                    for perkataan in bahagian_kod:
-                        if "X" in perkataan:
-                            teks_saiz = perkataan
-                            break
-                    
-                    if not teks_saiz and "X" in kod_bersih:
-                        teks_saiz = kod_bersih
-
-                    if teks_saiz:
-                        for char in ['CSG', 'CK', 'CN', 'CS', 'HP', 'LP']:
-                            teks_saiz = teks_saiz.replace(char, '')
-                        
-                        panjang_lebar = teks_saiz.split("X")
-                        lebar = float(panjang_lebar[0].strip())
-                        panjang = float(panjang_lebar[1].strip())
+                    if padanan:
+                        lebar = float(padanan.group(1))
+                        panjang = float(padanan.group(2))
                         luas_sqft = lebar * panjang
                     else:
-                        luas_sqft = 24.0
+                        # Jika kod adalah "TEBAL" atau tiada saiz X, kita jadikan luasnya 0 atau 1 
+                        # supaya ia bertindak sebagai kos tambahan tebal sahaja (Contoh: RM 24.00 terus)
+                        # Sila ubah nilai di bawah mengikut logik perniagaan abang:
+                        luas_sqft = 24.0 if kod == "TEBAL" else 0.0
                 except:
-                    luas_sqft = 24.0
+                    luas_sqft = 0.0
 
+                # Formula: Luas (Sqft) x Harga Darab. Jika kod TEBAL, ia akan jadi Luas(24) * Nilai Darab (1.00) = RM 24.00
                 harga_kiraan_final = luas_sqft * nilai_darab_semasa
                 senarai_harga_cadangan.append(harga_kiraan_final)
 
@@ -142,7 +134,7 @@ def papar_menu_katalog_harga():
             st.markdown("---")
             st.markdown("##### 📊 Pratonton Hasil Pengiraan Sebelum Disimpan:")
             
-            # Guna paparan asas tanpa menyekat konfigurasi nama kolom suapaya lajur baharu tidak hilang
+            # Guna paparan jadual
             st.dataframe(df_kalkulator, use_container_width=True, hide_index=True)
 
             st.markdown("---")
