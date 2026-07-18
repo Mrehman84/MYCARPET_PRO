@@ -263,9 +263,6 @@ if semak_login():
         tab_harga, t_pelanggan, t_tempahan, t_karpet = inisial_database_segar() # <--- TAMBAH BARIS INI
         # Masukkan pemboleh ubah gspread/Google Sheets anda ke dalam kurungan:
         menu_scan_qr.papar_menu_scan_qr(t_karpet, t_pelanggan)
-
-
-
                
 
     # ==============================================================================
@@ -277,7 +274,9 @@ if semak_login():
             exec(code, globals())
             papar_menu_payment()
 
+#========================== 
 #menu 5 invoice
+#=========================
 
     elif pilihan == "📄 Cetak Invois & Resit":
         _, _, t_tempahan, _ = inisial_database_segar()
@@ -297,7 +296,7 @@ if semak_login():
 
 #=============================================================
 #MENU LOGISTIK CETAK BARCODE
-
+#=========================================================
     elif pilihan == "🖨️ Cetak Barcode Carpet":
         menu_cetak_barcode.papar_menu_cetak_barcode()
 
