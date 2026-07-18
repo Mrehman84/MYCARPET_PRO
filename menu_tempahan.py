@@ -3,8 +3,9 @@ import pandas as pd
 from datetime import datetime
 from app import inisial_database_segar 
 import time
-
 from database import inisial_database_segar
+
+
 
 
 
