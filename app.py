@@ -12,6 +12,8 @@ import menu_temujanji
 import menu_scan_qr
 import menu_tempahan
 import menu_harga
+import menu_cetak_barcode
+
 
 
 
@@ -115,7 +117,9 @@ if semak_login():
             "📄 Cetak Invois & Resit",
             "💸 Perbelanjaan Bisnes",
             "📸 Kamera Sebelum/Selepas",
-            "📋 Pengurusan Katalog Harga" 
+            "📋 Pengurusan Katalog Harga",
+            "🖨️ Cetak Barcode Carpet"
+
         ],
         key="navigasi_utama_system"
     )
@@ -165,10 +169,11 @@ if semak_login():
 
             # # 2. PENGIRAAN TOTAL SECARA TERUS MENGGUNAKAN .count() (KATA YANG SAMA DIKUMPULKAN)
             skarp_proses = senarai_status.count('DALAM PROSES') + senarai_status.count('PENDING')
-            skarp_cuci = senarai_status.count('SEDANG DICUCI') + senarai_status.count('CUCI') + senarai_status.count('DITERIMA')
-            skarp_siap = senarai_status.count('SIAP CUCI') + senarai_status.count('SIAP')
-            skarp_deliver = senarai_status.count('READY TO DELIVER') + senarai_status.count('SIAP DIHANTAR')
-            skarp_selesai = senarai_status.count('SELESAI') + senarai_status.count('DONE') + senarai_status.count('SELESAI DIHANTAR')
+            skarp_cuci = senarai_status.count('PENGERINGAN') # Disatukan membaca status PENGERINGAN sahaja
+            skarp_siap = 0 # Dibersihkan jadi 0 kerana kategori ini sudah dibuang
+            skarp_deliver = senarai_status.count('READY TO DELIVER')
+            skarp_selesai = senarai_status.count('SELESAI') + senarai_status.count('DONE')
+
 
             # Hitung jumlah baris keseluruhan yang aktif
             total_keseluruhan = len(senarai_status)
@@ -192,18 +197,19 @@ if semak_login():
 
             # 4. PAPARKAN GRID MATRIK DI DASHBOARD UTAMA
             st.markdown("---")
-            st.subheader("🔄 Status Operasi Karpet Semasa")
-            col_s1, col_s2, col_s3, col_s4, col_s5 = st.columns(5)
-            with col_s1:
-                st.metric(label="⏳ Dalam Proses", value=f"{skarp_proses} Pcs")
-            with col_s2:
-                st.metric(label="🧼 Sedang Dicuci", value=f"{skarp_cuci} Pcs")
-            with col_s3:
-                st.metric(label="✨ Siap Cuci", value=f"{skarp_siap} Pcs")
-            with col_s4:
-                st.metric(label="🚚 Ready to Deliver", value=f"{skarp_deliver} Pcs")
-            with col_s5:
-                st.metric(label="✅ Selesai", value=f"{skarp_selesai} Pcs")
+            st.markdown("### 🔄 Status Operasi Karpet Semasa")
+            
+            # Ditukar kepada 4 lajur yang sepadan dengan kitaran status baharu
+            c1, c2, c3, c4 = st.columns(4)
+            with c1:
+                st.metric("⏳ Dalam Proses", f"{skarp_proses} Pcs")
+            with c2:
+                st.metric("☀️ Pengeringan", f"{skarp_cuci} Pcs")
+            with c3:
+                st.metric("📦 Ready to Deliver", f"{skarp_deliver} Pcs")
+            with c4:
+                st.metric("✅ Selesai", f"{skarp_selesai} Pcs")
+
                 
             st.markdown("---")
             st.subheader("📈 Ringkasan Basuhan Karpet")
@@ -289,6 +295,11 @@ if semak_login():
         menu_harga.papar_menu_katalog_harga()
 
 
+#=============================================================
+#MENU LOGISTIK CETAK BARCODE
+
+    elif pilihan == "🖨️ Cetak Barcode Carpet":
+        menu_cetak_barcode.papar_menu_cetak_barcode()
 
 
  

@@ -44,8 +44,7 @@ def papar_menu_scan_qr(t_karpet, t_pelanggan):
                     df_sumber = df_k.copy()
                 else:
                     if lajur_status_asal:
-                        df_sumber = df_k[df_k[lajur_status_asal].astype(str).str.upper().str.strip() != "SELESAI"].copy()
-
+                        df_sumber = df_k[df_k[lajur_status_asal].astype(str).str.upper().str.strip() != "SELESAI DIHANTAR"].copy()
                     else:
                         df_sumber = df_k.copy()
 
@@ -134,7 +133,7 @@ def papar_menu_scan_qr(t_karpet, t_pelanggan):
                             </div>
                             """, unsafe_allow_html=True)
                             
-                        elif status_badge == "SELESAI":
+                        elif status_badge == "SELESAI DIHANTAR":
                             # Latar belakang hijau lembut
                             st.markdown(f"""
                             <div style="background-color: #14281d; color: #4ade80; padding: 8px 12px; border-radius: 6px; border-left: 4px solid #22c55e; margin-bottom: 4px; font-family: sans-serif;">
@@ -151,13 +150,8 @@ def papar_menu_scan_qr(t_karpet, t_pelanggan):
                     
                     lajur_qr_real = 'QR ID' if 'QR ID' in df_hasil_tapis.columns else ""
                     if lajur_qr_real:
-                        # 1. Tapis keluar status SELESAI (Kod baharu yang kita tambah)
-                        df_tapis_belum_selesai = df_hasil_tapis[df_hasil_tapis[lajur_status_asal].astype(str).str.upper().str.strip() != "SELESAI"]
-                        senarai_qr_wujud = df_tapis_belum_selesai[lajur_qr_real].dropna().unique().tolist()
-                        
-                        # 2. Kotak selectbox asal abang (PASTIKAN BARIS INI ADA SEMULA)
+                        senarai_qr_wujud = df_hasil_tapis[lajur_qr_real].dropna().unique().tolist()
                         qr_pilihan = st.selectbox("3. Pilih QR ID Karpet Yang Mahu Ditukar Status:", senarai_qr_wujud)
-
                         
                         if qr_pilihan:
                             row_filtered = df_hasil_tapis[df_hasil_tapis[lajur_qr_real] == qr_pilihan]
@@ -168,10 +162,9 @@ def papar_menu_scan_qr(t_karpet, t_pelanggan):
                                 st.markdown(f"📍 Karpet Terpilih: **{val_jenis}** | Status Semasa: `{val_status}`")
                             
                             status_baru = st.selectbox(
-                            "4. Pilih Status Baharu:",
-                            ["DALAM PROSES", "PENGERINGAN", "READY TO DELIVER", "SELESAI"]
-)
-
+                                "4. Pilih Status Baharu:",
+                                ["DALAM PROSES", "SEDANG DICUCI", "SIAP CUCI", "READY TO DELIVER", "SELESAI DIHANTAR"]
+                            )
                             
                             if st.button("💾 Simpan & Hantar Status Baharu Ke Google Sheets", use_container_width=True):
                                 lajur_qr_index = [str(c).upper().strip() for c in data_k_raw[0]].index('QR ID')

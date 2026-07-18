@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 from app import inisial_database_segar 
-import time
 
 
 from app import inisial_database_segar
@@ -253,14 +252,13 @@ def papar_menu_tempahan_baru(): # <--- TAMBAH BARIS INI
         st.metric("💰 Jumlah Keseluruhan Tempahan",
                 f"RM {total_harga_keseluruhan:.2f}")
 
-        # # 2. BUTANG SIMPAN TEMPAHAN (DI LUAR GELUNG KARPET)
+        # =========================================================================
+        # 2. BUTANG SIMPAN TEMPAHAN (DI LUAR GELUNG KARPET - 100% STABIL & AMAN)
+        # =========================================================================
         if st.button("💾 Sahkan & Simpan Tempahan Baru", use_container_width=True):
-            
-            # --- UTAMAKAN INI: Takrifkan next_inv di baris teratas butang simpan ---
             data_t_semasa = t_tempahan.get_all_values() if t_tempahan else []
             if len(data_t_semasa) > 1:
-                nombor_turutan = (len(data_t_semasa) - 1) + 1
-                next_inv = f"INV26{nombor_turutan:04d}"
+                next_inv = f"INV{len(data_t_semasa):04d}"
             else:
                 next_inv = "INV260001"
 
@@ -268,90 +266,104 @@ def papar_menu_tempahan_baru(): # <--- TAMBAH BARIS INI
             harga_formatted = f"RM {total_harga_keseluruhan:.2f}"
 
             if status_pelanggan == "Pelanggan Sedia Ada":
-                current_cus_id = st.session_state.get("id_pelanggan_dipilih", "CUS0001")
+                current_cus_id = st.session_state.get(
+                    "id_pelanggan_dipilih", "CUS0001")
             else:
                 data_p_semasa = t_pelanggan.get_all_values() if t_pelanggan else []
                 if len(data_p_semasa) > 1:
                     current_cus_id = f"CUS{len(data_p_semasa):04d}"
                 else:
                     current_cus_id = "CUS0001"
-
                 if nama_input and telefon_input:
-                    t_pelanggan.append_row([current_cus_id, nama_input, telefon_input, alamat_input, ""])
+                    t_pelanggan.append_row(
+                        [current_cus_id, nama_input, telefon_input, alamat_input, ""])
 
-            # Masukkan rekod induk ke tab Tempahan
-            baris_tempahan = [next_inv, tarikh_hari_ini, current_cus_id, harga_formatted, "Pending"]
+            baris_tempahan = [next_inv, tarikh_hari_ini,
+                            current_cus_id, harga_formatted, "Pending"]
             t_tempahan.append_row(baris_tempahan)
 
-            # # 4. Simpan data per helai karpet ke tab Karpetsecara DINAMIK & BETUL
-            counter_item = 1
-            for i in range(st.session_state.bilangan_karpet):
-                # Ambil data input secara langsung daripada setiap kotak baris #1, #2, #3 skrin
-                kod_dinamik = st.session_state.get(f"kod_{i}", "PELBAGAI")
-                qty_int = int(st.session_state.get(f"qty_{i}", 1))
-                harga_seunit_dinamik = float(st.session_state.get(f"harga_base_{i}", 15.00))
-                
-                # Logik ambil jenis dan saiz teks mengikut perkiraan borang
-                item_data = data_karpet_borang[i] if i < len(data_karpet_borang) else {"jenis": "Carpet", "saiz": "Standard"}
-                jenis_dinamik = item_data.get("jenis", "Carpet")
-                saiz_dinamik = item_data.get("saiz", "Standard")
+            # 4. Simpan data per helai karpet ke tab Karpet beserta FORMAT QR ID BAHARU
+            counter_item = 1  # Bermula dari helai ke-1 untuk invois semasa
+
+            for item in data_karpet_borang:
+                try:
+                    qty_int = int(item["qty"])
+                except:
+                    qty_int = 1
 
                 for _ in range(qty_int):
+                    # Menjana QR ID mengikut format permintaan abang (Contoh: INV0021-1)
                     qr_id = f"{next_inv}-{counter_item}"
-                    
+
                     baris_karpet = [
-                        qr_id,                                # Lajur A: QR ID
-                        next_inv,                             # Lajur B: INV NO
-                        str(kod_dinamik).strip().upper(),     # Lajur C: KOD (Dinamik mengikut apa abang klik!)
-                        str(jenis_dinamik).strip(),           # Lajur D: JENIS
-                        f"RM {harga_seunit_dinamik:.2f}",     # Lajur E: HARGA
-                        str(saiz_dinamik).strip(),            # Lajur F: Column 1 (SAIZ)
-                        "DALAM PROSES"                            # Lajur G: STATUS
+                        qr_id,
+                        next_inv,
+                        item["kod"],
+                        item["jenis"],
+                        f"RM {item['harga']:.2f}",
+                        item["saiz"],
+                        "DALAM PROSES"  # Status awal untuk setiap helai karpet
                     ]
                     t_karpet.append_row(baris_karpet)
-                    counter_item += 1
+                    counter_item += 1  # Tambah nombor turutan untuk helai karpet seterusnya
 
             teks_senarai_karpet = ""
+            jumlah_keping_karpet = 0
             for idx, item in enumerate(data_karpet_borang):
-                teks_senarai_karpet += f"• ({idx+1}). {item['jenis'].upper()} ({item['saiz']}) \n"
+                try:
+                    qty_item = int(item["qty"])
+                except:
+                    qty_item = 1
+                jumlah_keping_karpet += qty_item
+                teks_senarai_karpet += f" {idx+1}. {item['jenis'].upper()} ({item['saiz']})\n"
 
             from datetime import timedelta
-            tarikh_siap_anggaran = (datetime.now() + timedelta(days=7)).strftime("%d-%m-%Y")
-            tarikh_ambil_format = datetime.now().strftime("%d-%m-%Y")
+            tarikh_siap_anggaran = (datetime.strptime(
+                tarikh_hari_ini, "%Y-%m-%d") + timedelta(days=7)).strftime("%d-%m-%Y")
+            tarikh_ambil_format = datetime.strptime(
+                tarikh_hari_ini, "%Y-%m-%d").strftime("%d-%m-%Y")
 
             mesej_wa = (
-                f"*MYCARPET PRO v2.0*\n"
+                f"🧺 *MYCARPET PRO v2.0*\n"
                 f"Assalamualaikum / Salam Sejahtera,\n\n"
                 f"Pelanggan yang dihormati, kami ingin memaklumkan bahawa karpet anda telah selamat diambil dan akan diproses untuk cucian. Berikut adalah maklumat pesanan anda:\n\n"
-                f"• *No Invoice:* `{next_inv}` - ({alamat_input[:30]}...)\n"
-                f"• *Tarikh Ambil:* {tarikh_ambil_format}\n"
-                f"• *Tarikh Siap (Anggaran):* {tarikh_siap_anggaran}\n"
-                f"• *Jumlah Karpet:* {st.session_state.bilangan_karpet} keping\n"
-                f"• *Butiran Jenis Karpet:* \n{teks_senarai_karpet}\n"
-                f"• *Jumlah Harga:* {harga_formatted}\n"
-                f"• *Status:* Pickup & Proses Cucian\n\n"
+                f"🧾 *No Invoice:* {next_inv} - {alamat_input[:30]}...\n"
+                f"📅 *Tarikh Ambil:* {tarikh_ambil_format}\n"
+                f"📆 *Tarikh Siap (Anggaran):* {tarikh_siap_anggaran}\n"
+                f"🔢 *Jumlah Karpet:* {jumlah_keping_karpet} keping\n\n"
+                f"📝 *Butiran Jenis Karpet:*\n{teks_senarai_karpet}\n"
+                f"💰 *Jumlah Harga:* {harga_formatted}\n"
+                f"🚚 *Status:* Pickup & Proses Cucian\n\n"
                 f"Sila hubungi kami jika anda mempunyai sebarang arahan khas atau ingin menjadualkan masa penghantaran yang sesuai nanti. Terima kasih kerana mempercayai perkhidmatan kami! 🙏✨"
             )
 
+            # Kunci data di dalam memori session state supaya borang tidak padam secara automatik
             st.session_state["data_tersimpan_state"] = True
             st.session_state["teks_resit_salinan"] = mesej_wa
             st.session_state["nota_sukses"] = f"🎉 Tempahan {next_inv} berjaya disimpan ke Google Sheets!"
             st.rerun()
 
-        # Paparan Mesej Resit
+        # -------------------------------------------------------------------------
+        # Paparan Komponen Mesej Rasmi (Jarak Tepi 8 Spacebar Dari Dinding Kiri)
+        # -------------------------------------------------------------------------
         if st.session_state.get("data_tersimpan_state", False):
-            st.success(st.session_state.get("nota_sukses", "Simpanan Berjaya!"))
-            st.markdown("### 📱 Salinan Mesej WhatsApp Resit")
+            # Paparkan notifikasi kejayaan berwarna hijau di atas kotak teks
+            st.success(st.session_state.get("nota_sukses", "🎉 Simpanan Berjaya!"))
+
+            st.markdown("### 📋 Salinan Mesej WhatsApp Resit")
             st.info("💡 Sila klik butang ikon salin (Copy) di penjuru kanan atas kotak teks di bawah ini, kemudian buka aplikasi WhatsApp di laptop abang dan tekan 'Ctrl + V' untuk hantar kepada pelanggan.")
+
+            # KOTAK TEKS BESAR UNTUK ABANG COPY MANUAL (Mempunyai butang salin otomatis di penjuru kanan kotak)
+            st.write("Butiran teks resit pesanan pelanggan sedia untuk disalin:")
             st.code(st.session_state.get("teks_resit_salinan", ""), language="text")
 
-        st.markdown("---")
-        if st.button("🔄 Buka Borang Baru (Reset Skrin)", use_container_width=True):
-            st.session_state.bilangan_karpet = 1
-            st.session_state["data_tersimpan_state"] = False
-            if "id_pelanggan_dipilih" in st.session_state:
-                del st.session_state["id_pelanggan_dipilih"]
-            st.rerun()
+            
 
-
-
+            st.markdown("---")
+            # Sediakan butang reset borang manual untuk diklik apabila urusan salinan selesai
+            if st.button("🔄 Buka Borang Baru (Reset Skrin)", use_container_width=True):
+                st.session_state.bilangan_karpet = 1
+                st.session_state["data_tersimpan_state"] = False
+                if "id_pelanggan_dipilih" in st.session_state:
+                    del st.session_state["id_pelanggan_dipilih"]
+                st.rerun()
