@@ -1,7 +1,7 @@
-
 import gspread
 import streamlit as st
-from google.oauth2.service_account import Credentials 
+from google.oauth2.service_account import Credentials  # 💡 TUKAR BARIS INI
+
 
 def inisial_database_segar():
     try:
