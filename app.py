@@ -6,7 +6,6 @@ import pandas as pd
 import gspread
 import streamlit as st
 from google.oauth2.service_account import Credentials
-import database
 import menu_invoice
 from streamlit_cookies_controller import CookieController
 import menu_temujanji
@@ -14,7 +13,7 @@ import menu_scan_qr
 import menu_tempahan
 import menu_harga
 import menu_cetak_barcode
-import database
+
 
 
 
@@ -74,6 +73,32 @@ def semak_login():
     return True
 
 
+def inisial_database_segar():
+    try:
+        skop = ["https://www.googleapis.com/auth/spreadsheets",
+                "https://www.googleapis.com/auth/drive"]
+
+         # GANTIKAN BARIS 30-33 DENGAN KOD INI:
+        info_kredensial = st.secrets["gspread"]
+        kredensial = Credentials.from_service_account_info(
+            info_kredensial, scopes=skop
+        )
+        
+        gc = gspread.authorize(kredensial)
+
+        # Buka fail utama menggunakan URL aktif anda
+        url_sheet = "https://docs.google.com/spreadsheets/d/1AAszxb_8Rbvb9ruXCVL_vQN12NME0eHYEtxqMj6OIRo/edit?gid=1251116694#gid=1251116694"
+        buka_fail = gc.open_by_url(url_sheet)
+
+        tab_harga = buka_fail.worksheet("SENARAI_HARGA")
+        t_pelanggan = buka_fail.worksheet("Pelanggan")
+        t_tempahan = buka_fail.worksheet("Tempahan")
+        t_karpet = buka_fail.worksheet("Karpet")
+
+        return tab_harga, t_pelanggan, t_tempahan, t_karpet
+    except Exception as e:
+        st.error(f"❌ Gagal menyambung ke Google Sheets: {e}")
+        return None, None, None, None
 
 # MEMANGGIL SESI PANGKALAN DATA AWAL
 if semak_login():
@@ -94,7 +119,6 @@ if semak_login():
             "📸 Kamera Sebelum/Selepas",
             "📋 Pengurusan Katalog Harga",
             "🖨️ Cetak Barcode Carpet"
-
         ],
         key="navigasi_utama_system"
     )
@@ -111,8 +135,7 @@ if semak_login():
 
         # MASUKKAN BARIS INI DENGAN ANJAKAN 4 SPASI KE DALAM:
         # Mengambil database segar Google Sheets
-        tab_harga, t_pelanggan, t_tempahan, t_karpet = database.inisial_database_segar()
-
+        tab_harga, t_pelanggan, t_tempahan, t_karpet = inisial_database_segar()
 
         data_mentah_t = t_tempahan.get_all_values() if t_tempahan else []
         if len(data_mentah_t) > 1:
@@ -239,6 +262,9 @@ if semak_login():
         tab_harga, t_pelanggan, t_tempahan, t_karpet = inisial_database_segar() # <--- TAMBAH BARIS INI
         # Masukkan pemboleh ubah gspread/Google Sheets anda ke dalam kurungan:
         menu_scan_qr.papar_menu_scan_qr(t_karpet, t_pelanggan)
+
+
+
                
 
     # ==============================================================================
@@ -250,9 +276,7 @@ if semak_login():
             exec(code, globals())
             papar_menu_payment()
 
-#========================== 
 #menu 5 invoice
-#=========================
 
     elif pilihan == "📄 Cetak Invois & Resit":
         _, _, t_tempahan, _ = inisial_database_segar()
@@ -272,7 +296,7 @@ if semak_login():
 
 #=============================================================
 #MENU LOGISTIK CETAK BARCODE
-#=========================================================
+
     elif pilihan == "🖨️ Cetak Barcode Carpet":
         menu_cetak_barcode.papar_menu_cetak_barcode()
 
