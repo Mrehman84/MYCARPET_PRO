@@ -111,7 +111,8 @@ if semak_login():
 
         # MASUKKAN BARIS INI DENGAN ANJAKAN 4 SPASI KE DALAM:
         # Mengambil database segar Google Sheets
-        tab_harga, t_pelanggan, t_tempahan, t_karpet = inisial_database_segar()
+        tab_harga, t_pelanggan, t_tempahan, t_karpet = database.inisial_database_segar()
+
 
         data_mentah_t = t_tempahan.get_all_values() if t_tempahan else []
         if len(data_mentah_t) > 1:
