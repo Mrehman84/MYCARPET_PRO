@@ -5,7 +5,8 @@ from app import inisial_database_segar
 import time
 
 
-from app import inisial_database_segar
+from menu_scan_qr import inisial_database_segar
+
 
     # --- MENU 2: TEMPAHAN BARU ---
 

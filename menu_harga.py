@@ -1,7 +1,8 @@
 import streamlit as st
 import pandas as pd
 import re
-from app import inisial_database_segar
+from menu_scan_qr import inisial_database_segar
+
 
 def papar_menu_katalog_harga():
     st.title("📋 Katalog Harga")
