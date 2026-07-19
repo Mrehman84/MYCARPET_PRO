@@ -5,7 +5,7 @@ import io
 import base64
 
 # ===================================================================
-# 1. FUNGSI JANA GAMBAR QR CODE (STABIL & DIJAMIN MUNCUL DALAM CETAKAN)
+# 1. FUNGSI JANA GAMBAR QR CODE
 # ===================================================================
 def jana_gambar_qr(teks_id):
     qr = qrcode.QRCode(version=1, box_size=10, border=1)
@@ -36,19 +36,29 @@ def papar_menu_cetak_barcode(t_tempahan, t_karpet, t_pelanggan):
         st.info("ℹ️ Tiada data tempahan aktif ditemui buat masa ini.")
         return
 
-    # --- PILIHAN INVOICE (Mencipta variable inv_sebenar agar tidak NameError) ---
+    # --- PILIHAN INVOICE ---
     pilihan_dropdown = ["-- Sila Pilih Invoice --"] + df_t.iloc[:, 0].unique().tolist()
     inv_sebenar = st.selectbox("🎯 1. Pilih Nombor Invoice Pelanggan:", pilihan_dropdown)
 
-    # Memulakan logik semakan jika invoice sudah dipilih
     if inv_sebenar != "-- Sila Pilih Invoice --":
         
-        # Ambil maklumat ID Pelanggan dan Nombor Telefon dengan selamat
+        # ----------------================================================---
+        # FIX: PENGAMBILAN DATA PELANGGAN YANG TEPAT MENGIKUT NAMA LAJUR (BUKAN INDEKS)
+        # ----------------================================================---
         row_t = df_t[df_t.iloc[:, 0] == inv_sebenar]
         cus_id_final = row_t.iloc[0, 2] if not row_t.empty else "CUS-0000"
         
+        # Cari data pelanggan dalam df_p
         row_p = df_p[df_p.iloc[:, 0] == cus_id_final]
-        no_tel_final = row_p.iloc[0, 3] if not row_p.empty else "000-0000000"
+        
+        # Semak nama lajur telefon secara selamat (mengambil lajur bernama TELEFON atau No. Telefon)
+        lajur_tel = [c for c in df_p.columns if 'TEL' in str(c).upper()]
+        
+        if not row_p.empty and lajur_tel:
+            no_tel_final = str(row_p[lajur_tel[0]].values[0]).strip()
+        else:
+            # Jika tiada nama lajur, guna indeks asal lajur ke-3 (indeks 2) untuk No. Telefon
+            no_tel_final = row_p.iloc[0, 2] if not row_p.empty else "000-0000000"
 
         # Tapis senarai pecahan karpet yang hanya milik nombor invoice ini
         df_pecahan_karpet = df_k[df_k.iloc[:, 1] == inv_sebenar]
@@ -57,9 +67,7 @@ def papar_menu_cetak_barcode(t_tempahan, t_karpet, t_pelanggan):
             st.warning("⚠️ Tiada pecahan data karpet dijumpai untuk nombor invoice ini di dalam tab 'Karpet'.")
             return
 
-        # ----------------================================================---
-        # FUNGSI KEMBALI 1: JADUAL PREVIEW UNTUK SEMAK JUMLAH CARPET
-        # ----------------================================================---
+        # 1. PAPARAN JADUAL PREVIEW UNTUK SEMAK JUMLAH CARPET
         st.markdown(f"### 📊 2. Senarai Karpet Dalam Invoice Ini")
         df_view_clean = df_pecahan_karpet.copy()
         st.dataframe(df_view_clean, use_container_width=True, hide_index=True)
@@ -67,18 +75,16 @@ def papar_menu_cetak_barcode(t_tempahan, t_karpet, t_pelanggan):
 
         st.markdown(f"### 📑 3. Pratonton Halaman Cetakan A6 ({len(df_pecahan_karpet)} Stiker)")
 
-        # ----------------================================================---
-        # FUNGSI KEMBALI 2: STRUKTUR GRID KERTAS A6 (MUAT MULTIPLE BARCODE)
-        # ----------------================================================---
+        # 2. STRUKTUR GRID KERTAS A6
         html_semua_stiker = ""
         for idx, row_k in df_pecahan_karpet.iterrows():
             qr_id_karpet = str(row_k.iloc[0]).strip()
-            kod_saiz = str(row_k.iloc[2]).strip()  # Mengambil data jenis/kod karpet
+            kod_saiz = str(row_k.iloc[2]).strip()  # Mengambil data kod gred/saiz karpet
             
             # Jana gambar QR Code dinamik base64
             imej_qr_base64 = jana_gambar_qr(qr_id_karpet)
 
-            # Menyusun stiker box ke dalam bentuk grid (Ukuran dioptimumkan untuk stiker mampat)
+            # Menyusun stiker box ke dalam bentuk grid
             html_semua_stiker += f"""
             <div class="stiker-box">
                 <div class="header-tag">MYCARPET PRO v2.0</div>
@@ -100,7 +106,6 @@ def papar_menu_cetak_barcode(t_tempahan, t_karpet, t_pelanggan):
             <style>
                 body {{ margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #ffffff; }}
                 
-                /* Mengatur sempadan luar kertas thermal A6 (100mm x 150mm) */
                 .halaman-a6-container {{
                     width: 100mm;
                     height: 150mm;
@@ -109,14 +114,12 @@ def papar_menu_cetak_barcode(t_tempahan, t_karpet, t_pelanggan):
                     margin: 0 auto;
                 }}
                 
-                /* Sistem Grid 2 Lajur (Kiri & Kanan berkembar) */
                 .grid-layout {{
                     display: grid;
                     grid-template-columns: 1fr 1fr;
                     grid-gap: 2mm;
                 }}
                 
-                /* Saiz kotak stiker individu (Dianggarkan muat 8-10 stiker) */
                 .stiker-box {{
                     border: 1px dashed #000000;
                     padding: 4px;
@@ -153,13 +156,11 @@ def papar_menu_cetak_barcode(t_tempahan, t_karpet, t_pelanggan):
         </html>
         """
 
-        # Papar komponen kotak pratonton dengan fungsi skrol menegak aktif
+        # Papar komponen kotak pratonton
         st.components.v1.html(html_kertas_a6_lengkap, height=580, scrolling=True)
         st.markdown("---")
 
-        # ----------------================================================---
-        # 3. BUTANG MUAT TURUN PINTAR JAVASCRIPT BLOB (UNTUK TELEFON - BEBAS ERROR)
-        # ----------------================================================---
+        # 3. BUTANG MUAT TURUN PINTAR JAVASCRIPT BLOB
         html_butang_muat_turun = f"""
         <script>
         function muatTurunHTML() {{
@@ -180,7 +181,6 @@ def papar_menu_cetak_barcode(t_tempahan, t_karpet, t_pelanggan):
         """
         st.components.v1.html(html_butang_muat_turun, height=60)
 
-        # Butang sokongan cetakan terus jika menggunakan Laptop
         if st.button("🖨️ Cetak Terus Dari Laptop (A6 Grid)", use_container_width=True):
             st.components.v1.html(
                 f"""
