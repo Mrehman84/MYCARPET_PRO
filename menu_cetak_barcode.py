@@ -5,7 +5,7 @@ import io
 import base64
 
 # ===================================================================
-# 1. FUNGSI JANA GAMBAR QR CODE
+# 1. FUNGSI JANA GAMBAR QR CODE (STABIL)
 # ===================================================================
 def jana_gambar_qr(teks_id):
     qr = qrcode.QRCode(version=1, box_size=10, border=1)
@@ -27,14 +27,19 @@ def papar_menu_cetak_barcode(t_tempahan, t_karpet, t_pelanggan):
     st.title("🖨️ Cetak QR Code Carpet")
     st.caption("Sistem pengurusan cetakan tag stiker QR Carpet (Format Kertas A6 Grid).")
 
-    # Ambil dan tukar data dari Google Sheets menjadi Dataframe Pandas
-    df_t = pd.DataFrame(t_tempahan.get_all_values()[1:], columns=t_tempahan.get_all_values()[0]) if t_tempahan else pd.DataFrame()
-    df_k = pd.DataFrame(t_karpet.get_all_values()[1:], columns=t_karpet.get_all_values()[0]) if t_karpet else pd.DataFrame()
-    df_p = pd.DataFrame(t_pelanggan.get_all_values()[1:], columns=t_pelanggan.get_all_values()[0]) if t_pelanggan else pd.DataFrame()
+    # Ambil data dari Google Sheets
+    data_t = t_tempahan.get_all_values() if t_tempahan else []
+    data_k = t_karpet.get_all_values() if t_karpet else []
+    data_p = t_pelanggan.get_all_values() if t_pelanggan else []
 
-    if df_t.empty:
+    if len(data_t) <= 1:
         st.info("ℹ️ Tiada data tempahan aktif ditemui buat masa ini.")
         return
+
+    # Tukar menjadi Dataframe
+    df_t = pd.DataFrame(data_t[1:], columns=data_t[0])
+    df_k = pd.DataFrame(data_k[1:], columns=data_k[0])
+    df_p = pd.DataFrame(data_p[1:], columns=data_p[0])
 
     # --- PILIHAN INVOICE ---
     pilihan_dropdown = ["-- Sila Pilih Invoice --"] + df_t.iloc[:, 0].unique().tolist()
@@ -42,49 +47,44 @@ def papar_menu_cetak_barcode(t_tempahan, t_karpet, t_pelanggan):
 
     if inv_sebenar != "-- Sila Pilih Invoice --":
         
-        # ----------------================================================---
-        # FIX: PENGAMBILAN DATA PELANGGAN YANG TEPAT MENGIKUT NAMA LAJUR (BUKAN INDEKS)
-        # ----------------================================================---
+        # Ambil data pelanggan
         row_t = df_t[df_t.iloc[:, 0] == inv_sebenar]
         cus_id_final = row_t.iloc[0, 2] if not row_t.empty else "CUS-0000"
         
-        # Cari data pelanggan dalam df_p
         row_p = df_p[df_p.iloc[:, 0] == cus_id_final]
         
-        # Semak nama lajur telefon secara selamat (mengambil lajur bernama TELEFON atau No. Telefon)
-        lajur_tel = [c for c in df_p.columns if 'TEL' in str(c).upper()]
-        
-        if not row_p.empty and lajur_tel:
-            no_tel_final = str(row_p[lajur_tel[0]].values[0]).strip()
-        else:
-            # Jika tiada nama lajur, guna indeks asal lajur ke-3 (indeks 2) untuk No. Telefon
-            no_tel_final = row_p.iloc[0, 2] if not row_p.empty else "000-0000000"
+        # FIX AMBIL NO TELEFON: Cari lajur nombor telefon (biasanya indeks ke-2 atau lajur ke-3)
+        no_tel_final = "000-0000000"
+        if not row_p.empty:
+            for col in row_p.columns:
+                if 'TEL' in str(col).upper() or 'PHONE' in str(col).upper():
+                    no_tel_final = str(row_p[col].values[0]).strip()
+                    break
+            if no_tel_final == "000-0000000" and len(row_p.columns) >= 3:
+                no_tel_final = str(row_p.iloc[0, 2]).strip()
 
-        # Tapis senarai pecahan karpet yang hanya milik nombor invoice ini
+        # Tapis senarai pecahan karpet mengikut invoice
         df_pecahan_karpet = df_k[df_k.iloc[:, 1] == inv_sebenar]
 
         if df_pecahan_karpet.empty:
             st.warning("⚠️ Tiada pecahan data karpet dijumpai untuk nombor invoice ini di dalam tab 'Karpet'.")
             return
 
-        # 1. PAPARAN JADUAL PREVIEW UNTUK SEMAK JUMLAH CARPET
+        # 1. PAPARAN JADUAL PREVIEW DATA
         st.markdown(f"### 📊 2. Senarai Karpet Dalam Invoice Ini")
-        df_view_clean = df_pecahan_karpet.copy()
-        st.dataframe(df_view_clean, use_container_width=True, hide_index=True)
+        st.dataframe(df_pecahan_karpet, use_container_width=True, hide_index=True)
         st.markdown("---")
 
         st.markdown(f"### 📑 3. Pratonton Halaman Cetakan A6 ({len(df_pecahan_karpet)} Stiker)")
 
-        # 2. STRUKTUR GRID KERTAS A6
+        # 2. BINA STRUKTUR GRID KERTAS A6
         html_semua_stiker = ""
         for idx, row_k in df_pecahan_karpet.iterrows():
             qr_id_karpet = str(row_k.iloc[0]).strip()
-            kod_saiz = str(row_k.iloc[2]).strip()  # Mengambil data kod gred/saiz karpet
+            kod_saiz = str(row_k.iloc[2]).strip() # Mengambil kod gred karpet yang betul
             
-            # Jana gambar QR Code dinamik base64
             imej_qr_base64 = jana_gambar_qr(qr_id_karpet)
 
-            # Menyusun stiker box ke dalam bentuk grid
             html_semua_stiker += f"""
             <div class="stiker-box">
                 <div class="header-tag">MYCARPET PRO v2.0</div>
@@ -139,9 +139,8 @@ def papar_menu_cetak_barcode(t_tempahan, t_karpet, t_pelanggan):
                 .footer-text {{ font-size: 7px; border-top: 1px solid #000000; padding-top: 1px; font-weight: bold; color: #111; }}
                 
                 @media print {{
-                    body * {{ visibility: hidden; }}
-                    .halaman-a6-container, .halaman-a6-container * {{ visibility: visible; }}
-                    .halaman-a6-container {{ position: absolute; left: 0; top: 0; width: 100mm; height: 150mm; }}
+                    body {{ background: none; }}
+                    .halaman-a6-container {{ width: 100mm; height: 150mm; padding: 0; margin: 0; }}
                     @page {{ size: 100mm 150mm; margin: 0; }}
                 }}
             </style>
@@ -156,39 +155,32 @@ def papar_menu_cetak_barcode(t_tempahan, t_karpet, t_pelanggan):
         </html>
         """
 
-        # Papar komponen kotak pratonton
+        # Papar komponen kotak pratonton di Streamlit
         st.components.v1.html(html_kertas_a6_lengkap, height=580, scrolling=True)
         st.markdown("---")
 
-        # 3. BUTANG MUAT TURUN PINTAR JAVASCRIPT BLOB
-        html_butang_muat_turun = f"""
+        # ===================================================================
+        # 3. HELAH PINTAR: BUTANG PENCETUS PDF BAWAAN TELEFON & LAPTOP
+        # ===================================================================
+        st.markdown("### 🖨️ Tindakan Cetakan:")
+        
+        # Butang ini akan membuka tetingkap cetakan bersih yang mesra peranti mudah alih (telefon)
+        # Di telefon, ia akan mencetuskan dialog sistem "Save as PDF" secara automatik bersaiz A6
+        html_butang_cetak_pintar = f"""
         <script>
-        function muatTurunHTML() {{
-            var isiHTML = `{html_kertas_a6_lengkap}`;
-            var blob = new Blob([isiHTML], {{type: "text/html"}});
-            var url = URL.createObjectURL(blob);
-            var a = document.createElement("a");
-            a.href = url;
-            a.download = "Stiker_Grid_A6_{inv_sebenar}.html";
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+        function bukaTetingkapCetak() {{
+            var tetingkap = window.open('', '_blank', 'width=600,height=800');
+            tetingkap.document.write(`{html_kertas_a6_lengkap}`);
+            tetingkap.document.close();
+            tetingkap.focus();
+            setTimeout(function() {{
+                tetingkap.print();
+                tetingkap.close();
+            }}, 500);
         }}
         </script>
-        <button onclick="muatTurunHTML()" style="width: 100%; background-color: #ff4b4b; color: white; border: none; padding: 12px; font-size: 16px; border-radius: 5px; cursor: pointer; font-weight: bold;">
-            💾 Simpan Fail Cetakan QR Grid (Untuk Telefon)
+        <button onclick="bukaTetingkapCetak()" style="width: 100%; background-color: #00cc66; color: white; border: none; padding: 14px; font-size: 16px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-bottom: 10px;">
+            🖨️ Cetak / Simpan Sebagai PDF (Sesuai Untuk Telefon & Laptop)
         </button>
         """
-        st.components.v1.html(html_butang_muat_turun, height=60)
-
-        if st.button("🖨️ Cetak Terus Dari Laptop (A6 Grid)", use_container_width=True):
-            st.components.v1.html(
-                f"""
-                {html_kertas_a6_lengkap}
-                <script>
-                window.print();
-                </script>
-                """,
-                height=0
-            )
-            st.success("Arahan cetakan grid kemas telah dihantar!")
+        st.components.v1.html(html_butang_cetak_pintar, height=70)
