@@ -6,3 +6,5 @@ qrcode
 python-barcode
 oauth2client
 xhtml2pdf
+qrcode
+pillow
