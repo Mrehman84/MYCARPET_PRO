@@ -753,9 +753,18 @@ if semak_login():
                 
                 lajur_qr_real = 'QR ID' if 'QR ID' in df_hasil_tapis.columns else ""
                 if lajur_qr_real:
-                    senarai_qr_wujud = df_hasil_tapis[lajur_qr_real].dropna().unique().tolist()
+                    if 'STATUS' in df_hasil_tapis.columns:
+                        df_aktif_sahaja = df_hasil_tapis[
+                            (~df_hasil_tapis['STATUS'].str.upper().str.strip().isin(["SELESAI", "SELESAI DIHANTAR"]))
+                        ]
+                        senarai_qr_wujud = df_aktif_sahaja[lajur_qr_real].dropna().unique().tolist()
+                    else:
+                        senarai_qr_wujud = df_hasil_tapis[lajur_qr_real].dropna().unique().tolist()
+
                     qr_pilihan = st.selectbox("3. Pilih QR ID Karpet Yang Mahu Ditukar Status:", senarai_qr_wujud)
-                    
+
+
+                                    
                     if qr_pilihan:
                         row_filtered = df_hasil_tapis[df_hasil_tapis[lajur_qr_real] == qr_pilihan]
                         if not row_filtered.empty:
