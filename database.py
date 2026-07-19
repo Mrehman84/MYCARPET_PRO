@@ -5,10 +5,15 @@ import gspread
 
 def inisial_database_segar():
     try:
+        from google.oauth2 import service_account
+
         info_kredensial = st.secrets["gspread"]
-                  
+                
         gc = gspread.auth.service_account_from_dict(info_kredensial)
 
+        kredensial = gspread.service_account.Credentials.from_service_account_info(
+            info_kredensial, scopes=skop
+        )
 
         # Buka fail utama menggunakan URL aktif anda
         url_sheet = "https://docs.google.com/spreadsheets/d/1AAszxb_8Rbvb9ruXCVL_vQN12NME0eHYEtxqMj6OIRo/edit?gid=1251116694#gid=1251116694"

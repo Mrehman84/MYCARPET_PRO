@@ -5,15 +5,14 @@ from datetime import datetime
 import pandas as pd
 import gspread
 import streamlit as st
-from database import inisial_database_segar
-import menu_invoice
 from streamlit_cookies_controller import CookieController
+import menu_invoice
 import menu_temujanji
 import menu_scan_qr
 import menu_tempahan
 import menu_harga
 import menu_cetak_barcode
-from google.oauth2 import service_account
+from database import inisial_database_segar
 
 
 
@@ -105,15 +104,35 @@ if semak_login():
 # ==========================================
     if pilihan == "📊 Dashboard Utama":
         st.title("📊 Pusat Kawalan Operasi")
+
+        # 1. Memanggil fungsi sambungan dari database.py
         tab_harga, t_pelanggan, t_tempahan, t_karpet = inisial_database_segar()
 
-        data_mentah_t = t_tempahan.get_all_values() if t_tempahan else []
-        if len(data_mentah_t) > 1:
-            df_t = pd.DataFrame(data_mentah_t[1:], columns=data_mentah_t[0])
-            df_t.columns = [str(c).upper().strip() for c in df_t.columns]
+        # 2. Blok Pengaman: Menukarkan nama menjadi df_t supaya sepadan dengan baris 133 Anda
+        if t_tempahan is not None:
+            try:
+                data_mentah_t = t_tempahan.get_all_values()
+                
+                if data_mentah_t and len(data_mentah_t) > 1:
+                    # KOD DIUBAH DI SINI: Menggunakan nama df_t
+                    df_t = pd.DataFrame(data_mentah_t[1:], columns=data_mentah_t[0])
+                    
+                    # Menampilkan ringkasan ringkas di dashboard
+                    st.metric(label="Jumlah Keseluruhan Tempahan", value=len(df_t))
+                    st.dataframe(df_t, use_container_width=True)
+                else:
+                    st.info("ℹ️ Helaian Google Sheets 'Tempahan' wujud tetapi belum mempunyai data pesanan.")
+                    # Sediakan df_t kosong jika sheet tiada data untuk elak crash di baris 133
+                    df_t = pd.DataFrame()
+                    
+            except Exception as e:
+                st.warning(f"⚠️ Sistem berjaya sambung ke Sheets, tetapi gagal memproses jadual: {e}")
+                df_t = pd.DataFrame()
+        else:
+            st.error("❌ Pangkalan data Tempahan tidak dijumpai atau gagal diakses.")
+            df_t = pd.DataFrame()
 
-            hari_ini = datetime.now().strftime('%Y-%m-%d')
-            bulan_ini = datetime.now().strftime('%Y-%m')
+
 
             if 'TARIKH' in df_t.columns:
                 df_t['TARIKH'] = df_t['TARIKH'].astype(str).str.strip()
@@ -131,7 +150,9 @@ if semak_login():
 #MASUKKAN BAHAGIAN PROSES DAN STATUS KARPET
 
             # 1. AMBIL DATA DARI TAB KARPET (MENGGUNAKAN INDEKS TETAP JALUR G)
-            data_mentah_karpet = t_karpet.get_all_values() if 't_karpet' in locals() or 't_karpet' in globals() else []
+            # GANTIKAN BARIS 153 DENGAN INI
+            data_mentah_karpet = t_karpet.get_all_values() if (('t_karpet' in locals() or 't_karpet' in globals()) and t_karpet is not None) else []
+
 
             # Ekstrak teks dari Kolom G (Indeks 6) sahaja untuk setiap baris data (Lompat baris Table1 & Header)
             senarai_status = [str(baris[6]).strip().upper() for baris in data_mentah_karpet[1:] if len(baris) > 6]
@@ -152,7 +173,7 @@ if semak_login():
             tahun_ini_str = datetime.now().strftime('%Y')
 
             # MENGHADIRKAN SEMULA DF_T SUPAYA BARIS BAWAH TIDAK MERAH
-            data_mentah_tempahan = t_tempahan.get_all_values() if 't_tempahan' in locals() or 't_tempahan' in globals() else []
+            data_mentah_tempahan = t_tempahan.get_all_values() if (('t_tempahan' in locals() or 't_tempahan' in globals()) and t_tempahan is not None) else []
             df_t = pd.DataFrame(data_mentah_tempahan[1:], columns=data_mentah_tempahan[0]) if len(data_mentah_tempahan) > 1 else pd.DataFrame()
 
             
