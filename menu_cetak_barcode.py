@@ -5,7 +5,7 @@ from barcode.writer import ImageWriter
 import io
 import base64
 import re
-from database import inisial_database_segar
+
 
 
 def jana_gambar_barcode_128(teks_id):
@@ -25,12 +25,12 @@ def jana_gambar_barcode_128(teks_id):
     except:
         return ""
 
-def papar_menu_cetak_barcode():
+def papar_menu_cetak_barcode(t_tempahan, t_karpet, t_pelanggan):
+
     st.title("🖨️ Cetak Barcode Carpet")
     st.caption("Menu pengurusan cetakan tag kod bar karpet secara pukal (Format Ujian Kertas A6).")
 
-    # 1. Hubungkan database segar Google Sheets
-    _, t_pelanggan, t_tempahan, t_karpet = inisial_database_segar()
+    
 
     # Tarik data dari 3 tab Sheets untuk proses 'Teknik Jambatan'
     data_t = t_tempahan.get_all_values() if t_tempahan else []

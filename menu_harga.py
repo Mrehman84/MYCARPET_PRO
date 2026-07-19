@@ -1,17 +1,16 @@
 import streamlit as st
 import pandas as pd
 import re
-from database import inisial_database_segar
 
 
 
 
-def papar_menu_katalog_harga():
+
+def papar_menu_katalog_harga(tab_harga):
+
     st.title("📋 Katalog Harga")
     st.caption("Pusat kawalan tetapan kod, jenis permaidani, dan kos cucian semasa.")
     
-    # 1. Hubungkan database segar Google Sheets (Tab Harga)
-    tab_harga, _, _, _ = inisial_database_segar()
     
     # Tarik data semasa untuk paparan rujukan
     data_mentah = tab_harga.get_all_values() if tab_harga else []
