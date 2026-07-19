@@ -246,7 +246,7 @@ if semak_login():
     elif pilihan == "📝 Tempahan Baru":
 
         # 1. Hubungkan sesi pangkalan data segar Google Sheets
-        tab_harga, t_pelanggan, t_tempahan, t_karpet = inisial_database_segar()
+        
 
         alamat_input = ""
         nama_input = ""
