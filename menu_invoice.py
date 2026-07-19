@@ -2,7 +2,8 @@ import io
 import os
 import streamlit as st
 from fpdf import FPDF
-from app import inisial_database_segar
+from database import inisial_database_segar
+
 
 
 

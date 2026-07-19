@@ -1,7 +1,8 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
-from app import inisial_database_segar 
+from database import inisial_database_segar
+
 
 
 

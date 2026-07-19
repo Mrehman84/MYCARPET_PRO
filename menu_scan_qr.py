@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-
+from database import inisial_database_segar
 
 
 # --- MENU 3: SCAN & TRACKING QR ---
