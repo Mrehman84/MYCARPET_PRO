@@ -7,7 +7,8 @@ def inisial_database_segar():
     try:
         info_kredensial = st.secrets["gspread"]
                   
-        gc = gspread.service_account_from_dict(info_kredensial)
+        gc = gspread.auth.service_account_from_dict(info_kredensial)
+
 
         # Buka fail utama menggunakan URL aktif anda
         url_sheet = "https://docs.google.com/spreadsheets/d/1AAszxb_8Rbvb9ruXCVL_vQN12NME0eHYEtxqMj6OIRo/edit?gid=1251116694#gid=1251116694"
