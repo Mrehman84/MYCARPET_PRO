@@ -150,31 +150,51 @@ if semak_login():
 #MASUKKAN BAHAGIAN PROSES DAN STATUS KARPET
 
             # 1. AMBIL DATA DARI TAB KARPET (MENGGUNAKAN INDEKS TETAP JALUR G)
-            # GANTIKAN BARIS 153 DENGAN INI
-            data_mentah_karpet = t_karpet.get_all_values() if (('t_karpet' in locals() or 't_karpet' in globals()) and t_karpet is not None) else []
+            # =====================================================================
+            # BLOK PENGAMAN UTAMA: PEMBACAAN DATA GLOBAL DARI GOOGLE SHEETS
+            # =====================================================================
 
+            # 1. Ambil data dari tab Karpet secara selamat (Ganti Baris 153 Lama)
+            if ('t_karpet' in globals() or 't_karpet' in locals()) and t_karpet is not None:
+                try:
+                    data_mentah_karpet = t_karpet.get_all_values()
+                except Exception:
+                    data_mentah_karpet = []
+            else:
+                data_mentah_karpet = []
 
-            # Ekstrak teks dari Kolom G (Indeks 6) sahaja untuk setiap baris data (Lompat baris Table1 & Header)
-            senarai_status = [str(baris[6]).strip().upper() for baris in data_mentah_karpet[1:] if len(baris) > 6]
+            # Ekstrak status dari Kolom G (Kekalkan fungsi asal anda dengan perlindungan)
+            senarai_status = []
+            if len(data_mentah_karpet) > 1:
+                senarai_status = [str(baris[6]).strip().upper() for baris in data_mentah_karpet[1:] if len(baris) > 6]
 
-            # # 2. PENGIRAAN TOTAL SECARA TERUS MENGGUNAKAN .count() (KATA YANG SAMA DIKUMPULKAN)
+            # Pengiraan status untuk Dashboard Utama
             skarp_proses = senarai_status.count('DALAM PROSES') + senarai_status.count('PENDING')
-            skarp_cuci = senarai_status.count('PENGERINGAN') # Disatukan membaca status PENGERINGAN sahaja
-            skarp_siap = 0 # Dibersihkan jadi 0 kerana kategori ini sudah dibuang
+            skarp_cuci = senarai_status.count('PENGERINGAN')
+            skarp_siap = 0
             skarp_deliver = senarai_status.count('READY TO DELIVER')
             skarp_selesai = senarai_status.count('SELESAI') + senarai_status.count('DONE')
-
-
-            # Hitung jumlah baris keseluruhan yang aktif
             total_keseluruhan = len(senarai_status)
 
-            # 3. KIRA JUMLAH TEMPOH MASA (DARI TAB TEMPAHAN)
+            # 2. Ambil data dari tab Tempahan secara selamat (Ganti Baris 176 Lama)
+            if ('t_tempahan' in globals() or 't_tempahan' in locals()) and t_tempahan is not None:
+                try:
+                    data_mentah_tempahan = t_tempahan.get_all_values()
+                except Exception:
+                    data_mentah_tempahan = []
+            else:
+                data_mentah_tempahan = []
+
+            # Membina df_t semula supaya kod analisis tarikh anda di bawah tidak ralat
+            if data_mentah_tempahan and len(data_mentah_tempahan) > 1:
+                df_t = pd.DataFrame(data_mentah_tempahan[1:], columns=data_mentah_tempahan[0])
+            else:
+                df_t = pd.DataFrame()
+
+            # 3. Kira jumlah tempoh masa semasa (Kekalkan kod asal anda)
             bulan_ini_str = datetime.now().strftime('%Y-%m')
             tahun_ini_str = datetime.now().strftime('%Y')
 
-            # MENGHADIRKAN SEMULA DF_T SUPAYA BARIS BAWAH TIDAK MERAH
-            data_mentah_tempahan = t_tempahan.get_all_values() if (('t_tempahan' in locals() or 't_tempahan' in globals()) and t_tempahan is not None) else []
-            df_t = pd.DataFrame(data_mentah_tempahan[1:], columns=data_mentah_tempahan[0]) if len(data_mentah_tempahan) > 1 else pd.DataFrame()
 
             
             if 'INV NO' in df_t.columns and 'TARIKH' in df_t.columns:
