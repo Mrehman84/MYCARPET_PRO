@@ -25,6 +25,19 @@ if "bilangan_karpet" not in st.session_state:
 # Inisialisasi pengontrol cookie di luar fungsi
 controller = CookieController()
 
+# ===================================================================
+# FUNGSI CACHE UNTUK MENYELAMATKAN KUOTA GOOGLE SHEETS API (KALIS ERROR 429)
+# ===================================================================
+@st.cache_data(ttl=60) # Data disimpan selama 60 saat sebelum dibenarkan tarik baru
+def tarik_data_sheets_selamat(_worksheet_obj):
+    if _worksheet_obj:
+        return _worksheet_obj.get_all_values()
+    return []
+
+# Fungsi pembersihan cache jika abang mahu paksa data segar masuk serta-merta
+def clear_cache_sheets():
+    st.cache_data.clear()
+
 # 1. FUNGSI SAMBUNGAN UTAMA PANGKALAN DATA GOOGLE SHEETS
 
 def semak_login():
