@@ -5,3 +5,4 @@ streamlit-cookies-controller
 qrcode
 python-barcode
 oauth2client
+xhtml2pdf
