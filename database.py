@@ -16,7 +16,7 @@ def inisial_database_segar():
         )
 
         # Buka fail utama menggunakan URL aktif anda
-        url_sheet = "https://docs.google.com/spreadsheets/d/1AAszxb_8Rbvb9ruXCVL_vQN12NME0eHYEtxqMj6OIRo/edit?gid=1251116694#gid=1251116694"
+        url_sheet = "https://docs.google.com/spreadsheets/d/1AAszxb_8Rbvb9ruXCVL_vQN12NME0eHYEtxqMj6OIRo/edit?gid=205062829#gid=205062829"
         buka_fail = gc.open_by_url(url_sheet)
 
         tab_harga = buka_fail.worksheet("SENARAI_HARGA")

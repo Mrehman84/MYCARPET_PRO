@@ -8,7 +8,6 @@ from database import inisial_database_segar
 
 
 
-
     # --- MENU 2: TEMPAHAN BARU ---
 
 def papar_menu_tempahan_baru(): # <--- TAMBAH BARIS INI
