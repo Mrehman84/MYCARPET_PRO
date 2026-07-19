@@ -492,10 +492,15 @@ if semak_login():
         # =========================================================================
         if st.button("💾 Sahkan & Simpan Tempahan Baru", use_container_width=True):
             data_t_semasa = t_tempahan.get_all_values() if t_tempahan else []
+            # Mengira nombor turutan berdasarkan bilangan data sedia ada
             if len(data_t_semasa) > 1:
-                next_inv = f"INV{len(data_t_semasa):04d}"
+                # Contoh: Jika ada 1 data (tidak termasuk header), nombor bermula dari 70001 + 1 = 70002
+                nombor_turutan = 70000 + len(data_t_semasa)
+                next_inv = f"INV26{nombor_turutan:05d}"
             else:
-                next_inv = "INV0001"
+                # Invois pertama yang akan disimpan jika pangkalan data kosong
+                next_inv = "INV2670001"
+
 
             tarikh_hari_ini = datetime.now().strftime("%Y-%m-%d")
             harga_formatted = f"RM {total_harga_keseluruhan:.2f}"
