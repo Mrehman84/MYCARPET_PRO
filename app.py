@@ -11,6 +11,7 @@ from streamlit_cookies_controller import CookieController
 import menu_temujanji
 import menu_cetak_barcode
 import menu_harga
+import menu_kewangan
 
 
 # TENTUKAN KONFIGURASI HALAMAN UTAMA STREAMLIT
@@ -119,10 +120,9 @@ if semak_login():
             "🔍 Scan & Tracking QR",
             "💳 Pengurusan Pembayaran",
             "📄 Cetak Invois & Resit",
-            "💸 Perbelanjaan Bisnes",
-            "📸 Kamera Sebelum/Selepas",
             "📋 Pengurusan Katalog Harga",
-            "🖨️ Cetak Barcode Carpet"
+            "🖨️ Cetak Barcode Carpet",
+            "📊 Kewangan"
         ],
         key="navigasi_utama_system"
     )
@@ -857,4 +857,9 @@ if semak_login():
 
 
 
- 
+ #==============================================================================
+ #MENU KEWANGAN BERMULA DARI BAWAH INI
+ #================================================================================================================================
+
+    if pilihan == "📊 Kewangan":
+        menu_kewangan.app()

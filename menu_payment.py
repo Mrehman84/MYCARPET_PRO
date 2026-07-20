@@ -4,6 +4,60 @@ from datetime import datetime
 import gspread
 from google.oauth2.service_account import Credentials
 
+
+#=================================================
+#20/7/2026 tambahkan code menu kewangan. yg mana ada tanda 20/7 adalah code baru
+#================================================================================
+# ----------------------------------------------------------------------
+# TAMBAHAN SUNTIKAN SISTEM LEJAR KEWANGAN SECARA TERASING (JANGAN USIK KOD ASAL)
+# ----------------------------------------------------------------------
+def hantar_ke_lejar_revenue(id_invois, nama_pelanggan, saluran_masuk, amount_dibayar, jenis_bayaran):
+    try:
+        # Hubungkan ke Google Sheet baru menggunakan kunci rahsia kewangan
+        scope = ["https://googleapis.com", "https://googleapis.com"]
+        creds = Credentials.from_service_account_info(st.secrets["gcp_service_account"], scopes=scope)
+        client = gspread.authorize(creds)
+        sheet = client.open("https://docs.google.com/spreadsheets/d/1xCSGuFUQjSp33kRSSOJpYP2AIMKdTemg5wWi8jyPm_o/edit?gid=314909126#gid=314909126")
+        revenue_sheet = sheet.worksheet("Raw_Revenue")
+        
+        all_values = revenue_sheet.get_all_values()
+        tarikh_sekarang = datetime.now()
+        
+        # Standarisasi nama saluran masuk agar sepadan dengan drop-down lejar
+        saluran_bersih = "TUNAI" if "TUNAI" in str(saluran_masuk).upper() else str(saluran_masuk).upper()
+        
+        # Jika sheet lejar masih kosong, bina header otomatis dahulu
+        if len(all_values) == 0:
+            headers = ["NO", "TARIKH", "ID_INVOIS", "PELANGGAN", "SALURAN_MASUK", "KATEGORI_SERVIS", "AMOUNT", "CATATAN", "GABUNGAN"]
+            revenue_sheet.append_row(headers)
+            next_id = 1
+        else:
+            next_id = len(all_values)
+            
+        # Logik lejar: Generasi kod gabungan otomatis bulanan
+        bulan_tahun_str = tarikh_sekarang.strftime("%b%Y") # Hasil cth: Jul2026
+        kod_gabungan = f"{saluran_bersih}{bulan_tahun_str}" # Hasil cth: TUNAIJul2026
+        
+        catatan_lejar = f"Bayaran {jenis_bayaran} untuk Invois {id_invois}"
+        
+        row_data = [
+            next_id,
+            tarikh_sekarang.strftime("%d/%m/%Y"),
+            id_invois,
+            nama_pelanggan,
+            saluran_bersih,
+            "CUCI KARPET",  # Fasa awal: Set default cuci carpet sahaja
+            float(amount_dibayar),
+            catatan_lejar,
+            kod_gabungan
+        ]
+        
+        revenue_sheet.append_row(row_data)
+        return True, kod_gabungan
+    except Exception as e:
+        return False, str(e)
+# ----------------------------------------------------------------------
+
 def papar_menu_payment():
     st.title("💳 Pengurusan Pembayaran & Invois")
     st.info("Sistem menarik data daripada Tab Tempahan secara live dan merekodkan status ke dalam Tab Payment.")
@@ -221,6 +275,22 @@ def papar_menu_payment():
                     t_payment.append_row(baris_baru)
                     st.success(f"🎉 Pembayaran untuk Invois {v_no_invoice} berjaya direkodkan ke Google Sheets!")
                     
+                    #20/7============================
+                                # >>> SUNTIKAN DATA KE LEJAR KEWANGAN SECARA AUTOMATIK <<<
+                    berjaya_lejar, respons_lejar = hantar_ke_lejar_revenue(
+                            id_invois=v_no_invoice,
+                            nama_pelanggan=v_nama,
+                            saluran_masuk=v_kaedah_bayar,
+                            amount_dibayar=v_amaun_dibayar,
+                            jenis_bayaran=v_status_bayar
+                        )
+                    if berjaya_lejar:
+                            st.toast(f"📈 Lejar Kewangan dikemas kini! Kod Aliran: {respons_lejar}")
+                    else:
+                            st.warning(f"⚠ Operasi sukses, tetapi gagal menulis ke lejar kewangan: {respons_lejar}")
+                        # >>> END SUNTIKAN <<<
+             #20/7=======================================================================================================
+
                     # Kira baki untuk paparan skrin
                     if v_baki > 0:
                         st.info(f"Baki tunggakan yang perlu dibayar: RM {v_baki:.2f}")
