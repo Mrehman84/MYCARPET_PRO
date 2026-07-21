@@ -555,7 +555,7 @@ if semak_login():
                         item["jenis"],
                         f"RM {item['harga']:.2f}",
                         item["saiz"],
-                        "Menunggu"
+                        "DALAM PROSES"
                     ]
                     t_karpet.append_row(baris_karpet)
                     counter_item += 1  # Tambah nombor turutan untuk helai karpet seterusnya
