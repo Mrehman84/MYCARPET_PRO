@@ -114,25 +114,24 @@ def paparan_menu_invoice(sheet):
 
 
         ## # 5. AMBIL REKOD DEPOSIT (TAB PAYMENT)
+           # ##5. AMBIL REKOD DEPOSIT (TAB PAYMENT)
+           # ##5. AMBIL REKOD DEPOSIT & JUMLAH BAYARAN (TAB PAYMENT)
         deposit_nilai = 0.0
         for pay_row in data_payment:
-            pay_inv = str(
-                pay_row.get("INV NO", pay_row.get("INV_NO", ""))
-            ).strip()
+            pay_inv = str(pay_row.get("INV NO", pay_row.get("INV_NO", ""))).strip()
+            
+            # Menyemak jika no invois sepadan (Jangan letak break supaya semua baris dibaca)
             if pay_inv == inv_no_aktif:
                 try:
-                    nilai_raw = 0
-                    for k, v in pay_row.items():
-                        if "AMAUN" in k.upper() or "DEPOSIT" in k.upper():
-                            nilai_raw = v
-                            break
-                    
+                    # Ambil nilai dari lajur AMAUN DIBAYAR secara dinamik
+                    nilai_raw = pay_row.get("AMAUN DIBAYAR", pay_row.get("AMAUN_DIBAYAR", 0))
                     nilai_str = str(nilai_raw).replace("RM", "").strip()
-                    deposit_nilai = float(nilai_str) if nilai_str else 0.0
-                    break
+                    
+                    if nilai_str:
+                        deposit_nilai += float(nilai_str)
                 except:
-                    deposit_nilai = 0.0
-                    break
+                    continue
+
 
 
         # 6. EKSTRAK MULTI-ITEM KARPET (LAJUR JENIS & HARGA)
@@ -278,17 +277,46 @@ def paparan_menu_invoice(sheet):
 
             
 
+            # =====================================================================
+    # AUTOMATIK KEMAS KINI STATUS DI TAB TEMPAHAN JIKA BAKI DAHLAH RM 0.00
+        # =====================================================================
+        status_pembayaran_terkini = status_inv
+        
+        if jumlah_bersih_akhir <= 0:
+            status_pembayaran_terkini = "PAID"
+            try:
+                # Mencari baris yang sepadan dengan No Invois aktif di dalam Tab Tempahan
+                for idx, t_row in enumerate(data_tempahan, start=2): # Hubungan baris bermula dari baris 2
+                    t_inv = str(t_row.get("INV NO", t_row.get("inv_no", ""))).strip()
+                    if t_inv == inv_no_aktif:
+                        # Kemas kini ruangan STATUS (Lajur F/G atau nama lajur STATUS) di Google Sheets
+                        # Cari indeks lajur bernama STATUS
+                        col_idx = 1
+                        for key in t_row.keys():
+                            if "STATUS" in str(key).upper():
+                                break
+                            col_idx += 1
+                        
+                        # Hantar arahan kemas kini terus ke Google Sheets secara langsung
+                        ws_tempahan.update_cell(idx, col_idx, "PAID")
+                        break
+            except Exception as e:
+                st.warning(f"Nota: Gagal mengemas kini status tab Tempahan di Google Sheets: {e}")
+
+        # Menyediakan data input PDF dengan status pembayaran yang dinamik
         data_pdf_input = {
             "inv_no": inv_no_aktif,
             "tarikh": tarikh_inv,
-            "customer_id": f"{cust_id_asal} - {nama_pelanggan}".strip(" - "),
+            "customer_id": f"{nama_pelanggan} ({cust_id_asal})".strip(),
             "alamat": alamat_pelanggan,
             "no_telefon": no_tel_pelanggan,
-            "status": status_inv,
+            "status": status_pembayaran_terkini,  # Diambil dari status_pembayaran_terkini yang sudah dikemas kini
             "sub_jumlah": sub_jumlah_akhir,
             "deposit": deposit_nilai,
-            "jumlah_bersih": v_baki_bersih_akhir,#17/7 DIUBAHSUAI
-        }
+            "jumlah_bersih": jumlah_bersih_akhir,
+            "jumlah_clean": jumlah_bersih_akhir
+    }
+
 
         # JANA ENGINE PDF
         pdf_file = jana_pdf_invois_terkini(data_pdf_input, item_list_pdf)
@@ -353,13 +381,16 @@ def jana_pdf_invois_terkini(data_invois, item_list):
     pdf.add_page()
     pdf.set_margins(15, 15, 15)
 
-    status_str = str(data_invois["status"]).upper()
-    is_paid = "DITERIMA" in status_str or "PAID" in status_str
-
-    if is_paid:
+        # TUKAR KEPADA LOGIK INI (Baris 366-373):
+    # Pengecekan pintar untuk status Lunas / Paid / Diterima / Selesai
+    status_str = str(data_invois.get("status", "PENDING")).strip().upper()
+    
+    if any(keyword in status_str for keyword in ["PAID", "DITERIMA", "LUNAS", "SELESAI"]):
+        # Hijau (Paid)
         r_brand, g_brand, b_brand = 40, 167, 69
         r_bg, g_bg, b_bg = 240, 255, 240
     else:
+        # Oranye (Pending)
         r_brand, g_brand, b_brand = 255, 109, 0
         r_bg, g_bg, b_bg = 255, 240, 240
 
