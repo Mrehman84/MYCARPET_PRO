@@ -44,35 +44,41 @@ def paparan_menu_invoice(sheet):
 
 
         # =====================================================================
-        # 3. BINA DROPDOWN PILIHAN GABUNGAN INV NO & ALAMAT (DARI TAB PELANGGAN)
+        # 3. BINA DROPDOWN PILIHAN GABUNGAN INV NO & ALAMAT (LOGIK MENU PAYMENT)
         # =====================================================================
+        import pandas as pd
+        df_tempahan = pd.DataFrame(data_tempahan)
+        df_customer = pd.DataFrame(data_pelanggan)
+
+        # Seragamkan nama lajur kepada Huruf Besar untuk mengelakkan ralat ejaan Sheets
+        df_tempahan.columns = [str(c).upper().strip() for c in df_tempahan.columns]
+        df_customer.columns = [str(c).upper().strip() for c in df_customer.columns]
+
         pilihan_options = []
         mapping_tempahan = {}
 
-        # Sediakan pemetaan untuk mencari alamat dari data_pelanggan
-        mapping_alamat_pelanggan = {}
-        for p_row in data_pelanggan:
-            p_id = str(p_row.get("CUSTOMER ID", p_row.get("CUSTOMER_ID", ""))).strip().upper()
-            p_alamat = str(p_row.get("ALAMAT", "")).strip()
-            if p_id:
-                mapping_alamat_pelanggan[p_id] = p_alamat
-
-        for t_row in data_tempahan:
-            inv_no = str(t_row.get("INV NO", t_row.get("INV_NO", ""))).strip()
-            cust_id_t = str(t_row.get("CUSTOMER ID", t_row.get("CUSTOMER_ID", ""))).strip().upper()
-
-            # Cari alamat yang sepadan secara dinamik berdasarkan CUSTOMER ID tab Pelanggan
-            alamat_pangkalan = mapping_alamat_pelanggan.get(cust_id_t, "")
-
-            if inv_no in inv_aktif_set:
-                # GABUNGAN DINAMIK: Nombor invois berserta alamat dari tab Pelanggan
-                label = f"{inv_no} | {alamat_pangkalan[:50]}" if alamat_pangkalan else f"{inv_no} | -"
-                pilihan_options.append(label)
-                mapping_tempahan[inv_no] = t_row
-
-        if not pilihan_options:
-            st.success("🎉 Cemerlang! Semua karpet bagi semua tempahan telah bertukar status kepada 'SELESAI DIHANTAR'.")
-            return
+        if 'INV NO' in df_tempahan.columns:
+            for idx, row in df_tempahan.iterrows():
+                c_inv = str(row.get('INV NO', '-')).strip()
+                c_cust_id = str(row.get('CUSTOMER ID', '-')).strip()
+                
+                # Hanya proses jika invois ini wujud dalam set invois aktif
+                if c_inv in inv_aktif_set:
+                    c_alamat = ""
+                    if not df_customer.empty and c_cust_id != "-":
+                        c_match = df_customer[df_customer['CUSTOMER ID'] == c_cust_id]
+                        if not c_match.empty:
+                            c_alamat = str(c_match.iloc[0].get('ALAMAT', '')).strip()
+                    
+                    teks_pilihan = f"{c_inv} | {c_alamat}" if c_alamat else f"{c_inv} | -"
+                    pilihan_options.append(teks_pilihan)
+                    
+                    # Simpan baris data asal ke dalam dictionary untuk digunakan oleh row_utama di bawah
+                    # Kita guna baris asal t_row dari data_tempahan supaya kod bawah adik tidak rosak
+                    for original_row in data_tempahan:
+                        if str(original_row.get("INV NO", original_row.get("INV_NO", ""))).strip() == c_inv:
+                            mapping_tempahan[c_inv] = original_row
+                            break
 
         invoice_terpilih = st.selectbox("🔍 Pilih Invoice & Alamat Pelanggan:", pilihan_options)
 
@@ -101,14 +107,9 @@ def paparan_menu_invoice(sheet):
                 p_row.get("CUSTOMER ID", p_row.get("CUSTOMER_ID", ""))
             ).strip()
 
-            if p_id.upper() == cust_id_asal.upper() and p_id != "":
-                if p_row.get("NAMA"):
-                    nama_pelanggan = str(p_row.get("NAMA")).strip()
-                if p_row.get("TELEFON"):
-                    no_tel_pelanggan = str(p_row.get("TELEFON")).strip()
-                if p_row.get("ALAMAT"):
-                    alamat_pelanggan = str(p_row.get("ALAMAT")).strip()
-                break
+                    # Memastikan nama lajur Customer ID dibaca dengan selamat tanpa mengira huruf besar atau kecil
+        cust_id_asal = str(row_utama.get("CUSTOMER ID", row_utama.get("Customer ID", row_utama.get("customer id", "")))).strip()
+
 
         ## # 5. AMBIL REKOD DEPOSIT (TAB PAYMENT)
         deposit_nilai = 0.0

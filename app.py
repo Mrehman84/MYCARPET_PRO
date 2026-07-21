@@ -764,62 +764,72 @@ if semak_login():
                     else:
                         st.code(f"{qr_id_badge} | {jenis_badge} | {status_badge}")
 
-            # --- 📝 BAHAGIAN 2: KOTAK EDIT & KEMASKINI STATUS ---
-            if not df_hasil_tapis.empty:
-                st.markdown("---")
-                st.markdown("### 📝 Bahagian 2: Kemaskini Status Karpet")
+                  # --- 🛠️ BAHAGIAN 2: KOTAK EDIT & KEMASKINI STATUS (DENGAN MULTI-CARPET & st.form) ---
+        # Logik Asal: Hanya tunjuk Bahagian 2 jika pengguna sudah MEMILIH No Invois/Pelanggan tertentu (bukan "Semua Karpet Aktif")
+        if not df_hasil_tapis.empty and kata_kunci != "-- Tampilkan Semua Karpet Aktif --":
+            st.markdown("---")
+            st.markdown("### 🛠️ Bahagian 2: Kemaskini Status Karpet")
+
+            lajur_qr_real = 'QR ID' if 'QR ID' in df_hasil_tapis.columns else ""
+            
+            if lajur_qr_real and lajur_status_asal:
+                # 🔍 TAPISAN KETAT: Ambil karpet bagi No Invois terpilih SAHAJA yang BELUM selesai dihantar
+                df_aktif_sahaja = df_hasil_tapis[
+                    ~df_hasil_tapis[lajur_status_asal].str.upper().str.strip().isin(["SELESAI", "SELESAI DIHANTAR"])
+                ]
+                senarai_qr_wujud = df_aktif_sahaja[lajur_qr_real].dropna().unique().tolist()
                 
-                lajur_qr_real = 'QR ID' if 'QR ID' in df_hasil_tapis.columns else ""
-                if lajur_qr_real:
-                    if 'STATUS' in df_hasil_tapis.columns:
-                        df_aktif_sahaja = df_hasil_tapis[
-                            (~df_hasil_tapis['STATUS'].str.upper().str.strip().isin(["SELESAI", "SELESAI DIHANTAR"]))
-                        ]
-                        senarai_qr_wujud = df_aktif_sahaja[lajur_qr_real].dropna().unique().tolist()
-                    else:
-                        senarai_qr_wujud = df_hasil_tapis[lajur_qr_real].dropna().unique().tolist()
-
-                    qr_pilihan = st.selectbox("3. Pilih QR ID Karpet Yang Mahu Ditukar Status:", senarai_qr_wujud)
-
-
-                                    
-                    if qr_pilihan:
-                        row_filtered = df_hasil_tapis[df_hasil_tapis[lajur_qr_real] == qr_pilihan]
-                        if not row_filtered.empty:
-                            val_status = row_filtered[lajur_status_asal].values[0] if lajur_status_asal else "N/A"
-                            val_jenis = row_filtered['JENIS'].values[0] if 'JENIS' in row_filtered.columns else "N/A"
-                            
-                            st.markdown(f"📍 Karpet Terpilih: **{val_jenis}** | Status Semasa: `{val_status}`")
+                if senarai_qr_wujud:
+                    # 💡 Membuka Borang Tempatan (Form) untuk Menjimatkan Kuota Google API
+                    with st.form(key='borang_kemaskini_status'):
+                        st.write(f"📝 *Ditemui **{len(senarai_qr_wujud)}** karpet aktif untuk No Invois / Rekod ini.*")
+                        
+                        # 🔄 PILIHAN PUKAL: Mengandungi QR ID untuk Invois terpilih sahaja
+                        qr_terpilih = st.multiselect(
+                            "3. Pilih QR ID Karpet Yang Mahu Ditukar Status:",
+                            options=senarai_qr_wujud,
+                            default=senarai_qr_wujud
+                        )
                         
                         status_baru = st.selectbox(
                             "4. Pilih Status Baharu:",
                             ["DALAM PROSES", "PENGERINGAN", "READY TO DELIVER", "SELESAI DIHANTAR"]
                         )
                         
-                        if st.button("💾 Simpan & Hantar Status Baharu Ke Google Sheets", use_container_width=True):
-                            lajur_qr_index = [str(c).upper().strip() for c in data_k_raw[0]].index('QR ID')
-                            semua_qr_id_mentah = [str(r[lajur_qr_index]).strip() for r in data_k_raw[1:]]
-                            
-                            try:
-                                indeks_baris_sheets = semua_qr_id_mentah.index(str(qr_pilihan)) + 2
-                                lajur_status_index_sheets = [str(c).upper().strip() for c in data_k_raw[0]].index('STATUS') + 1
+                        # Butang hantar borang (wajib di dalam st.form)
+                        butang_simpan = st.form_submit_button("💾 Simpan & Hantar Status Baharu", use_container_width=True)
+                        
+                        if butang_simpan:
+                            if not qr_terpilih:
+                                st.warning("⚠️ Sila pilih sekurang-kurangnya satu QR ID Karpet sebelum menghantar.")
+                            else:
+                                kemas_kini_berjaya = 0
+                                # Ambil senarai semua QR ID dari baris Google Sheets untuk cari indeks baris asal
+                                semua_qr_id_mentah = [str(r[nama_lajur_k.index('QR ID')]).upper().strip() for r in data_k_raw[1:]]
+                                lajur_status_index_sheets = [str(c).upper().strip() for c in data_k_raw].index('STATUS') + 1
                                 
-                                t_karpet.update_cell(indeks_baris_sheets, lajur_status_index_sheets, status_baru)
-                                st.success(f"🎉 Sukses! Status bagi QR ID {qr_pilihan} telah ditukar kepada {status_baru}!")
-                                st.rerun()
-                            except ValueError:
-                                st.error("❌ Ralat: Gagal mencari baris QR ID tersebut di dalam fail Google Sheets.")
-                
-                # --- PALING BAWAH: JADUAL JAWAPAN RUJUKAN VISUAL ---
-                st.markdown("---")
-                st.write(f"📋 **Senarai Maklumat Karpet Untuk Rujukan ({len(df_hasil_tapis)} rekod):**")
-                lajur_papar = [c for c in df_hasil_tapis.columns if not c.endswith('UPPER')]
-                st.dataframe(df_hasil_tapis[lajur_papar])
+                                with st.spinner("Sedang mengemaskini data ke Google Sheets..."):
+                                    for q_id in qr_terpilih:
+                                        try:
+                                            indeks_baris_sheets = semua_qr_id_mentah.index(str(q_id).upper().strip()) + 2
+                                            t_karpet.update_cell(indeks_baris_sheets, lajur_status_index_sheets, status_baru)
+                                            kemas_kini_berjaya += 1
+                                        except ValueError:
+                                            st.error(f"❌ Ralat: Gagal mencari baris untuk QR ID {q_id} di Google Sheets.")
+                                
+                                if kemas_kini_berjaya > 0:
+                                    st.success(f"🎉 Sukses! Status bagi {kemas_kini_berjaya} karpet telah ditukar kepada '{status_baru}'!")
+                                    st.rerun()
+                else:
+                    st.info("ℹ️ Semua karpet di bawah No Invois / Rekod ini telah berstatus 'SELESAI' atau 'SELESAI DIHANTAR'.")
             else:
-                st.info("ℹ️ Tiada data karpet ditemui untuk tapisan pilihan ini.")
-        else:
-            st.error("❌ **Gagal Memuatkan Data!** Fail Google Sheets Karpet abang didapati kosong.")
+                st.error("❌ Lajur 'QR ID' atau 'STATUS' tidak ditemui dalam fail Google Sheets anda.")
 
+        # --- 📊 PALING BAWAH: JADUAL RUJUKAN VISUAL ---
+        st.markdown("---")
+        st.write(f"📊 **Senarai Maklumat Karpet Untuk Rujukan ({len(df_hasil_tapis)} rekod):**")
+        lajur_papar = [c for c in df_hasil_tapis.columns if not c.endswith('UPPER')]
+        st.dataframe(df_hasil_tapis[lajur_papar])
 
 
                
