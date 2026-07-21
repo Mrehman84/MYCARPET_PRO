@@ -552,19 +552,49 @@ def jana_pdf_invois_terkini(data_invois, item_list):
     pdf.set_text_color(180, 40, 40)
     pdf.cell(50, 4.5, "15-203-142-4070", ln=1)
 
-    # === TAMBAHAN NOTA PROFESIONAL DI BAHAGIAN BAWAH INVOIS ===
-    pdf.ln(20)  # Memberi ruang kosong ke bawah supaya tidak rapat dengan jadual
-    
-    # Bahagian 1: Terma & Syarat Pembayaran
+    # -----------------------------------------------------------------
+    # PENAMBAHAN KOTAK TANDATANGAN & COP (SEBELAH KANAN INFO BANK)
+    # -----------------------------------------------------------------
+    # Menetapkan kedudukan di sebelah kanan (x=140) selari dengan tinggi akaun bank
+     # -----------------------------------------------------------------
+    # PENAMBAHAN KOTAK TANDATANGAN & COP (DIBETULKAN KEDUKAN & FAIL GAMBAR)
+    # -----------------------------------------------------------------
+    # Menurunkan koordinat Y ke y_total + 22 supaya tidak bertindih dengan kotak jumlah bersih
+    pdf.set_xy(135, y_total + 22)
     pdf.set_font("Helvetica", "B", 8)
-    pdf.set_text_color(100, 100, 100)  # Warna kelabu korporat
+    pdf.set_text_color(80, 80, 80)
+    pdf.cell(55, 4, "DISEDIAKAN OLEH / COP:", ln=1, align="C")
+    
+    # Memasukkan Fail Gambar Tandatangan Asli Adik
+    sign_path = "tandatangan.png"
+    if os.path.exists(sign_path):
+        # x=145 (tengah kotak kanan), y=y_total+26, w=35 (saiz tandatangan digital yang ngam)
+        pdf.image(sign_path, x=145, y=y_total + 26, w=35)
+    
+    # Garisan bawah untuk penutup tandatangan (diturunkan ke y_total + 40)
+    pdf.set_xy(135, y_total + 40)
+    pdf.set_font("Helvetica", "", 8)
+    pdf.cell(55, 4, "_______________________", ln=1, align="C")
+    pdf.set_x(135)
+    pdf.cell(55, 4, "( MYCARPETPRO.V2 MANAGEMENT )", ln=1, align="C")
+
+    # -----------------------------------------------------------------
+    # NOTA KAKI & TERMA (DITOLAK KE BAWAH LAGI SUPAYA SEIMBANG)
+    # -----------------------------------------------------------------
+    pdf.set_xy(15, y_total + 48)
+    pdf.set_font("Helvetica", "B", 8)
+    pdf.set_text_color(100, 100, 100)
     pdf.cell(0, 4, "TERMA & SYARAT PEMBAYARAN:", ln=1)
     
-    pdf.set_font("Helvetica", "", 8)
+    pdf.set_font("Helvetica", "", 7.5)
+    pdf.set_x(15)
     pdf.cell(0, 4, "1. Sila jelaskan baki bayaran penuh semasa penghantaran atau pengambilan karpet dilakukan.", ln=1)
+    pdf.set_x(15)
     pdf.cell(0, 4, "2. Sila sertakan resit/bukti transaksi Online Transfer kepada pihak kami untuk pengesahan baki.", ln=1)
-    
-    pdf.ln(10)  # Jarakkan sedikit sebelum ucapan terima kasih
+    pdf.set_x(15)
+    pdf.set_font("Helvetica", "I", 7.5)
+    pdf.cell(0, 4, "3. Hubungi kami di talian 017-4050336 atau layari media sosial kami @mycarpetpro untuk sebarang maklum balas.", ln=1)
+
     
     # Bahagian 2: Nota Penghargaan & Terima Kasih
     pdf.set_font("Helvetica", "BI", 9)  # Bold + Italic (BI)
