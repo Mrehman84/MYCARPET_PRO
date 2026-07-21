@@ -94,21 +94,23 @@ def paparan_menu_invoice(sheet):
         row_utama = mapping_tempahan[inv_no_aktif]
 
         # 4. SINKRONISASI DATA PELANGGAN
-        cust_id_asal = str(
-            row_utama.get("CUSTOMER ID", row_utama.get("CUSTOMER_ID", ""))
-        ).strip()
-
-        alamat_pelanggan = str(row_utama.get("ALAMAT", "-")).strip()
+        # Membaca ID Pelanggan dengan selamat mengikut ejaan huruf besar/kecil Sheets adik
+        cust_id_asal = str(row_utama.get("CUSTOMER ID", row_utama.get("CUSTOMER_ID", ""))).strip()
+        
+        alamat_pelanggan = "-"
         no_tel_pelanggan = "-"
         nama_pelanggan = cust_id_asal
 
         for p_row in data_pelanggan:
-            p_id = str(
-                p_row.get("CUSTOMER ID", p_row.get("CUSTOMER_ID", ""))
-            ).strip()
+            # Dibetulkan: Membaca lajur 'CUSTOMER ID' dengan jarak dari data_pelanggan gspread
+            p_id = str(p_row.get("CUSTOMER ID", p_row.get("CUSTOMER_ID", ""))).strip()
+            
+            if p_id.upper() == cust_id_asal.upper() and p_id != "":
+                nama_pelanggan = str(p_row.get("NAMA", "-")).strip()
+                no_tel_pelanggan = str(p_row.get("TELEFON", "-")).strip()
+                alamat_pelanggan = str(p_row.get("ALAMAT", "-")).strip()
+                break
 
-                    # Memastikan nama lajur Customer ID dibaca dengan selamat tanpa mengira huruf besar atau kecil
-        cust_id_asal = str(row_utama.get("CUSTOMER ID", row_utama.get("Customer ID", row_utama.get("customer id", "")))).strip()
 
 
         ## # 5. AMBIL REKOD DEPOSIT (TAB PAYMENT)
