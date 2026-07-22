@@ -274,7 +274,26 @@ def papar_menu_payment():
                     # Masukkan data ke baris paling bawah dalam Tab Payment Google Sheets
                     t_payment.append_row(baris_baru)
                     st.success(f"🎉 Pembayaran untuk Invois {v_no_invoice} berjaya direkodkan ke Google Sheets!")
+         # --- KOD BARU: UPDATE STATUS 'PAID' DI TAB TEMPAHAN ---
+                                    # --- KOD KEMASKINI STATUS TEMPAHAN (TUMPANG DI BLOK TRY ASAL) ---
+                    data_tempahan_raw = t_tempahan.get_all_values()
+                    # Mengambil data dari Kolom A (INV NO) di setiap baris tab Tempahan
+                    senarai_inv_tempahan = [str(r[0]).strip() for r in data_tempahan_raw]
                     
+                    if v_no_invoice in senarai_inv_tempahan:
+                        indeks_baris = senarai_inv_tempahan.index(v_no_invoice) + 1
+                        
+                        # Jika baki sudah habis (0 atau kurang), tukar status utama ke PAID
+                        if v_baki <= 0:
+                            t_tempahan.update_cell(indeks_baris, 5, "PAID") # Kolom 5 (E) ialah STATUS
+                            st.toast(f"Status {v_no_invoice} di Tab Tempahan telah dikemaskini ke PAID!", icon="✅")
+                        else:
+                            t_tempahan.update_cell(indeks_baris, 5, "PARTIAL")
+
+                            
+                except Exception as e:
+                    st.warning(f"Nota: Gagal mengemaskini status PAID di Tab Tempahan secara automatik: {e}")
+                   
                     #20/7============================
                                 # >>> SUNTIKAN DATA KE LEJAR KEWANGAN SECARA AUTOMATIK <<<
                     berjaya_lejar, respons_lejar = hantar_ke_lejar_revenue(

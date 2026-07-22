@@ -1,4 +1,9 @@
 kunci_google.json
 .streamlit/
 __pycache__/
-mycarpetpro-finance-4d556a2151dc.json
+proses_lejar.py
+mycarpetpro-finance-f1efc8262e3d.json
+# Fail Konfigurasi Pautan URL Google Sheets Peribadi
+config.py
+analisa_segar.py
+

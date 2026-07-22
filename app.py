@@ -554,7 +554,7 @@ if semak_login():
                         item["kod"],
                         item["jenis"],
                         f"RM {item['harga']:.2f}",
-                        item["saiz"],
+                        tarikh_hari_ini,
                         "DALAM PROSES"
                     ]
                     t_karpet.append_row(baris_karpet)
@@ -806,7 +806,9 @@ if semak_login():
                                 kemas_kini_berjaya = 0
                                 # Ambil senarai semua QR ID dari baris Google Sheets untuk cari indeks baris asal
                                 semua_qr_id_mentah = [str(r[nama_lajur_k.index('QR ID')]).upper().strip() for r in data_k_raw[1:]]
-                                lajur_status_index_sheets = [str(c).upper().strip() for c in data_k_raw].index('STATUS') + 1
+                              # BAIKI RALAT 22/7 TENTANG STATUS PROSES KARPET
+                                lajur_status_index_sheets = [str(c).upper().strip() for c in nama_lajur_k].index('STATUS') + 1
+
                                 
                                 with st.spinner("Sedang mengemaskini data ke Google Sheets..."):
                                     for q_id in qr_terpilih:
