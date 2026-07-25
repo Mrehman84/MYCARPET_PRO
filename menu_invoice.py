@@ -83,15 +83,27 @@ def paparan_menu_invoice(sheet):
         invoice_terpilih = st.selectbox("🔍 Pilih Invoice & Alamat Pelanggan:", pilihan_options)
 
         # 3. PECATKAN STRING DROPDOWN UNTUK INV NO BERSIH (PUNCA SEBENAR DATA RM 0.00 KOSONG)
-        inv_no_aktif = str(invoice_terpilih.split(" | ")[0]).strip()
-        row_utama = mapping_tempahan[inv_no_aktif]
+        # Gantikan baris 86 & 87 dengan kod ini:
+        if invoice_terpilih:
+            inv_no_aktif = str(invoice_terpilih.split(" | ")[0]).strip()
+            row_utama = mapping_tempahan.get(inv_no_aktif, {})
+        else:
+            inv_no_aktif = ""
+            row_utama = {}
+
 
 
         
 
         # Pecahkan string dropdown untuk dapatkan INV NO yang bersih
-        inv_no_aktif = str(invoice_terpilih.split(" | ")[0]).strip()
-        row_utama = mapping_tempahan[inv_no_aktif]
+# Gantikan baris 86 & 87 dengan kod ini:
+        if invoice_terpilih:
+            inv_no_aktif = str(invoice_terpilih.split(" | ")[0]).strip()
+            row_utama = mapping_tempahan.get(inv_no_aktif, {})
+        else:
+            inv_no_aktif = ""
+            row_utama = {}
+
 
         # 4. SINKRONISASI DATA PELANGGAN
         # Membaca ID Pelanggan dengan selamat mengikut ejaan huruf besar/kecil Sheets adik
