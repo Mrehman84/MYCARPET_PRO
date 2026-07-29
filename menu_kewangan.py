@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
+import time 
 import gspread
 from google.oauth2.service_account import Credentials
 
@@ -41,16 +42,14 @@ def app():
         if len(st.session_state.senarai_barang) > 1:
             st.session_state.senarai_barang.pop(index)
 
-    # 🧹 FUNGSI MENGOSONGKAN BORANG
+    # 🌟 KOD PEMBETULAN UNTUK FUNGSI MENGOSONGKAN BORANG
     def kosongkan_borang():
-        for idx in range(len(st.session_state.senarai_barang)):
-            if f"jenis_{idx}" in st.session_state:
-                st.session_state[f"jenis_{idx}"] = ""
-            if f"qty_{idx}" in st.session_state:
-                st.session_state[f"qty_{idx}"] = 1
-            if f"harga_{idx}" in st.session_state:
-                st.session_state[f"harga_{idx}"] = 0.0
+        # Mengosongkan data baris item sahaja mengikut pembolehubah asal di Baris 33
         st.session_state.senarai_barang = [{"jenis": "", "kod": senarai_belanja[0], "qty": 1, "uom": "LITER", "harga": 0.0}]
+        # Muat semula borang baharu yang bersih dengan selamat
+        st.rerun()
+
+
 
     # 📥 MULA FORM: Mengunci semua input supaya STATIK
     with st.form(key="borang_kewangan_utama", clear_on_submit=True):
@@ -115,62 +114,71 @@ def app():
         for b in st.session_state.senarai_barang:
             if not b["jenis"] or b["harga"] <= 0:
                 borang_sah = False
-                
-        if not no_resit:
-            st.warning("Sila masukkan Nombor Resit/Invois Pembekal untuk pengikat kumpulan data.")
-        elif not supplier:
-            st.warning("Sila masukkan nama pembekal syarikat.")
-        elif not borang_sah:
-            st.warning("Sila pastikan semua Nama Barang telah diisi dan Harga Seunit adalah lebih daripada RM0.00.")
-        else:
-            with st.spinner("Sistem sedang mengira agihan caj kos per unit dan menulis ke lejar..."):
-                try:
-                    expenses_sheet = sheet.worksheet("Raw_Expenses")
-                    all_values = expenses_sheet.get_all_values()
-                    
-                    next_id = len(all_values)
-                    
-                    bulan_tahun_str = tarikh.strftime("%b%Y").upper()
-                    kod_gabungan = f"{akaun_pilihan}{bulan_tahun_str}"
-                    baris_pukal_resit = []
-                    
-                    for item in st.session_state.senarai_barang:
-                        subtotal_kos_asal = item["qty"] * item["harga"]
-                        
-                        if jumlah_kasar_resit > 0:
-                            nisbah_agihan_pos = (subtotal_kos_asal / jumlah_kasar_resit) * caj_pos
-                        else:
-                            nisbah_agihan_pos = 0.0
-                            
-                        amount_bersih_item = subtotal_kos_asal + nisbah_agihan_pos
-                        
-                        row_data = [
-                            next_id,
-                            tarikh.strftime("%d/%m/%Y"),
-                            akaun_pilihan,
-                            item["jenis"].upper(),
-                            item["qty"],
-                            item["harga"],
-                            item["uom"],
-                            item["kod"],
-                            round(amount_bersih_item, 2),
-                            supplier.upper(),
-                            f"{catatan_resit} | No Resit: {no_resit.upper()}".strip(" | "),
-                            "",
-                            kod_gabungan
-                        ]
-                        baris_pukal_resit.append(row_data)
-                        next_id += 1
-                        
-                    expenses_sheet.append_rows(baris_pukal_resit)
-                    
-                    # Memanggil fungsi pembersihan di posisi inden blok 'try' yang betul
-                    kosongkan_borang()
-                    st.success(f"🎉 Berjaya! Seluruh resit '{no_resit.upper()}' telah dimasukkan. Borang telah dikosongkan semula.")
-                    st.rerun()
-                    
-                except Exception as err:
-                    st.error(f"Gagal menyimpan transaksi resit: {err}")
 
-if __name__ == "__main__":
+    if not no_resit: 
+        st.warning("Sila masukkan Nombor Resit/Invois Pembekal untuk pengikat kumpulan data.") 
+    elif not supplier: 
+        st.warning("Sila masukkan nama pembekal syarikat.") 
+    elif not borang_sah: 
+        st.warning("Sila pastikan semua Nama Barang telah diisi dan Harga Seunit adalah lebih daripada RM0.00.") 
+    else: 
+        with st.spinner("Sistem sedang mengira agihan caj kos per unit dan menulis ke lejar..."): 
+            try: 
+                expenses_sheet = sheet.worksheet("Raw_Expenses") 
+                all_values = expenses_sheet.get_all_values() 
+                next_id = len(all_values) 
+                bulan_tahun_str = tarikh.strftime("%b%Y").upper() 
+                kod_gabungan = f"{akaun_pilihan}{bulan_tahun_str}" 
+                baris_pukal_resit = [] 
+                
+                for item in st.session_state.senarai_barang: 
+                    subtotal_kos_asal = item["qty"] * item["harga"] 
+                    if jumlah_kasar_resit > 0: 
+                        nisbah_agihan_pos = (subtotal_kos_asal / jumlah_kasar_resit) * caj_pos 
+                    else: 
+                        nisbah_agihan_pos = 0.0 
+                    
+                    amount_bersih_item = subtotal_kos_asal + nisbah_agihan_pos 
+                    row_data = [ 
+                        next_id, 
+                        tarikh.strftime("%d/%m/%Y"), 
+                        akaun_pilihan, 
+                        item["jenis"].upper(), 
+                        item["qty"], 
+                        item["harga"], 
+                        item["uom"], 
+                        item["kod"], 
+                        round(amount_bersih_item, 2), 
+                        supplier.upper(), 
+                        f"{catatan_resit} | No Resit: {no_resit.upper()}".strip(" | "), 
+                        "", 
+                        kod_gabungan 
+                    ] 
+                    baris_pukal_resit.append(row_data) 
+                    next_id += 1 
+
+                # 1. Tembak masuk data ke Raw_Expenses (BAIKI TYPO: Ditambah huruf 'l' pada baris_pukal_resit)
+                expenses_sheet.append_rows(baris_pukal_resit) 
+
+                # 2. SUNTIKAN AUTOMASI: Ketuk sel O2 Dashboard
+                try: 
+                    ws_dashboard_trigger = sheet_kewangan.worksheet("DASHBOARD") 
+                    cap_masa_perbelanjaan = f"REFRESH_EXPENSES_{int(time.time())}" 
+                    ws_dashboard_trigger.update(range_name="O2", values=[[cap_masa_perbelanjaan]]) 
+                except Exception as e_trigger: 
+                    print(f"⚠️ Amaran: Gagal menghantar isyarat pemicu otomatis ke O2: {e_trigger}") 
+
+                # 3. Paparkan mesej sukses kepada pengguna 
+                st.toast(f"🎉 Berjaya! Seluruh resit '{no_resit.upper()}' telah dimasukkan.", icon="✅") 
+                time.sleep(1) 
+                
+                # 4. Bersihkan borang dan muat semula halaman secara automatik 
+                kosongkan_borang() 
+
+            except Exception as e_utama:
+                # PENUTUP TRY UTAMA: Menangkap ralat besar jika gagal hubung ke sheet Raw_Expenses
+                st.error(f"❌ Gagal menyimpan data resit perbelanjaan. Ralat: {str(e_utama)}")
+
+if __name__ == "__main__": 
+    # Pastikan fungsi app() anda dipanggil dengan betul di luar/rapat ke kiri
     app()

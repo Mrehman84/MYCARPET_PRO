@@ -3,7 +3,7 @@ import pandas as pd
 from datetime import datetime
 import gspread
 from google.oauth2.service_account import Credentials
-
+import pakar_kewangan
 
 #=================================================
 #20/7/2026 tambahkan code menu kewangan. yg mana ada tanda 20/7 adalah code baru
@@ -250,64 +250,167 @@ def papar_menu_payment():
                     except:
                         v_deposit_lama = 0.0
 
-                # Formula baki baharu: Jumlah keseluruhan ditolak deposit lama dan ditolak amaun baharu yang dibayar sekarang
-                v_baki = nilai_baki_default - v_amaun_dibayar
-                v_status_bayar = "PAID" if v_baki <= 0 else "DEPOSIT"
-                v_masa_sekarang = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                v_nota = ""  # <--- TAMBAH BARIS INI (Selesaikan ralat NameError
+                # Formula baki baharu: Jumlah keseluruhan ditolak deposit lama dan ditolak amaun baharu yang dibayar sekarang 
+                v_baki = nilai_baki_default - v_amaun_dibayar 
+                v_status_bayar = "PAID" if v_baki <= 0 else "DEPOSIT" 
 
-                # Susunan baris data baru untuk dimasukkan ke tab Payment
-                baris_baru = [
-                    v_no_invoice,      # INV NO
-                    v_cust_id,         # CUSTOMER ID
-                    v_nama,            # NAMA
-                    v_jumlah_invoice,  # JUMLAH INVOIS
-                    v_amaun_dibayar,   # AMAUN DIBAYAR
-                    v_baki,            # BAKI
-                    v_kaedah_bayar,    # KAEDAH PEMBAYARAN
-                    v_status_bayar,    # STATUS
-                    v_masa_sekarang,   # TARIKH BAYARAN
-                    v_nota             # NOTA
-                ]
+                # GUNA PANDAS TIMESTAMP: Kebal ralat import
+                v_masa_sekarang = pd.Timestamp.now().strftime("%Y-%m-%d %H:%M:%S")
+                v_nota = "" 
 
-                try:
-                    # Masukkan data ke baris paling bawah dalam Tab Payment Google Sheets
-                    t_payment.append_row(baris_baru)
-                    st.success(f"🎉 Pembayaran untuk Invois {v_no_invoice} berjaya direkodkan ke Google Sheets!")
-         # --- KOD BARU: UPDATE STATUS 'PAID' DI TAB TEMPAHAN ---
-                                    # --- KOD KEMASKINI STATUS TEMPAHAN (TUMPANG DI BLOK TRY ASAL) ---
-                    data_tempahan_raw = t_tempahan.get_all_values()
-                    # Mengambil data dari Kolom A (INV NO) di setiap baris tab Tempahan
-                    senarai_inv_tempahan = [str(r[0]).strip() for r in data_tempahan_raw]
-                    
-                    if v_no_invoice in senarai_inv_tempahan:
-                        indeks_baris = senarai_inv_tempahan.index(v_no_invoice) + 1
+                # Susunan baris data baru untuk dimasukkan ke tab Payment 
+                baris_baru = [ 
+                    v_no_invoice,      # INV NO 
+                    v_cust_id,        # CUSTOMER ID 
+                    v_nama,           # NAMA 
+                    v_jumlah_invoice, # JUMLAH INVOIS 
+                    v_amaun_dibayar,  # AMAUN DIBAYAR 
+                    v_baki,           # BAKI 
+                    v_kaedah_bayar,   # KAEDAH PEMBAYARAN 
+                    v_status_bayar,   # STATUS 
+                    v_masa_sekarang,  # TARIKH BAYARAN 
+                    v_nota            # NOTA 
+                ] 
+
+                try: 
+                    # 1. MASUKKAN KE TAB PAYMENT (FAIL OPERASI - ASAL)
+                    t_payment.append_row(baris_baru) 
+                    st.success(f"🎉 Pembayaran untuk Invois {v_no_invoice} berjaya direkodkan ke Google Sheets!") 
+
+                    # ====================================================================
+                    # 🚀 2. SUNTIKAN TERUS REAL-TIME: MASUKKAN KE TAB RAW_REVENUE (FAIL FINANCE)
+                    # ====================================================================
+                    try:
+                        import config
                         
-                        # Jika baki sudah habis (0 atau kurang), tukar status utama ke PAID
-                        if v_baki <= 0:
-                            t_tempahan.update_cell(indeks_baris, 5, "PAID") # Kolom 5 (E) ialah STATUS
-                            st.toast(f"Status {v_no_invoice} di Tab Tempahan telah dikemaskini ke PAID!", icon="✅")
-                        else:
-                            t_tempahan.update_cell(indeks_baris, 5, "PARTIAL")
+                        # Hubung terus fail kewangan menggunakan URL dalam config
+                        client_finance = config.hubung_google_sheets()
+                        sheet_finance = client_finance.open_by_url(config.URL_FINANCE_SHEET)
+                        ws_revenue = sheet_finance.worksheet("Raw_Revenue")
+                        
+                        # Ambil baris terakhir di Raw_Revenue untuk jana ID No baharu secara auto
+                        data_rev_skrg = ws_revenue.get_all_values()
+                        no_turutan_f = 1
+                        if len(data_rev_skrg) > 1:
+                            try:
+                                no_turutan_f = int(data_rev_skrg[-1]) + 1
+                            except:
+                                no_turutan_f = len(data_rev_skrg)
+                        
+                        # Menggunakan 100% nama pembolehubah borang asal anda
+                        harga_f = str(v_amaun_dibayar).upper().replace('RM', '').strip()
+                        # Ditukar supaya mengambil alamat penuh pelanggan untuk Lajur D
+                        pelanggan_f = v_alamat if 'v_alamat' in locals() else "-"
 
-                            
-                except Exception as e:
+                        saluran_f = "MAYBANK" if "TRANSFER" in str(v_kaedah_bayar).upper() or "BANK" in str(v_kaedah_bayar).upper() else "TUNAI"
+                        
+                        # Set format tarikh lejar DD/MM/YYYY secara automatik mengikut waktu semasa
+                        tarikh_f = pd.Timestamp.now().strftime("%d/%m/%Y")
+                        bulan_tahun_f = pd.Timestamp.now().strftime("%b%Y").upper()
+                        gabungan_kod_f = f"{saluran_f}{bulan_tahun_f}"
+                        
+                        # Susunan baris mengikut jalur lejar kewangan anda (Lajur A hingga I)
+                        baris_suntikan_finance = [[
+                            no_turutan_f,                   # Lajur A (NO)
+                            tarikh_f,                       # Lajur B (TARIKH)
+                            str(v_no_invoice).upper(),      # Lajur C (ID_INVOIS)
+                            pelanggan_f,                    # Lajur D (PELANGGAN)
+                            saluran_f,                      # Lajur E (SALURAN_MASUK)
+                            "CUCI KARPET",                  # Lajur F (KATEGORI_SERVIS)
+                            harga_f,                        # Lajur G (AMOUNT)
+                            f"Auto-Direct: Invois {v_no_invoice}", # Lajur H (CATATAN)
+                            gabungan_kod_f                  # Lajur I (GABUNGAN)
+                        ]]
+                        
+                        # Tembak masuk serta-merta tanpa perlu scan memori yang berat!
+                        ws_revenue.append_rows(baris_suntikan_finance, value_input_option="USER_ENTERED")
+                        st.toast("💻 Auto-Sync: Data berjaya dihantar ke Lejar Kewangan!", icon="📊")
+                        
+                    except Exception as err_suntik:
+                        # Jika kewangan ada ralat sekatan, cetak di log belakang dan jangan sekat transaksi kedai
+                        print(f"⚠️ Amaran: Gagal suntik terus ke Finance: {str(err_suntik)}")
+                    # ====================================================================
+
+                    # 3. KEMASKINI STATUS 'PAID' DI TAB TEMPAHAN (FAIL OPERASI - ASAL)
+                    data_tempahan_raw = t_tempahan.get_all_values() 
+                    senarai_inv_tempahan = [str(r[0]).strip() for r in data_tempahan_raw] 
+                    
+                    if v_no_invoice in senarai_inv_tempahan: 
+                        indeks_baris = senarai_inv_tempahan.index(v_no_invoice) + 1 
+                        
+                        if v_baki <= 0: 
+                            t_tempahan.update_cell(indeks_baris, 5, "PAID") 
+                            st.toast(f"Status {v_no_invoice} di Tab Tempahan telah dikemaskini ke PAID!", icon="✅") 
+                        else: 
+                            t_tempahan.update_cell(indeks_baris, 5, "PARTIAL") 
+
+                except Exception as e: 
                     st.warning(f"Nota: Gagal mengemaskini status PAID di Tab Tempahan secara automatik: {e}")
-                   
-                    #20/7============================
-                                # >>> SUNTIKAN DATA KE LEJAR KEWANGAN SECARA AUTOMATIK <<<
-                    berjaya_lejar, respons_lejar = hantar_ke_lejar_revenue(
-                            id_invois=v_no_invoice,
-                            nama_pelanggan=v_nama,
-                            saluran_masuk=v_kaedah_bayar,
-                            amount_dibayar=v_amaun_dibayar,
-                            jenis_bayaran=v_status_bayar
-                        )
-                    if berjaya_lejar:
-                            st.toast(f"📈 Lejar Kewangan dikemas kini! Kod Aliran: {respons_lejar}")
-                    else:
-                            st.warning(f"⚠ Operasi sukses, tetapi gagal menulis ke lejar kewangan: {respons_lejar}")
-                        # >>> END SUNTIKAN <<<
+
+
+        # ====================================================================
+        # 🚀 ENJIN SUNTIKAN TERUS REAL-TIME (100% AUTO & RINGAN)
+        # ====================================================================
+                try:
+                    # 1. Hubung ke fail kewangan anda secara langsung menggunakan config
+                    import config
+                    from datetime import datetime
+                    
+                    client_finance = config.hubung_google_sheets()
+                    sheet_finance = client_finance.open_by_url(config.URL_FINANCE_SHEET)
+                    ws_revenue = sheet_finance.worksheet("Raw_Revenue")
+                    
+                    # 2. Dapatkan nombor urutan terakhir di Raw_Revenue untuk baris baharu
+                    data_rev = ws_revenue.get_all_values()
+                    no_turutan = 1
+                    if len(data_rev) > 1:
+                        try:
+                            no_turutan = int(data_rev[-1][0]) + 1
+                        except:
+                            no_turutan = len(data_rev)
+                    
+                    # 3. Ambil data yang sedang aktif ditaip dalam borang Streamlit anda sekarang
+                    # (Sila pastikan nama pembolehubah ini sepadan dengan kod borang menu_payment anda)
+                    inv_no_auto = str(no_invois_sekarang).strip().upper() # Contoh pembolehubah invois anda
+                    cust_id_auto = str(id_pelanggan_sekarang).strip()
+                    nama_auto = str(nama_pelanggan_sekarang).strip()
+                    harga_auto = str(jumlah_bayaran_sekarang).upper().replace('RM', '').strip()
+                    kaedah_auto = str(kaedah_pembayaran_sekarang).upper()
+                    
+                    # Tetapkan nama paparan pelanggan
+                    pelanggan_auto = nama_auto if nama_auto and nama_auto != "-" else cust_id_auto
+                    saluran_auto = "MAYBANK" if "TRANSFER" in kaedah_auto or "BANK" in kaed_auto else "TUNAI"
+                    
+                    # Format tarikh masa kini secara auto ke DD/MM/YYYY
+                    tarikh_sekarang = datetime.now().strftime("%d/%m/%Y")
+                    bulan_tahun_auto = datetime.now().strftime("%b%Y").upper()
+                    gabungan_kod_auto = f"{saluran_auto}{bulan_tahun_auto}"
+                    
+                    # 4. Susun mengikut struktur jalur lejar kewangan anda (A hingga I)
+                    baris_suntikan_terus = [[
+                        no_turutan,                 # Lajur A (NO)
+                        tarikh_sekarang,            # Lajur B (TARIKH)
+                        inv_no_auto,                # Lajur C (ID_INVOIS)
+                        pelanggan_auto,             # Lajur D (PELANGGAN)
+                        saluran_auto,               # Lajur E (SALURAN_MASUK)
+                        "CUCI KARPET",              # Lajur F (KATEGORI_SERVIS)
+                        harga_auto,                 # Lajur G (AMOUNT)
+                        f"Auto-Direct: Invois {v_no_invoice}", # Lajur H (CATATAN)
+
+                        gabungan_kod_auto           # Lajur I (GABUNGAN)
+                    ]]
+                    
+                    # 5. Tembak terus masuk ke Raw_Revenue tanpa perlu scan sheet lagi!
+                    ws_revenue.append_rows(baris_suntikan_terus, value_input_option="USER_ENTERED")
+                    st.toast("💻 Auto-Sync: Transaksi berjaya direkodkan terus ke Lejar Kewangan!", icon="✅")
+                    
+                except Exception as err_suntik:
+                    # Mengeluarkan ralat nyata jika nama pembolehubah borang anda tidak sepadan
+                    st.error(f"⚠️ Amaran: Data selamat di Payment, tetapi gagal suntik terus ke Finance: {str(err_suntik)}")
+                # ====================================================================
+
+
+
              #20/7=======================================================================================================
 
                     # Kira baki untuk paparan skrin
