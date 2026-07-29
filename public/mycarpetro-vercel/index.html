@@ -15,7 +15,17 @@
         .harga-list li { padding: 12px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; font-size: 1.1rem; }
         .harga-list li:last-child { border-bottom: none; }
         .harga { font-weight: bold; color: #28a745; }
-        .cta-section { text-align: center; margin-top: 40px; padding: 20px; background: #e7f3ff; border-radius: 8px; }
+        
+        /* Gaya Tambahan untuk Borang Interaktif */
+        .kalkulator-section { background: #f0f7ff; padding: 20px; border-radius: 8px; margin-top: 30px; border: 1px solid #d0e3ff; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        select, input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1rem; }
+        .btn-kira { background: #0070f3; color: white; border: none; padding: 12px; width: 100%; font-size: 1.1rem; font-weight: bold; border-radius: 4px; cursor: pointer; margin-top: 10px; }
+        .btn-kira:hover { background: #0056b3; }
+        .papar-hasil { margin-top: 20px; padding: 15px; background: white; border-left: 5px solid #28a745; font-size: 1.3rem; font-weight: bold; display: none; }
+        
+        .cta-section { text-align: center; margin-top: 30px; padding: 20px; background: #e7f3ff; border-radius: 8px; }
         .btn-whatsapp { display: inline-block; padding: 15px 30px; font-size: 1.2rem; font-weight: bold; color: white; background: #25d366; border: none; border-radius: 5px; text-decoration: none; cursor: pointer; transition: background 0.3s; }
         .btn-whatsapp:hover { background: #128c7e; }
         footer { text-align: center; padding: 20px; color: #777; font-size: 0.9rem; }
@@ -42,10 +52,31 @@
             <li><span>Toto / Comforter</span> <span class="harga">RM 20.00</span></li>
         </ul>
 
+        <!-- BAHAGIAN KALKULATOR INTERAKTIF (BERHUBUNG DENGAN PYTHON) -->
+        <div class="kalkulator-section">
+            <h2>🧮 Kalkulator Harga Automatik (Dikuasakan oleh Python)</h2>
+            <div class="form-group">
+                <label for="saiz">Pilih Saiz Karpet:</label>
+                <select id="saiz">
+                    <option value="S">Saiz S (RM 15.00)</option>
+                    <option value="M" selected>Saiz M (RM 35.00)</option>
+                    <option value="L">Saiz L (RM 55.00)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="kuantiti">Kuantiti (Helai):</label>
+                <input type="number" id="kuantiti" value="1" min="1">
+            </div>
+            <button class="btn-kira" onclick="kiraHargaGunaPython()">Kira Anggaran Kos</button>
+            
+            <div id="kotakHasil" class="papar-hasil">
+                Jumlah Kos: RM <span id="totalHarga">0.00</span>
+            </div>
+        </div>
+
         <div class="cta-section">
             <h3>Mahu Karpet Anda Bersih Seperti Baharu?</h3>
             <p>Klik butang di bawah untuk tempahan slot hantaran atau khidmat ambil-dan-hantar.</p>
-            <!-- Sila tukar nombor telefon 60123456789 kepada nombor anda di bawah -->
             <a href="https://wa.me." target="_blank" class="btn-whatsapp">
                 Hubungi Kami via WhatsApp
             </a>
@@ -55,6 +86,38 @@
     <footer>
         <p>&copy; 2026 Pusat Cucian Karpet Kilat. Hak Cipta Terpelihara.</p>
     </footer>
+
+    <!-- SKRIP JAVASCRIPT UNTUK CALL BACKEND PYTHON FLASK -->
+    <script>
+        async function kiraHargaGunaPython() {
+            const saizPilihan = document.getElementById('saiz').value;
+            const kuantitiPilihan = document.getElementById('kuantiti').value;
+
+            try {
+                // Menghantar data ke API Python (/api/kira) yang kita bina dalam index.py
+                const respon = await fetch('/api/kira', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        saiz: saizPilihan,
+                        kuantiti: kuantitiPilihan
+                    })
+                });
+
+                const data = await respon.json();
+                
+                // Memaparkan hasil pulangan daripada kod Python ke skrin HTML
+                document.getElementById('totalHarga').innerText = data.total.toFixed(2);
+                document.getElementById('kotakHasil').style.display = 'block';
+
+            } catch (error) {
+                alert("Ralat menghubungi pelayan Python backend.");
+                console.error(error);
+            }
+        }
+    </script>
 
 </body>
 </html>
