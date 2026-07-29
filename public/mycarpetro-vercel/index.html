@@ -150,12 +150,14 @@
 
         </div>
     </div>
+            <!-- ... Kod bahagian atas (HTML) kekal sama ... -->
+
+    <!-- PASTIKAN STRUKTUR DI BAWAH INI ADALAH YANG PALING BAWAH DI FAIL INDEX.HTML -->
+    <script>
         function tukarTab(namaTab) {
-            // Sembunyikan semua tab kandungan & buang kelas active
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             
-            // Paparkan kandungan tab yang dipilih
             document.getElementById('tab-' + namaTab).classList.add('active');
             document.getElementById('btn-' + namaTab).classList.add('active');
             
@@ -167,15 +169,12 @@
         async function kiraHarga() {
             const res = await fetch('/api/kira', {
                 method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json' 
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     saiz: document.getElementById('saiz').value,
                     kuantiti: document.getElementById('kuantiti').value
                 })
             });
-            
             const data = await res.json();
             document.getElementById('paparTotal').innerText = data.total.toFixed(2);
             document.getElementById('hasilHarga').style.display = 'block';
@@ -184,16 +183,13 @@
         async function simpanTemujanji() {
             const res = await fetch('/api/temujanji', {
                 method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json' 
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     nama: document.getElementById('nama_pelanggan').value,
                     tarikh: document.getElementById('tarikh_slot').value,
                     slot: document.getElementById('waktu_slot').value
                 })
             });
-            
             const data = await res.json();
             const box = document.getElementById('hasilTemujanji');
             box.innerText = "✓ " + data.mesej;
@@ -201,10 +197,7 @@
         }
 
         async function janaInvois() {
-            const res = await fetch('/api/invois', { 
-                method: 'POST' 
-            });
-            
+            const res = await fetch('/api/invois', { method: 'POST' });
             const data = await res.json();
             document.getElementById('statusInvois').innerText = data.status;
             document.getElementById('noInvois').innerText = data.no_invois;
@@ -215,11 +208,14 @@
             try {
                 const res = await fetch('/api/kewangan');
                 const data = await res.json();
-                
                 document.getElementById('kewUntung').innerText = data.jumlah_pendapatan.toFixed(2);
                 document.getElementById('kewRugi').innerText = data.jumlah_perbelanjaan.toFixed(2);
-                document.getElementById('kewBersih').innerText = data.untung_bersih.toFixed(2);
+                document.getElementById('kewPermanen').innerText = data.untung_bersih.toFixed(2);
             } catch (error) {
                 console.error("Gagal memuatkan data kewangan:", error);
             }
         }
+    </script> <!-- WAJIB ADA TAG PENUTUP INI SEBELUM TANDAI BODY -->
+
+</body>
+</html>
