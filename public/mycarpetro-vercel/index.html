@@ -3,121 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pusat Cucian Karpet Profesional</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background: #f8f9fa; color: #333; }
-        header { background: #0070f3; color: white; padding: 40px 20px; text-align: center; }
-        header h1 { margin: 0; font-size: 2.5rem; }
-        header p { margin: 10px 0 0; font-size: 1.2rem; opacity: 0.9; }
-        .container { max-width: 800px; margin: 30px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        h2 { color: #0070f3; border-bottom: 2px solid #0070f3; padding-bottom: 8px; }
-        .harga-list { list-style: none; padding: 0; }
-        .harga-list li { padding: 12px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; font-size: 1.1rem; }
-        .harga-list li:last-child { border-bottom: none; }
-        .harga { font-weight: bold; color: #28a745; }
-        
-        /* Gaya Tambahan untuk Borang Interaktif */
-        .kalkulator-section { background: #f0f7ff; padding: 20px; border-radius: 8px; margin-top: 30px; border: 1px solid #d0e3ff; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; }
-        select, input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1rem; }
-        .btn-kira { background: #0070f3; color: white; border: none; padding: 12px; width: 100%; font-size: 1.1rem; font-weight: bold; border-radius: 4px; cursor: pointer; margin-top: 10px; }
-        .btn-kira:hover { background: #0056b3; }
-        .papar-hasil { margin-top: 20px; padding: 15px; background: white; border-left: 5px solid #28a745; font-size: 1.3rem; font-weight: bold; display: none; }
-        
-        .cta-section { text-align: center; margin-top: 30px; padding: 20px; background: #e7f3ff; border-radius: 8px; }
-        .btn-whatsapp { display: inline-block; padding: 15px 30px; font-size: 1.2rem; font-weight: bold; color: white; background: #25d366; border: none; border-radius: 5px; text-decoration: none; cursor: pointer; transition: background 0.3s; }
-        .btn-whatsapp:hover { background: #128c7e; }
-        footer { text-align: center; padding: 20px; color: #777; font-size: 0.9rem; }
-    </style>
+    <title>Sistem MYCARPET PRO | Dashboard Pengurusan</title>
+    <!-- Tailwind CSS untuk reka bentuk premium -->
+    <script src="https://tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-100 font-sans antialiased text-gray-800">
 
-    <header>
-        <h1>Pusat Cucian Karpet Kilat</h1>
-        <p>Bersih, Wangi, & Bebas Kuman dalam Masa 3 Hari!</p>
-    </header>
+    <!-- Navigasi Atas -->
+    <div class="bg-blue-600 p-4 text-white shadow-md flex justify-between items-center">
+        <h1 class="text-xl font-bold">MYCARPET PRO Admin System</h1>
+        <span class="bg-green-500 text-xs px-3 py-1 rounded-full font-semibold animate-pulse">Vercel Speed Active</span>
+    </div>
 
-    <div class="container">
-        <h2>Kenapa Pilih Kami?</h2>
-        <p>✓ Menggunakan mesin basuh karpet industri berteknologi tinggi.</p>
-        <p>✓ Pengeringan 100% di dalam bilik khas (bebas habuk jalanan).</p>
-        <p>✓ Formula sabun khas anti-bakteria dan menghilangkan bau hapak.</p>
-
-        <h2>Senarai Harga Cucian</h2>
-        <ul class="harga-list">
-            <li><span>Karpet Saiz S (Kecil / Alas Kaki)</span> <span class="harga">RM 15.00</span></li>
-            <li><span>Karpet Saiz M (Sederhana / Ruang Tamu)</span> <span class="harga">RM 35.00</span></li>
-            <li><span>Karpet Saiz L (Besar / Tebal / Bulu Panjang)</span> <span class="harga">RM 55.00</span></li>
-            <li><span>Toto / Comforter</span> <span class="harga">RM 20.00</span></li>
-        </ul>
-
-        <!-- BAHAGIAN KALKULATOR INTERAKTIF (BERHUBUNG DENGAN PYTHON) -->
-        <div class="kalkulator-section">
-            <h2>🧮 Kalkulator Harga Automatik (Dikuasakan oleh Python)</h2>
-            <div class="form-group">
-                <label for="saiz">Pilih Saiz Karpet:</label>
-                <select id="saiz">
-                    <option value="S">Saiz S (RM 15.00)</option>
-                    <option value="M" selected>Saiz M (RM 35.00)</option>
-                    <option value="L">Saiz L (RM 55.00)</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="kuantiti">Kuantiti (Helai):</label>
-                <input type="number" id="kuantiti" value="1" min="1">
-            </div>
-            <button class="btn-kira" onclick="kiraHargaGunaPython()">Kira Anggaran Kos</button>
-            
-            <div id="kotakHasil" class="papar-hasil">
-                Jumlah Kos: RM <span id="totalHarga">0.00</span>
-            </div>
+    <!-- Pilihan Menu Utama (Navigasi Tab) -->
+    <div class="max-w-6xl mx-auto mt-6 px-4">
+        <div class="flex flex-wrap border-b border-gray-200 bg-white rounded-t-lg shadow-sm">
+            <button onclick="tukarTab('harga')" id="btn-harga" class="tab-btn flex-1 py-4 text-center font-bold text-blue-600 border-b-2 border-blue-600">🧮 1. Kalkulator Harga</button>
+            <button onclick="tukarTab('temujanji')" id="btn-temujanji" class="tab-btn flex-1 py-4 text-center font-bold text-gray-500 hover:text-blue-600">📅 2. Tempahan Slot</button>
+            <button onclick="tukarTab('payment')" id="btn-payment" class="tab-btn flex-1 py-4 text-center font-bold text-gray-500 hover:text-blue-600">💳 3. Invois & Bayaran</button>
+            <button onclick="tukarTab('kewangan')" id="btn-kewangan" class="tab-btn flex-1 py-4 text-center font-bold text-gray-500 hover:text-blue-600">📊 4. Laporan Kewangan</button>
         </div>
 
-        <div class="cta-section">
-            <h3>Mahu Karpet Anda Bersih Seperti Baharu?</h3>
-            <p>Klik butang di bawah untuk tempahan slot hantaran atau khidmat ambil-dan-hantar.</p>
-            <a href="https://wa.me." target="_blank" class="btn-whatsapp">
-                Hubungi Kami via WhatsApp
-            </a>
+        <!-- KANDUNGAN UTAMA BAGI SETIAP MENU -->
+        <div class="bg-white p-6 rounded-b-lg shadow-sm min-h-[450px]">
+            
+            <!-- MENU 1: KALKULATOR HARGA -->
+            <div id="tab-harga" class="tab-content block">
+                <h2 class="text-xl font-bold text-blue-600 mb-4">Pengiraan Kos Cucian Karpet</h2>
+                <div class="max-w-md space-y-4">
+                    <div>
+                        <label class="block font-semibold mb-1">Pilih Saiz Karpet:</label>
+                        <select id="saiz" class="w-full p-2 border rounded">
+                            <option value="S">Saiz S (RM 15.00)</option>
+                            <option value="M" selected>Saiz M (RM 35.00)</option>
+                            <option value="L">Saiz L (RM 55.00)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Kuantiti (Helai):</label>
+                        <input type="number" id="kuantiti" value="1" min="1" class="w-full p-2 border rounded">
+                    </div>
+                    <button onclick="kiraHarga()" class="w-full bg-blue-600 text-white font-bold p-3 rounded hover:bg-blue-700">Kira Harga (Python Backend)</button>
+                    <div id="hasilHarga" class="p-4 bg-green-50 text-green-700 font-bold border-l-4 border-green-500 rounded hidden text-lg">
+                        Anggaran Jumlah Kos: RM <span id="paparTotal">0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MENU 2: TEMPAHAN SLOT -->
+            <div id="tab-temujanji" class="tab-content hidden">
+                <h2 class="text-xl font-bold text-blue-600 mb-4">Pendaftaran Temujanji Pelanggan</h2>
+                <div class="max-w-md space-y-4">
+                    <div>
+                        <label class="block font-semibold mb-1">Nama Pelanggan:</label>
+                        <input type="text" id="nama_pelanggan" placeholder="Masukkan nama" class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Pilih Tarikh:</label>
+                        <input type="date" id="tarikh_slot" class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Pilih Slot Waktu:</label>
+                        <select id="waktu_slot" class="w-full p-2 border rounded">
+                            <option value="Pagi (9am - 12pm)">Pagi (9am - 12pm)</option>
+                            <option value="Tengahari (2pm - 5pm)">Tengahari (2pm - 5pm)</option>
+                            <option value="Petang (5pm - 8pm)">Petang (5pm - 8pm)</option>
+                        </select>
+                    </div>
+                    <button onclick="simpanTemujanji()" class="w-full bg-blue-600 text-white font-bold p-3 rounded hover:bg-blue-700">Sahkan & Simpan Slot</button>
+                    <div id="hasilTemujanji" class="p-4 bg-blue-50 text-blue-700 font-medium border-l-4 border-blue-500 rounded hidden"></div>
+                </div>
+            </div>
+
+            <!-- MENU 3: INVOIS & BAYARAN -->
+            <div id="tab-payment" class="tab-content hidden">
+                <h2 class="text-xl font-bold text-blue-600 mb-4">Sistem Penjanaan Invois Syarikat</h2>
+                <button onclick="janaInvois()" class="bg-blue-600 text-white font-bold p-3 rounded hover:bg-blue-700">Jana Invois Baharu</button>
+                <div id="hasilInvois" class="mt-4 p-4 border rounded bg-gray-50 hidden max-w-sm">
+                    <p class="font-bold text-gray-700">Status: <span id="statusInvois"></span></p>
+                    <p class="text-sm text-gray-500 mb-3">No Rujukan: <span id="noInvois"></span></p>
+                    <p class="font-semibold text-xs mb-1 text-gray-600">Sila Imbas QR Bank di Bawah untuk Bayaran:</p>
+                    <img src="/qr_bank.jpeg" alt="QR Bank" class="w-48 h-48 mx-auto border rounded shadow-sm">
+                </div>
+            </div>
+
+            <!-- MENU 4: LAPORAN KEWANGAN -->
+            <div id="tab-kewangan" class="tab-content hidden">
+                <h2 class="text-xl font-bold text-blue-600 mb-4">Ringkasan Penyata Untung Rugi</h2>
+                <button onclick="muatKewangan()" class="bg-gray-800 text-white font-bold px-4 py-2 rounded hover:bg-gray-900 mb-4">Muat Data Terkini</button>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl">
+                    <div class="p-4 bg-green-100 rounded border border-green-200 shadow-sm">
+                        <p class="text-sm text-green-700 font-semibold">Jumlah Pendapatan</p>
+                        <p class="text-2xl font-bold text-green-900">RM <span id="kewUntung">0.00</span></p>
+                    </div>
+                    <div class="p-4 bg-red-100 rounded border border-red-200 shadow-sm">
+                        <p class="text-sm text-red-700 font-semibold">Jumlah Perbelanjaan</p>
+                        <p class="text-2xl font-bold text-red-900">RM <span id="kewRugi">0.00</span></p>
+                    </div>
+                    <div class="p-4 bg-blue-100 rounded border border-blue-200 shadow-sm">
+                        <p class="text-sm text-blue-700 font-semibold">Untung Bersih</p>
+                        <p class="text-2xl font-bold text-blue-900">RM <span id="kewBersih">0.00</span></p>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <footer>
-        <p>&copy; 2026 Pusat Cucian Karpet Kilat. Hak Cipta Terpelihara.</p>
-    </footer>
-
-    <!-- SKRIP JAVASCRIPT UNTUK CALL BACKEND PYTHON FLASK -->
+    <!-- LOGIK JAVASCRIPT UNTUK NAVIGASI TAB & PANGGIL BACKEND PYTHON -->
     <script>
-        async function kiraHargaGunaPython() {
-            const saizPilihan = document.getElementById('saiz').value;
-            const kuantitiPilihan = document.getElementById('kuantiti').value;
-
-            try {
-                // Menghantar data ke API Python (/api/kira) yang kita bina dalam index.py
-                const respon = await fetch('/api/kira', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        saiz: saizPilihan,
-                        kuantiti: kuantitiPilihan
-                    })
-                });
-
-                const data = await respon.json();
-                
-                // Memaparkan hasil pulangan daripada kod Python ke skrin HTML
-                document.getElementById('totalHarga').innerText = data.total.toFixed(2);
-                document.getElementById('kotakHasil').style.display = 'block';
-
-            } catch (error) {
-                alert("Ralat menghubungi pelayan Python backend.");
-                console.error(error);
+        // 1. Fungsi Tukar Paparan Menu (Tab)
+        function tukarTab(namaTab) {
+            document.querySelectorAll('.tab-content').forEach(c => {
+                c.classList.remove('block');
+                c.classList.add('hidden');
+            });
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600');
+                b.classList.add('text-gray-500');
+            });
+            document.getElementById('tab-' + namaTab).classList.remove('hidden');
+            document.getElementById('tab-' + namaTab).classList.add('block');
+            document.getElementById('btn-' + namaTab).classList.add('text-blue-600', 'border-b-2', 'border-blue-600');
+            
+            // Muat data automatik jika pengguna buka tab kewangan
+            if(namaTab === 'kewangan') {
+                muatKewangan();
             }
         }
-    </script>
 
-</body>
-</html>
+        // 2. Fungsi Menu Harga
+        async function kiraHarga() {
+            const res = await fetch('/api/kira', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    saiz: document.getElementById('saiz').value,
+                    kuantiti: document.getElementById('kuantiti').value
+                })
+            });
+            const data = await res.json();
+            document.getElementById('paparTotal').innerText = data.total.toFixed(2);
+            document.getElementById('hasilHarga').classList.remove('hidden');
+        }
+
+        // 3. Fungsi Menu Temujanji
+        async function simpanTemujanji() {
+            const res = await fetch('/api/temujanji', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    nama: document.getElementById('nama_pelanggan').value,
+                    tarikh: document.getElementById('tarikh_slot').value,
+                    slot: document.getElementById('waktu_slot').value
+                })
+            });
+            const data = await res.json();
+            const box = document.getElementById('hasilTemujanji');
+            box.innerText = "✓ " + data.mesej;
+            box.classList.remove('hidden');
+        }
+
+        // 4. Fungsi Menu Invois
+        async function janaInvois() {
+            const res = await fetch('/api/invois', { method: 'POST' });
+            const data = await res.json();
+            document.getElementById('statusInvois').innerText = data.status;
+            document.getElementById('noInvois').innerText = data.no_invois;
+            document.getElementById('hasilInvois').classList.remove('hidden');
+            }
+            // 5. Pembetulan Fungsi Menu Kewangan (Fixed Typo)
+            async function muatKewangan() {
+                try {
+                    const res = await fetch('/api/kewangan');
+                    const data = await res.json();
+
+            // Memastikan sepadan dengan struktur data dari api/index.py
+            document.getElementById('kewUntung').innerText = data.jumlah_pendapatan.toFixed(2);
+            document.getElementById('kewRugi').innerText = data.jumlah_perbelanjaan.toFixed(2);
+            document.getElementById('kewBersih').innerText = data.untung_bersih.toFixed(2);
+            } catch (error) {
+                console.error("Gagal memuatkan data kewangan:", error);
+                }
+            }
