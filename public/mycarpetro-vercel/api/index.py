@@ -1,14 +1,16 @@
-import sys
-import os
+import sys 
+import os 
 from flask import Flask, jsonify, request
+from flask_cors import CORS  # Membenarkan frontend akses API ini
 
-# Sambungan ke folder utama root
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
+# Memastikan path ke folder utama root adalah tepat di server Vercel
+# api/index.py berada 1 tingkat di bawah root, jadi kita undur 1 tingkat sahaja
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 try:
-    import menu_harga
-    import menu_payment
-    import menu_temujanji
+    import menu_harga 
+    import menu_payment 
+    import menu_temujanji 
     import menu_kewangan
 except ImportError:
     menu_harga = None
@@ -17,6 +19,21 @@ except ImportError:
     menu_kewangan = None
 
 app = Flask(__name__)
+CORS(app)  # Mengaktifkan CORS untuk seluruh aplikasi
+
+# Root Endpoint untuk semakan status
+@app.route('/api', methods=['GET'])
+def home():
+    return jsonify({
+        "status": "online", 
+        "project": "MYCARPET PRO Backend",
+        "modules_loaded": {
+            "menu_harga": menu_harga is not None,
+            "menu_payment": menu_payment is not None,
+            "menu_temujanji": menu_temujanji is not None,
+            "menu_kewangan": menu_kewangan is not None
+        }
+    })
 
 # 1. API UNTUK MENU HARGA
 @app.route('/api/kira', methods=['POST'])
@@ -41,9 +58,6 @@ def proses_temujanji():
     tarikh = data.get('tarikh', '')
     slot = data.get('slot', '')
     
-    # Sini anda boleh panggil fungsi simpan database dari menu_temujanji.py anda
-    # Contoh: menu_temujanji.simpan_slot(nama, tarikh, slot)
-    
     return jsonify({
         "status": "Success",
         "mesej": f"Slot {slot} pada {tarikh} untuk {nama} berjaya direkodkan!"
@@ -53,22 +67,19 @@ def proses_temujanji():
 @app.route('/api/invois', methods=['POST'])
 def jana_invois():
     data = request.get_json() or {}
-    # Logik ambil data payment dari menu_payment.py anda
     return jsonify({
         "status": "Invois Dijana",
         "no_invois": "INV-2026-001",
-        "qr_link": "/qr_bank.jpeg" # Memanggil imej qr dari root anda
+        "qr_link": "/qr_bank.jpeg" 
     })
 
 # 4. API UNTUK MENU KEWANGAAN
 @app.route('/api/kewangan', methods=['GET'])
 def dapatkan_data_kewangan():
-    # Sini boleh panggil data untung rugi dari menu_kewangan.py anda
     return jsonify({
         "jumlah_pendapatan": 2500.00,
         "jumlah_perbelanjaan": 800.00,
         "untung_bersih": 1700.00
     })
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# NOTA VERCEL: Buang app.run() supaya fungsi serverless berjalan lancar
