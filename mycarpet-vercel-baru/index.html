@@ -4,13 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MYCARPET PRO v2.0</title>
-    <!-- CSS Korporat Bootstrap Premium & Ikon Moden -->
+    <!-- CSS Korporat Premium & Ikon Moden -->
     <link rel="stylesheet" href="https://jsdelivr.net">
     <link rel="stylesheet" href="https://jsdelivr.net">
     <style>
         :root {
             --warna-korporat: #0a2540; /* Biru Gelap Premium */
-            --warna-biru-muda: #639fab;
             --warna-background: #f4f6f9;
         }
         body { 
@@ -35,17 +34,6 @@
             border: 1px solid rgba(0,0,0,0.05);
             margin-top: 15px; 
         }
-        .menu-bawah { 
-            position: fixed; 
-            bottom: 0; 
-            left: 0; 
-            right: 0; 
-            background: white; 
-            border-top: 1px solid #e5e7eb; 
-            padding: 12px 0; 
-            box-shadow: 0px -6px 20px rgba(0,0,0,0.06); 
-            z-index: 1000; 
-        }
         /* Gaya Butang Grid Besar Mesra Telefon */
         .butang-grid {
             background: white;
@@ -69,19 +57,6 @@
             display: block;
             margin-bottom: 8px;
         }
-        .butang-nav-bawah { 
-            flex: 1; 
-            border: none; 
-            background: none; 
-            color: #9ca3af; 
-            font-size: 11px; 
-            font-weight: 700; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-        }
-        .butang-nav-bawah i { font-size: 22px; margin-bottom: 2px; }
-        .nav-active { color: #2563eb !important; }
         .badge-status {
             background-color: #e0f2fe;
             color: #0369a1;
@@ -103,7 +78,7 @@
     <!-- BAHAGIAN UTAMA -->
     <div class="container" style="max-width: 480px;">
         <div id="kandungan-sistem" class="kad-premium">
-            <!-- Lalai (Default) akan memuatkan Dashboard Korporat -->
+            <!-- Halaman Utama Dashboard Korporat -->
             <h3 class="d-flex justify-content-between align-items-center" style="font-size: 18px; color: var(--warna-korporat); font-weight: 700;">
                 <span>📊 Dashboard Utama</span>
                 <span class="badge-status">Sistem Aktif</span>
@@ -124,7 +99,7 @@
                 </div>
                 <div class="col-6">
                     <button onclick="bukaSubMenu('invois')" class="w-100 butang-grid">
-                        <i class="bi bi-printer-fill text-purple" style="color: #8b5cf6;"></i> Cetak Invois
+                        <i class="bi bi-printer-fill" style="color: #8b5cf6;"></i> Cetak Invois
                     </button>
                 </div>
                 <div class="col-6">
@@ -146,22 +121,21 @@
         </div>
     </div>
 
-    <!-- BAHAGIAN BAWAH: Navigasi Pintas Telefon -->
-      <!-- BAHAGIAN BAWAH: Versi Kuat & Gerenti Cantik -->
+    <!-- BAHAGIAN BAWAH: Menu Navigasi Bawah Yang Gerenti Melintang Cantik -->
     <div class="menu-bawah" style="position: fixed; bottom: 0; left: 0; right: 0; background: #ffffff; border-top: 2px solid #e5e7eb; padding: 12px 10px; box-shadow: 0px -4px 15px rgba(0,0,0,0.1); z-index: 1000;">
         <div style="display: flex; justify-content: space-around; max-width: 480px; margin: 0 auto;">
             
-            <button onclick="pergiHome(this)" class="butang-nav-bawah nav-active" style="flex: 1; border: none; background: none; font-size: 14px; font-weight: bold; display: flex; flex-direction: column; align-items: center; padding: 5px;">
+            <button onclick="location.reload()" style="flex: 1; border: none; background: none; color: #2563eb; font-size: 14px; font-weight: bold; display: flex; flex-direction: column; align-items: center; padding: 5px;">
                 <i class="bi bi-house-door-fill" style="font-size: 20px; margin-bottom: 2px;"></i>
                 <span>🏠 Utama</span>
             </button>
             
-            <button onclick="bukaSubMenu('tempahan')" class="butang-nav-bawah" style="flex: 1; border: none; background: none; color: #9ca3af; font-size: 14px; font-weight: bold; display: flex; flex-direction: column; align-items: center; padding: 5px;">
+            <button onclick="bukaSubMenu('tempahan')" style="flex: 1; border: none; background: none; color: #9ca3af; font-size: 14px; font-weight: bold; display: flex; flex-direction: column; align-items: center; padding: 5px;">
                 <i class="bi bi-file-earmark-plus-fill" style="font-size: 20px; margin-bottom: 2px;"></i>
                 <span>📝 Borang</span>
             </button>
             
-            <button onclick="bukaSubMenu('invois')" class="butang-nav-bawah" style="flex: 1; border: none; background: none; color: #9ca3af; font-size: 14px; font-weight: bold; display: flex; flex-direction: column; align-items: center; padding: 5px;">
+            <button onclick="bukaSubMenu('invois')" style="flex: 1; border: none; background: none; color: #9ca3af; font-size: 14px; font-weight: bold; display: flex; flex-direction: column; align-items: center; padding: 5px;">
                 <i class="bi bi-printer-fill" style="font-size: 20px; margin-bottom: 2px;"></i>
                 <span>🖨️ Invois</span>
             </button>
@@ -169,24 +143,10 @@
         </div>
     </div>
 
-    <!-- SKRIPT LOGIK UI/UX -->
+    <!-- SKRIPT LOGIK UI/UX & PANGGIL BACKEND PYTHON -->
     <script>
-        // Simpan salinan asal Dashboard Utama supaya senang patah balik
-        const rekaBentukDashboardAsal = document.getElementById('kandungan-sistem').innerHTML;
-
-        function pergiHome(butang) {
-            document.querySelectorAll('.butang-nav-bawah').forEach(b => b.classList.remove('nav-active'));
-            butang.classList.add('nav-active');
-            document.getElementById('kandungan-sistem').innerHTML = rekaBentukDashboardAsal;
-        }
-
         function bukaSubMenu(jenisMenu) {
             let kawasanKandungan = document.getElementById('kandungan-sistem');
-            
-            // Butang navigasi bawah automatik berubah mengikut fungsi
-            let semuaNav = document.querySelectorAll('.butang-nav-bawah');
-            semuaNav.forEach(b => b.classList.remove('nav-active'));
-
             let tombolBalik = `<button onclick="location.reload()" class="btn btn-sm btn-outline-secondary mb-3"><i class="bi bi-arrow-left"></i> Kembali ke Dashboard</button>`;
 
             if (jenisMenu === 'tempahan') {
@@ -213,7 +173,7 @@
                     <button class="btn btn-purple w-100 py-2 text-white" style="background-color:#8b5cf6; border-radius:12px;">🖨️ Cetak PDF Invois</button>
                 `;
                 
-                                // Ambil data pelanggan dari API Python
+                // Ambil data pelanggan dari API Python FastAPI di Vercel
                 fetch('/api/pelanggan')
                     .then(res => res.json())
                     .then(hasil => {
@@ -221,12 +181,16 @@
                         kotakPilihan.innerHTML = '';
                         
                         if (hasil.status === 'berjaya') {
-                            hasil.data.forEach(nama => {
-                                let opt = document.createElement('option');
-                                opt.value = nama; 
-                                opt.textContent = nama;
-                                kotakPilihan.appendChild(opt);
-                            });
+                            if (hasil.data.length === 0) {
+                                kotakPilihan.innerHTML = '<option>Tiada rekod pelanggan dijumpai</option>';
+                            } else {
+                                    hasil.data.forEach(nama => {
+                                        let opt = document.createElement('option');
+                                        opt.value = nama; 
+                                        opt.textContent = nama;
+                                        kotakPilihan.appendChild(opt);
+                                });
+                            }
                         } else {
                             kotakPilihan.innerHTML = `<option>❌ Ralat: ${hasil.mesej}</option>`;
                         }
@@ -234,11 +198,11 @@
                     .catch(err => {
                         document.getElementById('pilih-pelanggan').innerHTML = `<option>❌ Gagal bersambung ke backend</option>`;
                     });
-
+                    
             } else if (jenisMenu === 'scan') {
                 kawasanKandungan.innerHTML = tombolBalik + `
-                    <h4 style="color: #ef4444; font-weight:700;"><i class="bi bi-qr-code-scan me-2"></i>Scan QR Code</h4> 
-                    <p class="small text-muted">Gunakan kamera telefon pintar untuk mengimbas kod QR karpet.</p> 
+                    <h4 style="color: #ef4444; font-weight:700;"><i class="bi bi-qr-code-scan me-2"></i>Scan QR Code</h4>
+                    <p class="small text-muted">Gunakan kamera telefon pintar untuk mengimbas kod QR karpet.</p>
                     <div class="p-5 bg-dark text-white rounded-4 text-center">
                         <i class="bi bi-camera-fill d-block fs-1 mb-2"></i> Mengaktifkan Kamera Phone...
                     </div>
@@ -246,15 +210,15 @@
 
             } else if (jenisMenu === 'barcode') {
                 kawasanKandungan.innerHTML = tombolBalik + `
-                    <h4 style="color: #4b5563; font-weight:700;"><i class="bi bi-barcode me-2"></i>Cetak Barcode Label</h4> 
-                    <p class="small text-muted">Jana kod bar untuk dilekatkan pada karpet pelanggan.</p> 
+                    <h4 style="color: #4b5563; font-weight:700;"><i class="bi bi-barcode me-2"></i>Cetak Barcode Label</h4>
+                    <p class="small text-muted">Jana kod bar untuk dilekatkan pada karpet pelanggan.</p>
                     <button class="btn btn-secondary w-100 py-2" style="border-radius:12px;">🏷️ Jana Barcode Baru</button>
                 `;
 
             } else if (jenisMenu === 'kewangan') {
                 kawasanKandungan.innerHTML = tombolBalik + `
-                    <h4 style="color: #f59e0b; font-weight:700;"><i class="bi bi-wallet2 me-2"></i>Kewangan & Katalog Harga</h4> 
-                    <p class="small text-muted">Analisis keuntungan kedai dan tetapan harga semasa.</p> 
+                    <h4 style="color: #f59e0b; font-weight:700;"><i class="bi bi-wallet2 me-2"></i>Kewangan & Katalog Harga</h4>
+                    <p class="small text-muted">Analisis keuntungan kedai dan tetapan harga semasa.</p>
                     <div class="p-3 bg-light rounded-3 text-center text-muted small">💰 Laporan kewangan korporat dimuatkan dari Google Sheets.</div>
                 `;
             }
