@@ -147,20 +147,25 @@
     </div>
 
     <!-- BAHAGIAN BAWAH: Navigasi Pintas Telefon -->
-    <div class="menu-bawah">
-        <div class="d-flex justify-content-around mx-auto" style="max-width: 480px;">
-            <button onclick="pergiHome(this)" class="butang-nav-bawah nav-active">
-                <i class="bi bi-house-door-fill"></i>
-                <span>Utama</span>
+      <!-- BAHAGIAN BAWAH: Versi Kuat & Gerenti Cantik -->
+    <div class="menu-bawah" style="position: fixed; bottom: 0; left: 0; right: 0; background: #ffffff; border-top: 2px solid #e5e7eb; padding: 12px 10px; box-shadow: 0px -4px 15px rgba(0,0,0,0.1); z-index: 1000;">
+        <div style="display: flex; justify-content: space-around; max-width: 480px; margin: 0 auto;">
+            
+            <button onclick="pergiHome(this)" class="butang-nav-bawah nav-active" style="flex: 1; border: none; background: none; font-size: 14px; font-weight: bold; display: flex; flex-direction: column; align-items: center; padding: 5px;">
+                <i class="bi bi-house-door-fill" style="font-size: 20px; margin-bottom: 2px;"></i>
+                <span>🏠 Utama</span>
             </button>
-            <button onclick="bukaSubMenu('tempahan')" class="butang-nav-bawah">
-                <i class="bi bi-file-earmark-plus-fill"></i>
-                <span>Borang</span>
+            
+            <button onclick="bukaSubMenu('tempahan')" class="butang-nav-bawah" style="flex: 1; border: none; background: none; color: #9ca3af; font-size: 14px; font-weight: bold; display: flex; flex-direction: column; align-items: center; padding: 5px;">
+                <i class="bi bi-file-earmark-plus-fill" style="font-size: 20px; margin-bottom: 2px;"></i>
+                <span>📝 Borang</span>
             </button>
-            <button onclick="bukaSubMenu('invois')" class="butang-nav-bawah">
-                <i class="bi bi-printer-fill"></i>
-                <span>Invois</span>
+            
+            <button onclick="bukaSubMenu('invois')" class="butang-nav-bawah" style="flex: 1; border: none; background: none; color: #9ca3af; font-size: 14px; font-weight: bold; display: flex; flex-direction: column; align-items: center; padding: 5px;">
+                <i class="bi bi-printer-fill" style="font-size: 20px; margin-bottom: 2px;"></i>
+                <span>🖨️ Invois</span>
             </button>
+
         </div>
     </div>
 
