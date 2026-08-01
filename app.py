@@ -512,7 +512,7 @@ if semak_login():
                 next_inv = f"INV26{nombor_turutan:05d}"
             else:
                 # Invois pertama yang akan disimpan jika pangkalan data kosong
-                next_inv = "INV2670001"
+                next_inv = "INV2670501"
 
 
             tarikh_hari_ini = datetime.now().strftime("%Y-%m-%d")
