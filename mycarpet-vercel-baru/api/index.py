@@ -1,6 +1,9 @@
 import sys
 import os
 import json
+import os
+import json
+import base64
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import gspread
@@ -23,11 +26,10 @@ app.add_middleware(
 )
 
 def sambung_google_sheets():
-    # Ambil maklumat terus daripada 2 variable bersih di Vercel
     client_email = os.environ.get("GOOGLE_CLIENT_EMAIL")
-    private_key = os.environ.get("GOOGLE_PRIVATE_KEY")
+    private_key_b64 = os.environ.get("GOOGLE_PRIVATE_KEY")
     
-    if not client_email or not private_key:
+    if not client_email or not private_key_b64:
         return None
         
     skop_akses = [
@@ -35,19 +37,30 @@ def sambung_google_sheets():
         "https://googleapis.com"
     ]
     
-    # Membetulkan semula isu jarak baris serong khusus untuk Vercel
-    private_key_bersih = private_key.replace("\\n", "\n")
-    
-    kunci_manual = {
-        "type": "service_account",
-        "client_email": client_email,
-        "private_key": private_key_bersih
-    }
+    try:
+        # Kod magik untuk menterjemah semula kunci rahsia yang selamat
+        private_key_decode = base64.b64decode(private_key_b64).decode("utf-8")
         
-    kredential = Credentials.from_service_account_info(kunci_manual, scopes=skop_akses)
-    client = gspread.authorize(kredential)
-    return client
-
+        kunci_manual = {
+            "type": "service_account",
+            "client_email": client_email,
+            "private_key": private_key_decode
+        }
+            
+        kredential = Credentials.from_service_account_info(kunci_manual, scopes=skop_akses)
+        client = gspread.authorize(kredential)
+        return client
+    except Exception:
+        # Jika kunci belum ditukar ke Base64, ia akan guna cara biasa
+        private_key_bersih = private_key_b64.replace("\\n", "\n")
+        kunci_manual = {
+            "type": "service_account",
+            "client_email": client_email,
+            "private_key": private_key_bersih
+        }
+        kredential = Credentials.from_service_account_info(kunci_manual, scopes=skop_akses)
+        client = gspread.authorize(kredential)
+        return client
 
 
 

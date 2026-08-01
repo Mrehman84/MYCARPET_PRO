@@ -4,6 +4,13 @@ import qrcode
 import io
 import base64
 
+
+@st.cache_data(ttl=600)
+def fetch_data(worksheet):
+    return worksheet.get_all_values()
+
+# Usage in your menu
+data_t = fetch_data(t_tempahan) if t_tempahan else []
 # ===================================================================
 # 1. FUNGSI JANA GAMBAR QR CODE (STABIL)
 # ===================================================================
