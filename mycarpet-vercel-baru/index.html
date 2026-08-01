@@ -4,115 +4,122 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MYCARPET PRO v2.0</title>
-    <!-- Kita guna Tailwind CSS supaya butang jadi cantik automatik -->
-    <script src="https://jsdelivr.net"></script>
-    <link rel="stylesheet" href="https://cloudflare.com">
+    <!-- Kita tukar guna Bootstrap CSS supaya hiasan butang dijamin 100% keluar walaupun internet perlahan -->
+    <link rel="stylesheet" href="https://jsdelivr.net">
+    <!-- Pembantu Ikon Bootstrap -->
+    <link rel="stylesheet" href="https://jsdelivr.net">
+    <style>
+        body { background-color: #f8f9fa; padding-bottom: 90px; }
+        .header-utama { background-color: #0d6efd; color: white; padding: 15px; text-align: center; font-weight: bold; }
+        .kotak-kandungan { background: white; padding: 20px; border-radius: 15px; box-shadow: 0px 4px 6px rgba(0,0,0,0.05); margin-top: 15px; }
+        .menu-bawah { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #dee2e6; padding: 10px 0; box-shadow: 0px -4px 10px rgba(0,0,0,0.05); z-index: 1000; }
+        .butang-menu { flex: 1; border: none; background: none; color: #6c757d; font-size: 11px; font-weight: bold; display: flex; flex-direction: column; align-items: center; }
+        .butang-menu i { font-size: 20px; margin-bottom: 2px; }
+        .butang-active { color: #0d6efd !important; }
+    </style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans pb-24">
+<body>
 
-    <!-- BAHAGIAN ATAS: Tajuk Utama -->
-    <header class="bg-blue-600 text-white p-4 shadow-md text-center sticky top-0 z-50">
-        <h1 class="text-xl font-bold">✨ MYCARPET PRO v2.0</h1>
-        <p class="text-xs opacity-90">Sistem Pengurusan Cucian Karpet</p>
-    </header>
+    <!-- BAHAGIAN ATAS -->
+    <div class="header-utama">
+        <h1 style="font-size: 20px; margin: 0;">✨ MYCARPET PRO v2.0</h1>
+        <small style="opacity: 0.8;">Sistem Pengurusan Cucian Karpet</small>
+    </div>
 
-    <!-- BAHAGIAN UTAMA: Tempat Paparan Borang/Invois -->
-    <main class="max-w-md mx-auto p-4 mt-2">
-        <!-- Kotak Kandungan yang akan bertukar mengikut butang yang ditekan -->
-        <div id="kandungan-sistem" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <h2 class="text-lg font-bold text-gray-700 mb-2">👋 Selamat Datang!</h2>
-            <p class="text-sm text-gray-500">Sila pilih menu di bawah untuk memulakan tugasan cuci karpet hari ini.</p>
+    <!-- BAHAGIAN UTAMA -->
+    <div class="container" style="max-width: 450px;">
+        <div id="kandungan-sistem" class="kotak-kandungan">
+            <h3 style="font-size: 18px; color: #333;">👋 Selamat Datang!</h3>
+            <p style="font-size: 14px; color: #666;">Sila pilih menu di bawah untuk memulakan tugasan cuci karpet hari ini.</p>
         </div>
-    </main>
+    </div>
 
-    <!-- BAHAGIAN BAWAH: Menu Butang Grid Besar (Sangat Mesra Phone!) -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-xl px-2 py-2 z-50">
-        <div class="grid grid-cols-4 gap-1 max-w-md mx-auto">
+    <!-- BAHAGIAN BAWAH: Menu Butang Besar Mesra Phone (Gerenti Cantik!) -->
+    <div class="menu-bawah">
+        <div class="d-flex justify-content-around mx-auto" style="max-width: 450px;">
             
-            <!-- Butang 1: Tempahan -->
-            <button onclick="tukarMenu('tempahan')" class="flex flex-col items-center justify-center p-2 text-blue-600 hover:bg-blue-50 rounded-xl transition">
-                <i class="fa-solid fa-file-invoice text-xl mb-1"></i>
-                <span class="text-[10px] font-semibold">Tempahan</span>
+            <button onclick="tukarMenu('tempahan', this)" class="butang-menu butang-active">
+                <i class="bi bi-file-earmark-plus-fill"></i>
+                <span>Tempahan</span>
             </button>
 
-            <!-- Butang 2: Cetak Invois -->
-            <button onclick="tukarMenu('invois')" class="flex flex-col items-center justify-center p-2 text-gray-500 hover:bg-blue-50 rounded-xl transition">
-                <i class="fa-solid fa-print text-xl mb-1"></i>
-                <span class="text-[10px] font-semibold">Cetak Invois</span>
+            <button onclick="tukarMenu('invois', this)" class="butang-menu">
+                <i class="bi bi-printer-fill"></i>
+                <span>Cetak Invois</span>
             </button>
 
-            <!-- Butang 3: Katalog Harga -->
-            <button onclick="tukarMenu('harga')" class="flex flex-col items-center justify-center p-2 text-gray-500 hover:bg-blue-50 rounded-xl transition">
-                <i class="fa-solid fa-tags text-xl mb-1"></i>
-                <span class="text-[10px] font-semibold">Katalog</span>
+            <button onclick="tukarMenu('harga', this)" class="butang-menu">
+                <i class="bi bi-tags-fill"></i>
+                <span>Katalog</span>
             </button>
 
-            <!-- Butang 4: Kewangan -->
-            <button onclick="tukarMenu('kewangan')" class="flex flex-col items-center justify-center p-2 text-gray-500 hover:bg-blue-50 rounded-xl transition">
-                <i class="fa-solid fa-wallet text-xl mb-1"></i>
-                <span class="text-[10px] font-semibold">Kewangan</span>
+            <button onclick="tukarMenu('kewangan', this)" class="butang-menu">
+                <i class="bi bi-wallet2"></i>
+                <span>Kewangan</span>
             </button>
 
         </div>
-    </nav>
+    </div>
 
-    <!-- SKRIPT: Logik Tukar Menu & Tarik Data API Python -->
     <script>
-        function tukarMenu(namaMenu) {
+        function tukarMenu(namaMenu, butangDitekan) {
+            // 1. Tukar warna butang yang aktif
+            let semuaButang = document.querySelectorAll('.butang-menu');
+            semuaButang.forEach(b => b.classList.remove('butang-active'));
+            butangDitekan.classList.add('butang-active');
+
+            // 2. Tukar kandungan skrin
             let kawasanKandungan = document.getElementById('kandungan-sistem');
             
             if (namaMenu === 'tempahan') {
                 kawasanKandungan.innerHTML = `
-                    <h2 class="text-xl font-bold mb-4 text-blue-600"><i class="fa-solid fa-file-invoice mr-2"></i>Tempahan Baru</h2>
-                    <p class="text-sm text-gray-600 mb-4">Isi borang di bawah untuk masuk data ke Google Sheets.</p>
-                    <div class="text-xs text-center p-4 bg-gray-50 border border-dashed rounded-xl">Borang Tempahan Karpet</div>
+                    <h4 class="text-primary mb-3"><i class="bi bi-file-earmark-plus-fill me-2"></i>Tempahan Baru</h4>
+                    <p class="small text-muted">Isi borang di bawah untuk masuk data ke Google Sheets.</p>
+                    <div class="p-4 text-center border border-dashed rounded text-muted small bg-light">Borang Tempahan Karpet</div>
                 `;
             } else if (namaMenu === 'invois') {
-                // 1. Tunjukkan rupa bentuk kotak pilihan dahulu sementara memuatkan data
                 kawasanKandungan.innerHTML = `
-                    <h2 class="text-xl font-bold mb-4 text-purple-600"><i class="fa-solid fa-print mr-2"></i>Cetak Invois & Resit</h2>
-                    <p class="text-sm text-gray-600 mb-4">Sila pilih nama pelanggan:</p>
-                    <select id="pilih-pelanggan" class="w-full p-3 border rounded-xl bg-gray-50 text-sm mb-4">
+                    <h4 class="text-purple mb-3" style="color: #6f42c1;"><i class="bi bi-printer-fill me-2"></i>Cetak Invois & Resit</h4>
+                    <p class="small text-muted mb-2">Sila pilih nama pelanggan:</p>
+                    <select id="pilih-pelanggan" class="form-select form-select-md mb-3 bg-light">
                         <option>🔄 Sedang memuatkan nama pelanggan...</option>
                     </select>
                 `;
                 
-                // 2. Panggil API Python untuk ambil data dari Google Sheets secara langsung
+                // Ambil data dari API Python
                 fetch('/api/pelanggan')
-                    .then(response => response.json())
+                    .then(res => res.json())
                     .then(hasil => {
                         let kotakPilihan = document.getElementById('pilih-pelanggan');
-                        kotakPilihan.innerHTML = ''; // Kosongkan tulisan "memuatkan"
-                        
+                        kotakPilihan.innerHTML = '';
                         if (hasil.status === 'berjaya') {
                             if (hasil.data.length === 0) {
-                                kotakPilihan.innerHTML = '<option>Tiada rekod pelanggan dijumpai</option>';
+                                kotakPilihan.innerHTML = '<option>Tiada rekod pelanggan</option>';
                             } else {
-                                // Masukkan setiap nama pelanggan ke dalam kotak pilihan phone
                                 hasil.data.forEach(nama => {
-                                    let pilihanBaru = document.createElement('option');
-                                    pilihanBaru.value = nama;
-                                    pilihanBaru.textContent = nama;
-                                    kotakPilihan.appendChild(pilihanBaru);
+                                    let opt = document.createElement('option');
+                                    opt.value = nama;
+                                    opt.textContent = nama;
+                                    kotakPilihan.appendChild(opt);
                                 });
                             }
                         } else {
                             kotakPilihan.innerHTML = `<option>❌ Ralat: ${hasil.mesej}</option>`;
                         }
                     })
-                    .catch(error => {
-                        document.getElementById('pilih-pelanggan').innerHTML = `<option>❌ Gagal bersambung ke pelayan backend</option>`;
+                    .catch(err => {
+                        document.getElementById('pilih-pelanggan').innerHTML = `<option>❌ Gagal bersambung ke backend</option>`;
                     });
                     
             } else if (namaMenu === 'harga') {
                 kawasanKandungan.innerHTML = `
-                    <h2 class="text-xl font-bold mb-4 text-green-600"><i class="fa-solid fa-tags mr-2"></i>Katalog Harga</h2>
-                    <p class="text-sm text-gray-600">Senarai harga cucian mengikut saiz karpet.</p>
+                    <h4 class="text-success mb-3"><i class="bi bi-tags-fill me-2"></i>Katalog Harga</h4>
+                    <p class="small text-muted">Senarai harga cucian mengikut saiz karpet.</p>
                 `;
             } else if (namaMenu === 'kewangan') {
                 kawasanKandungan.innerHTML = `
-                    <h2 class="text-xl font-bold mb-4 text-amber-600"><i class="fa-solid fa-wallet mr-2"></i>Laporan Kewangan</h2>
-                    <p class="text-sm text-gray-600">Ringkasan untung rugi kedai karpet kamu.</p>
+                    <h4 class="text-warning mb-3"><i class="bi bi-wallet2 me-2"></i>Laporan Kewangan</h4>
+                    <p class="small text-muted">Ringkasan untung rugi kedai karpet kamu.</p>
                 `;
             }
         }
