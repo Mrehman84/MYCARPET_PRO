@@ -1,85 +1,73 @@
 import sys 
 import os 
+import re
 from flask import Flask, jsonify, request
-from flask_cors import CORS  # Membenarkan frontend akses API ini
-
-# Memastikan path ke folder utama root adalah tepat di server Vercel
-# api/index.py berada 1 tingkat di bawah root, jadi kita undur 1 tingkat sahaja
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-try:
-    import menu_harga 
-    import menu_payment 
-    import menu_temujanji 
-    import menu_kewangan
-except ImportError:
-    menu_harga = None
-    menu_payment = None
-    menu_temujanji = None
-    menu_kewangan = None
+from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)  # Mengaktifkan CORS untuk seluruh aplikasi
+CORS(app)  # Membenarkan komunikasi dengan public/index.html
 
-# Root Endpoint untuk semakan status
-@app.route('/api', methods=['GET'])
-def home():
-    return jsonify({
-        "status": "online", 
-        "project": "MYCARPET PRO Backend",
-        "modules_loaded": {
-            "menu_harga": menu_harga is not None,
-            "menu_payment": menu_payment is not None,
-            "menu_temujanji": menu_temujanji is not None,
-            "menu_kewangan": menu_kewangan is not None
-        }
-    })
+# --- LOGIK ASAL ANDA (DIPINDAHKAN DARI STREAMLIT KE FLASK) ---
+def kira_kos_karpet_asal(kod_karpet):
+    kod = str(kod_karpet).strip().upper()
+    
+    # 1. Peta darab asal abang
+    peta_darab = {
+        "CSG": 1.30,
+        "CK": 1.20,
+        "CN": 0.50,
+        "CS": 0.50,
+        "HP": 1.30,
+        "LP": 1.00
+    }
+    
+    # 2. Cari nilai darab mengikut prefix
+    nilai_darab_semasa = 1.00
+    for prefix, nilai in peta_darab.items():
+        if kod.startswith(prefix):
+            nilai_darab_semasa = nilai
+            break
+            
+    # 3. Logik ekstrak saiz pintar menggunakan REGEX asal abang
+    luas_sqft = 0.0
+    try:
+        padanan = re.search(r'(\d+)\s*X\s*(\d+)', kod)
+        if padanan:
+            lebar = float(padanan.group(1))
+            panjang = float(padanan.group(2))
+            luas_sqft = lebar * panjang
+        else:
+            luas_sqft = 24.0 if kod == "TEBAL" else 0.0
+    except:
+        luas_sqft = 0.0
+        
+    harga_kiraan_final = luas_sqft * nilai_darab_semasa
+    return harga_kiraan_final
 
-# 1. API UNTUK MENU HARGA
+# --- ENDPOINT API UNTUK FRONTEND ---
 @app.route('/api/kira', methods=['POST'])
 def proses_kira_harga():
     data = request.get_json() or {}
-    saiz = data.get('saiz', 'M')
+    
+    # Mengambil kod karpet yang dihantar oleh borang HTML (Contoh: "CK 5X7")
+    kod_karpet = data.get('kod_karpet', '').strip().upper()
     kuantiti = int(data.get('kuantiti', 1))
     
-    if menu_harga and hasattr(menu_harga, 'kira_kos'):
-        total_harga = menu_harga.kira_kos(saiz, kuantiti)
-    else:
-        kadar = {"S": 15, "M": 35, "L": 55}
-        total_harga = kadar.get(saiz, 35) * kuantiti
+    if not kod_karpet:
+        return jsonify({"error": "Kod karpet tidak disediakan"}), 400
         
-    return jsonify({"total": total_harga})
-
-# 2. API UNTUK MENU TEMUJANJI
-@app.route('/api/temujanji', methods=['POST'])
-def proses_temujanji():
-    data = request.get_json() or {}
-    nama = data.get('nama', '')
-    tarikh = data.get('tarikh', '')
-    slot = data.get('slot', '')
+    # Jalankan formula asal anda
+    harga_seunit = kira_kos_karpet_asal(kod_karpet)
+    total_harga = harga_seunit * kuantiti
     
     return jsonify({
-        "status": "Success",
-        "mesej": f"Slot {slot} pada {tarikh} untuk {nama} berjaya direkodkan!"
+        "status": "success",
+        "kod": kod_karpet,
+        "harga_seunit": harga_seunit,
+        "kuantiti": kuantiti,
+        "total": total_harga
     })
 
-# 3. API UNTUK MENU INVOIS & PAYMENT
-@app.route('/api/invois', methods=['POST'])
-def jana_invois():
-    data = request.get_json() or {}
-    return jsonify({
-        "status": "Invois Dijana",
-        "no_invois": "INV-2026-001",
-        "qr_link": "/qr_bank.jpeg" 
-    })
-
-# 4. API UNTUK MENU KEWANGAAN
-@app.route('/api/kewangan', methods=['GET'])
-def dapatkan_data_kewangan():
-    return jsonify({
-        "jumlah_pendapatan": 2500.00,
-        "jumlah_perbelanjaan": 800.00,
-        "untung_bersih": 1700.00
-    })
-
-# NOTA VERCEL: Buang app.run() supaya fungsi serverless berjalan lancar
+@app.route('/api', methods=['GET'])
+def home():
+    return jsonify({"status": "online", "message": "Logik Formula Karpet sedia digunakan!"})
