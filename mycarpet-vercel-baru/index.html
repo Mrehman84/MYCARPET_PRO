@@ -103,14 +103,35 @@
     <div class="container">
         <div class="kad-premium">
             
-            <!-- SCREEN 1: DASHBOARD UTAMA -->
+                        <!-- SCREEN 1: DASHBOARD UTAMA DENGAN DATA LIVE -->
             <div id="screen-dashboard">
                 <div class="judul-dashboard">
-                    <span>📊 Dashboard Utama</span>
-                    <span class="badge-status">Sistem Aktif</span>
+                    <span>📊 Status Operasi Karpet Semasa</span>
+                    <span class="badge-status" id="status-sistem">Memuatkan...</span>
                 </div>
-                <p class="sub-judul">Ringkasan operasi kedai cuci karpet kamu hari ini.</p>
+                <p class="sub-judul">Ringkasan basuhan real-time dari Google Sheets.</p>
                 
+                <!-- KOTAK STATISTIK LIVE -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+                    <div style="background: #fef3c7; padding: 12px; border-radius: 12px; text-align: center;">
+                        <span style="font-size: 11px; color: #b45309; font-weight: bold;">⏳ Dalam Proses</span>
+                        <h2 id="num-proses" style="font-size: 22px; color: #78350f; margin-top: 5px;">0 Pcs</h2>
+                    </div>
+                    <div style="background: #e0f2fe; padding: 12px; border-radius: 12px; text-align: center;">
+                        <span style="font-size: 11px; color: #0369a1; font-weight: bold;">☀️ Pengeringan</span>
+                        <h2 id="num-kering" style="font-size: 22px; color: #0c4a6e; margin-top: 5px;">0 Pcs</h2>
+                    </div>
+                    <div style="background: #dcfce7; padding: 12px; border-radius: 12px; text-align: center;">
+                        <span style="font-size: 11px; color: #15803d; font-weight: bold;">🚚 Ready to Deliver</span>
+                        <h2 id="num-ready" style="font-size: 22px; color: #14532d; margin-top: 5px;">0 Pcs</h2>
+                    </div>
+                    <div style="background: #f3f4f6; padding: 12px; border-radius: 12px; text-align: center;">
+                        <span style="font-size: 11px; color: #4b5563; font-weight: bold;">✅ Selesai</span>
+                        <h2 id="num-selesai" style="font-size: 22px; color: #1f2937; margin-top: 5px;">0 Pcs</h2>
+                    </div>
+                </div>
+
+                <!-- MENU GRID UTAMA -->
                 <div class="grid-container">
                     <button onclick="tukarMenu('tempahan')" class="butang-grid"><span class="icon-emoji">📝</span> Tempahan Baru</button>
                     <button onclick="tukarMenu('temujanji')" class="butang-grid"><span class="icon-emoji">🗓️</span> Slot Temujanji</button>
@@ -120,6 +141,7 @@
                     <button onclick="tukarMenu('kewangan')" class="butang-grid"><span class="icon-emoji">💰</span> Kewangan & Harga</button>
                 </div>
             </div>
+
 
             <!-- SCREEN 2: TEMPAHAN BARU -->
             <div id="screen-tempahan" class="subscreen">
