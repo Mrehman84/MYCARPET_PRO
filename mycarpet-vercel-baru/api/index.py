@@ -22,11 +22,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 3. Fungsi khas untuk masuk ke Google Sheets guna kod rahsia
 def sambung_google_sheets():
-    # Ambil data JSON rahsia dari Environment Variable Vercel
-    info_kunci = os.environ.get("GOOGLE_CREDENTIALS")
-    if not info_kunci:
+    # Ambil maklumat terus daripada 2 variable bersih di Vercel
+    client_email = os.environ.get("GOOGLE_CLIENT_EMAIL")
+    private_key = os.environ.get("GOOGLE_PRIVATE_KEY")
+    
+    if not client_email or not private_key:
         return None
         
     skop_akses = [
@@ -34,15 +35,19 @@ def sambung_google_sheets():
         "https://googleapis.com"
     ]
     
-    kunci_json = json.loads(info_kunci)
+    # Membetulkan semula isu jarak baris serong khusus untuk Vercel
+    private_key_bersih = private_key.replace("\\n", "\n")
     
-    # 🌟 KOD PENYELAMAT: Membetulkan ralat format kunci rahsia akibat sistem Vercel
-    if "private_key" in kunci_json:
-        kunci_json["private_key"] = kunci_json["private_key"].replace("\\n", "\n")
+    kunci_manual = {
+        "type": "service_account",
+        "client_email": client_email,
+        "private_key": private_key_bersih
+    }
         
-    kredential = Credentials.from_service_account_info(kunci_json, scopes=skop_akses)
+    kredential = Credentials.from_service_account_info(kunci_manual, scopes=skop_akses)
     client = gspread.authorize(kredential)
     return client
+
 
 
 
