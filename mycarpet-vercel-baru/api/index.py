@@ -35,9 +35,15 @@ def sambung_google_sheets():
     ]
     
     kunci_json = json.loads(info_kunci)
+    
+    # KOD RAHSIA PENYELAMAT: Membetulkan ralat \n yang tersilap ditukar oleh Vercel
+    if "private_key" in kunci_json:
+        kunci_json["private_key"] = kunci_json["private_key"].replace("\\n", "\n")
+        
     kredential = Credentials.from_service_account_info(kunci_json, scopes=skop_akses)
     client = gspread.authorize(kredential)
     return client
+
 
 # 4. Jalan pintas (API Route) untuk ambil data pelanggan bagi Invois
 @app.get("/api/pelanggan")
