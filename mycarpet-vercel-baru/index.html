@@ -214,6 +214,25 @@
 
     <script>
         function tukarMenu(targetScreen) {
+                    // Fungsi Otomatis Ambil Angka Dashboard saat halaman dibuka
+        window.onload = function() {
+            fetch('/api/dashboard')
+                .then(res => res.json())
+                .then(hasil => {
+                    if(hasil.status === 'berjaya') {
+                        document.getElementById('status-sistem').innerText = 'Sistem Aktif';
+                        document.getElementById('num-proses').innerText = hasil.dalam_proses + ' Pcs';
+                        document.getElementById('num-kering').innerText = hasil.pengeringan + ' Pcs';
+                        document.getElementById('num-ready').innerText = hasil.ready_deliver + ' Pcs';
+                        document.getElementById('num-selesai').innerText = hasil.selesai + ' Pcs';
+                    } else {
+                        document.getElementById('status-sistem').innerText = 'Ralat Data';
+                    }
+                }).catch(err => {
+                    document.getElementById('status-sistem').innerText = 'Offline';
+                });
+        };
+
             // 1. Sembunyikan semua skrin terlebih dahulu
             document.getElementById('screen-dashboard').style.display = 'none';
             document.getElementById('screen-tempahan').style.display = 'none';
