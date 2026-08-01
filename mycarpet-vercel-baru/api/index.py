@@ -66,7 +66,8 @@ def ambil_senarai_pelanggan():
             buku_data = client.open("MYCARPET_PRO_DATA")
             
         # Ambil helaian pertama (sheet pertama tempat simpan data tempahan karpet)
-        helaian_tempahan = buku_data.get_worksheet(0) 
+        helaian_tempahan = buku_data.worksheet("Tempahan")
+
         
         # Ambil semua data tempahan karpet
         semua_data = helaian_tempahan.get_all_records()
@@ -113,7 +114,8 @@ def ambil_data_dashboard():
                 pengeringan += 1
             elif "ready" in status_karpet or "hantar" in status_karpet:
                 ready_deliver += 1
-            elif "selesai" in status_karpet or "siap" in status_karpet:
+            elif "selesai" in status_karpet or "hantar" in status_karpet:
+
                 selesai += 1
                 
         # 2. Ringkasan Basuhan Karpet
