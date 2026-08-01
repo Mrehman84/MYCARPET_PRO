@@ -78,3 +78,54 @@ def ambil_senarai_pelanggan():
         
     except Exception as ralat:
         return {"status": "ralat", "mesej": str(ralat)}
+
+
+@app.get("/api/dashboard")
+def ambil_data_dashboard():
+    try:
+        client = sambung_google_sheets()
+        if not client:
+            return {"status": "ralat", "mesej": "Kunci GOOGLE_CREDENTIALS tidak dijumpai!"}
+            
+        # Membuka Google Sheets menggunakan config
+        if hasattr(config, 'SHEET_URL'):
+            buku_data = client.open_by_url(config.SHEET_URL)
+        elif hasattr(config, 'SPREADSHEET_URL'):
+            buku_data = client.open_by_url(config.SPREADSHEET_URL)
+        else:
+            buku_data = client.open("MYCARPET_PRO_DATA")
+            
+        helaian_tempahan = buku_data.get_worksheet(0) 
+        semua_data = helaian_tempahan.get_all_records()
+        
+        # 1. Hitung Status Operasi Karpet Semasa
+        dalam_proses = 0
+        pengeringan = 0
+        ready_deliver = 0
+        selesai = 0
+        
+        for rekod in semua_data:
+            # Ganti kata "Status" di bawah sesuai dengan nama kolom status di Google Sheets kamu
+            status_karpet = str(rekod.get("Status", "")).lower()
+            if "proses" in status_karpet:
+                dalam_proses += 1
+            elif "pengeringan" in status_karpet or "kering" in status_karpet:
+                pengeringan += 1
+            elif "ready" in status_karpet or "hantar" in status_karpet:
+                ready_deliver += 1
+            elif "selesai" in status_karpet or "siap" in status_karpet:
+                selesai += 1
+                
+        # 2. Ringkasan Basuhan Karpet
+        total_pelanggan = len(semua_data)
+        
+        return {
+            "status": "berjaya",
+            "dalam_proses": dalam_proses,
+            "pengeringan": pengeringan,
+            "ready_deliver": ready_deliver,
+            "selesai": selesai,
+            "sepanjang_waktu": total_pelanggan
+        }
+    except Exception as ralat:
+        return {"status": "ralat", "mesej": str(ralat)}
