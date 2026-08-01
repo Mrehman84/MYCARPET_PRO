@@ -176,50 +176,62 @@
 
         </div>
     </div>
+    <div class="menu-bawah" style="position: fixed; bottom: 0; left: 0; right: 0; background: #ffffff; border-top: 2px solid #e5e7eb; padding: 12px 10px; box-shadow: 0px -4px 15px rgba(0,0,0,0.05); z-index: 1000;">
+        <div class="nav-flex" style="display: flex; justify-content: space-around; max-width: 480px; margin: 0 auto;">
+            <button onclick="tukarMenu('dashboard')" class="butang-nav-bawah nav-active" style="flex: 1; border: none; background: none; color: #2563eb; font-size: 13px; font-weight: bold; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
+                <span style="font-size: 18px; margin-bottom: 2px;">🏠</span><span>Utama</span>
+            </button>
+            <button onclick="tukarMenu('tempahan')" class="butang-nav-bawah" style="flex: 1; border: none; background: none; color: #9ca3af; font-size: 13px; font-weight: bold; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
+                <span style="font-size: 18px; margin-bottom: 2px;">📝</span><span>Borang</span>
+            </button>
+            <button onclick="tukarMenu('invois')" class="butang-nav-bawah" style="flex: 1; border: none; background: none; color: #9ca3af; font-size: 13px; font-weight: bold; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
+                <span style="font-size: 18px; margin-bottom: 2px;">🖨️</span><span>Invois</span>
+            </button>
+        </div>
+    </div>
 
-    <!-- NAVIGASI BAWAH TELEFON -->
-    <div class="menu-bawah">
-            🏠Utama
-            📝Borang
-            🖨️Invois
-function tukarMenu(targetScreen) {
-    // 1. Sembunyikan semua skrin terlebih dahulu
-    document.getElementById('screen-dashboard').style.display = 'none';
-    document.getElementById('screen-tempahan').style.display = 'none';
-    document.getElementById('screen-temujanji').style.display = 'none';
-    document.getElementById('screen-invois').style.display = 'none';
-    document.getElementById('screen-scan').style.display = 'none';
-    document.getElementById('screen-barcode').style.display = 'none';
-    document.getElementById('screen-kewangan').style.display = 'none';
+    <script>
+        function tukarMenu(targetScreen) {
+            // 1. Sembunyikan semua skrin terlebih dahulu
+            document.getElementById('screen-dashboard').style.display = 'none';
+            document.getElementById('screen-tempahan').style.display = 'none';
+            document.getElementById('screen-temujanji').style.display = 'none';
+            document.getElementById('screen-invois').style.display = 'none';
+            document.getElementById('screen-scan').style.display = 'none';
+            document.getElementById('screen-barcode').style.display = 'none';
+            document.getElementById('screen-kewangan').style.display = 'none';
 
-    // 2. Hanya paparkan skrin yang kita ketuk sahaja
-    document.getElementById('screen-' + targetScreen).style.display = 'block';
+            // 2. Hanya paparkan skrin yang kita ketuk sahaja
+            document.getElementById('screen-' + targetScreen).style.display = 'block';
 
-    // 3. Jika pengguna membuka menu Invois, panggil data Google Sheets
-    if (targetScreen === 'invois') {
-        fetch('/api/pelanggan')
-            .then(res => res.json())
-            .then(hasil => {
-                let kotakPilihan = document.getElementById('pilih-pelanggan');
-                kotakPilihan.innerHTML = '';
-                
-                if (hasil.status === 'berjaya') {
-                    if (hasil.data.length === 0) {
-                        kotakPilihan.innerHTML = '<option>Tiada rekod pelanggan dijumpai</option>';
-                    } else {
-                        hasil.data.forEach(nama => {
-                            let opt = document.createElement('option');
-                            opt.value = nama; 
-                            opt.textContent = nama;
-                            kotakPilihan.appendChild(opt);
-                        });
-                    }
-                } else {
-                    kotakPilihan.innerHTML = `<option>❌ Ralat API: ${hasil.mesej}</option>`;
-                }
-            })
-            .catch(err => {
-                document.getElementById('pilih-pelanggan').innerHTML = `<option>❌ Gagal bersambung ke backend</option>`;
-            });
-    }
-}
+            // 3. Jika pengguna membuka menu Invois, panggil data Google Sheets
+            if (targetScreen === 'invois') {
+                fetch('/api/pelanggan')
+                    .then(res => res.json())
+                    .then(hasil => {
+                        let kotakPilihan = document.getElementById('pilih-pelanggan');
+                        kotakPilihan.innerHTML = '';
+                        
+                        if (hasil.status === 'berjaya') {
+                            if (hasil.data.length === 0) {
+                                kotakPilihan.innerHTML = '<option>Tiada rekod pelanggan dijumpai</option>';
+                            } else {
+                                hasil.data.forEach(nama => {
+                                    let opt = document.createElement('option');
+                                    opt.value = nama; 
+                                    opt.textContent = nama;
+                                    kotakPilihan.appendChild(opt);
+                                });
+                            }
+                        } else {
+                            kotakPilihan.innerHTML = `<option>❌ Ralat API: ${hasil.mesej}</option>`;
+                        }
+                    })
+                    .catch(err => {
+                        document.getElementById('pilih-pelanggan').innerHTML = `<option>❌ Gagal bersambung ke backend</option>`;
+                    });
+            }
+        }
+    </script>
+</body>
+</html>
