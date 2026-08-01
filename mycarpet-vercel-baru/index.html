@@ -4,105 +4,224 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MYCARPET PRO v2.0</title>
-    <!-- Kita tukar guna Bootstrap CSS supaya hiasan butang dijamin 100% keluar walaupun internet perlahan -->
+    <!-- CSS Korporat Bootstrap Premium & Ikon Moden -->
     <link rel="stylesheet" href="https://jsdelivr.net">
-    <!-- Pembantu Ikon Bootstrap -->
     <link rel="stylesheet" href="https://jsdelivr.net">
     <style>
-        body { background-color: #f8f9fa; padding-bottom: 90px; }
-        .header-utama { background-color: #0d6efd; color: white; padding: 15px; text-align: center; font-weight: bold; }
-        .kotak-kandungan { background: white; padding: 20px; border-radius: 15px; box-shadow: 0px 4px 6px rgba(0,0,0,0.05); margin-top: 15px; }
-        .menu-bawah { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #dee2e6; padding: 10px 0; box-shadow: 0px -4px 10px rgba(0,0,0,0.05); z-index: 1000; }
-        .butang-menu { flex: 1; border: none; background: none; color: #6c757d; font-size: 11px; font-weight: bold; display: flex; flex-direction: column; align-items: center; }
-        .butang-menu i { font-size: 20px; margin-bottom: 2px; }
-        .butang-active { color: #0d6efd !important; }
+        :root {
+            --warna-korporat: #0a2540; /* Biru Gelap Premium */
+            --warna-biru-muda: #639fab;
+            --warna-background: #f4f6f9;
+        }
+        body { 
+            background-color: var(--warna-background); 
+            padding-bottom: 100px; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .header-korporat { 
+            background: linear-gradient(135deg, var(--warna-korporat) 0%, #1e3a8a 100%); 
+            color: white; 
+            padding: 20px 15px; 
+            text-align: center; 
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .kad-premium { 
+            background: white; 
+            padding: 22px; 
+            border-radius: 18px; 
+            box-shadow: 0px 6px 15px rgba(0,0,0,0.03); 
+            border: 1px solid rgba(0,0,0,0.05);
+            margin-top: 15px; 
+        }
+        .menu-bawah { 
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            background: white; 
+            border-top: 1px solid #e5e7eb; 
+            padding: 12px 0; 
+            box-shadow: 0px -6px 20px rgba(0,0,0,0.06); 
+            z-index: 1000; 
+        }
+        /* Gaya Butang Grid Besar Mesra Telefon */
+        .butang-grid {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+            color: var(--warna-korporat);
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.01);
+        }
+        .butang-grid:active {
+            transform: scale(0.95);
+            background-color: #eff6ff;
+            border-color: #bfdbfe;
+        }
+        .butang-grid i {
+            font-size: 24px;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .butang-nav-bawah { 
+            flex: 1; 
+            border: none; 
+            background: none; 
+            color: #9ca3af; 
+            font-size: 11px; 
+            font-weight: 700; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+        }
+        .butang-nav-bawah i { font-size: 22px; margin-bottom: 2px; }
+        .nav-active { color: #2563eb !important; }
+        .badge-status {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
-    <!-- BAHAGIAN ATAS -->
-    <div class="header-utama">
-        <h1 style="font-size: 20px; margin: 0;">✨ MYCARPET PRO v2.0</h1>
-        <small style="opacity: 0.8;">Sistem Pengurusan Cucian Karpet</small>
+    <!-- BAHAGIAN ATAS: Kad Header Korporat -->
+    <div class="header-korporat">
+        <h1 style="font-size: 22px; margin: 0; letter-spacing: 0.5px;">🏢 MYCARPET CORPORATION</h1>
+        <small style="opacity: 0.85; font-size: 12px;">Sistem Pengurusan & Invois Cucian Karpet</small>
     </div>
 
     <!-- BAHAGIAN UTAMA -->
-    <div class="container" style="max-width: 450px;">
-        <div id="kandungan-sistem" class="kotak-kandungan">
-            <h3 style="font-size: 18px; color: #333;">👋 Selamat Datang!</h3>
-            <p style="font-size: 14px; color: #666;">Sila pilih menu di bawah untuk memulakan tugasan cuci karpet hari ini.</p>
-        </div>
-    </div>
-
-    <!-- BAHAGIAN BAWAH: Menu Butang Besar Mesra Phone (Gerenti Cantik!) -->
-    <div class="menu-bawah">
-        <div class="d-flex justify-content-around mx-auto" style="max-width: 450px;">
+    <div class="container" style="max-width: 480px;">
+        <div id="kandungan-sistem" class="kad-premium">
+            <!-- Lalai (Default) akan memuatkan Dashboard Korporat -->
+            <h3 class="d-flex justify-content-between align-items-center" style="font-size: 18px; color: var(--warna-korporat); font-weight: 700;">
+                <span>📊 Dashboard Utama</span>
+                <span class="badge-status">Sistem Aktif</span>
+            </h3>
+            <p style="font-size: 13px; color: #6b7280; margin-bottom: 20px;">Ringkasan operasi kedai cuci karpet kamu hari ini.</p>
             
-            <button onclick="tukarMenu('tempahan', this)" class="butang-menu butang-active">
-                <i class="bi bi-file-earmark-plus-fill"></i>
-                <span>Tempahan</span>
-            </button>
-
-            <button onclick="tukarMenu('invois', this)" class="butang-menu">
-                <i class="bi bi-printer-fill"></i>
-                <span>Cetak Invois</span>
-            </button>
-
-            <button onclick="tukarMenu('harga', this)" class="butang-menu">
-                <i class="bi bi-tags-fill"></i>
-                <span>Katalog</span>
-            </button>
-
-            <button onclick="tukarMenu('kewangan', this)" class="butang-menu">
-                <i class="bi bi-wallet2"></i>
-                <span>Kewangan</span>
-            </button>
-
+            <!-- Grid Butang Besar Mesra Telefon Pintar -->
+            <div class="row g-3">
+                <div class="col-6">
+                    <button onclick="bukaSubMenu('tempahan')" class="w-100 butang-grid">
+                        <i class="bi bi-file-earmark-plus-fill text-primary"></i> Tempahan Baru
+                    </button>
+                </div>
+                <div class="col-6">
+                    <button onclick="bukaSubMenu('temujanji')" class="w-100 butang-grid">
+                        <i class="bi bi-calendar-event-fill text-info"></i> Slot Temujanji
+                    </button>
+                </div>
+                <div class="col-6">
+                    <button onclick="bukaSubMenu('invois')" class="w-100 butang-grid">
+                        <i class="bi bi-printer-fill text-purple" style="color: #8b5cf6;"></i> Cetak Invois
+                    </button>
+                </div>
+                <div class="col-6">
+                    <button onclick="bukaSubMenu('scan')" class="w-100 butang-grid">
+                        <i class="bi bi-qr-code-scan text-danger"></i> Scan QR Code
+                    </button>
+                </div>
+                <div class="col-6">
+                    <button onclick="bukaSubMenu('barcode')" class="w-100 butang-grid">
+                        <i class="bi bi-barcode text-secondary"></i> Cetak Barcode
+                    </button>
+                </div>
+                <div class="col-6">
+                    <button onclick="bukaSubMenu('kewangan')" class="w-100 butang-grid">
+                        <i class="bi bi-wallet2 text-warning"></i> Kewangan & Harga
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <script>
-        function tukarMenu(namaMenu, butangDitekan) {
-            // 1. Tukar warna butang yang aktif
-            let semuaButang = document.querySelectorAll('.butang-menu');
-            semuaButang.forEach(b => b.classList.remove('butang-active'));
-            butangDitekan.classList.add('butang-active');
+    <!-- BAHAGIAN BAWAH: Navigasi Pintas Telefon -->
+    <div class="menu-bawah">
+        <div class="d-flex justify-content-around mx-auto" style="max-width: 480px;">
+            <button onclick="pergiHome(this)" class="butang-nav-bawah nav-active">
+                <i class="bi bi-house-door-fill"></i>
+                <span>Utama</span>
+            </button>
+            <button onclick="bukaSubMenu('tempahan')" class="butang-nav-bawah">
+                <i class="bi bi-file-earmark-plus-fill"></i>
+                <span>Borang</span>
+            </button>
+            <button onclick="bukaSubMenu('invois')" class="butang-nav-bawah">
+                <i class="bi bi-printer-fill"></i>
+                <span>Invois</span>
+            </button>
+        </div>
+    </div>
 
-            // 2. Tukar kandungan skrin
+    <!-- SKRIPT LOGIK UI/UX -->
+    <script>
+        // Simpan salinan asal Dashboard Utama supaya senang patah balik
+        const rekaBentukDashboardAsal = document.getElementById('kandungan-sistem').innerHTML;
+
+        function pergiHome(butang) {
+            document.querySelectorAll('.butang-nav-bawah').forEach(b => b.classList.remove('nav-active'));
+            butang.classList.add('nav-active');
+            document.getElementById('kandungan-sistem').innerHTML = rekaBentukDashboardAsal;
+        }
+
+        function bukaSubMenu(jenisMenu) {
             let kawasanKandungan = document.getElementById('kandungan-sistem');
             
-            if (namaMenu === 'tempahan') {
-                kawasanKandungan.innerHTML = `
-                    <h4 class="text-primary mb-3"><i class="bi bi-file-earmark-plus-fill me-2"></i>Tempahan Baru</h4>
-                    <p class="small text-muted">Isi borang di bawah untuk masuk data ke Google Sheets.</p>
-                    <div class="p-4 text-center border border-dashed rounded text-muted small bg-light">Borang Tempahan Karpet</div>
+            // Butang navigasi bawah automatik berubah mengikut fungsi
+            let semuaNav = document.querySelectorAll('.butang-nav-bawah');
+            semuaNav.forEach(b => b.classList.remove('nav-active'));
+
+            let tombolBalik = `<button onclick="location.reload()" class="btn btn-sm btn-outline-secondary mb-3"><i class="bi bi-arrow-left"></i> Kembali ke Dashboard</button>`;
+
+            if (jenisMenu === 'tempahan') {
+                kawasanKandungan.innerHTML = tombolBalik + `
+                    <h4 style="color: #2563eb; font-weight:700;"><i class="bi bi-file-earmark-plus-fill me-2"></i>Borang Tempahan Baru</h4>
+                    <p class="small text-muted">Sila isi maklumat cuci karpet pelanggan di bawah.</p>
+                    <div class="mb-3"><label class="form-label small font-weight-bold">Nama Pelanggan</label><input type="text" class="form-content form-control form-control-md" placeholder="Contoh: Ahmad"></div>
+                    <div class="mb-3"><label class="form-label small">No Telefon</label><input type="tel" class="form-control" placeholder="Contoh: 0123456789"></div>
+                    <button class="btn btn-primary w-100 py-2" style="border-radius:12px; background-color:#2563eb;">Simpan ke Google Sheets</button>
                 `;
-            } else if (namaMenu === 'invois') {
-                kawasanKandungan.innerHTML = `
-                    <h4 class="text-purple mb-3" style="color: #6f42c1;"><i class="bi bi-printer-fill me-2"></i>Cetak Invois & Resit</h4>
-                    <p class="small text-muted mb-2">Sila pilih nama pelanggan:</p>
-                    <select id="pilih-pelanggan" class="form-select form-select-md mb-3 bg-light">
+            } else if (jenisMenu === 'temujanji') {
+                kawasanKandungan.innerHTML = tombolBalik + `
+                    <h4 style="color: #06b6d4; font-weight:700;"><i class="bi bi-calendar-event-fill me-2"></i>Slot Temujanji</h4>
+                    <p class="small text-muted">Jadual tarikh hantar dan ambil karpet pelanggan.</p>
+                    <div class="p-3 bg-light rounded-3 text-center text-muted small">📅 Tiada temujanji untuk hari ini.</div>
+                `;
+            } else if (jenisMenu === 'invois') {
+                kawasanKandungan.innerHTML = tombolBalik + `
+                    <h4 style="color: #8b5cf6; font-weight:700;"><i class="bi bi-printer-fill me-2"></i>Cetak Invois & Resit</h4>
+                    <p class="small text-muted mb-2">Sila pilih rekod pelanggan dari Google Sheets:</p>
+                    <select id="pilih-pelanggan" class="form-select mb-3 bg-light" style="padding:12px; border-radius:12px;">
                         <option>🔄 Sedang memuatkan nama pelanggan...</option>
                     </select>
+                    <button class="btn btn-purple w-100 py-2 text-white" style="background-color:#8b5cf6; border-radius:12px;">🖨️ Cetak PDF Invois</button>
                 `;
                 
-                // Ambil data dari API Python
+                                // Ambil data pelanggan dari API Python
                 fetch('/api/pelanggan')
                     .then(res => res.json())
                     .then(hasil => {
                         let kotakPilihan = document.getElementById('pilih-pelanggan');
                         kotakPilihan.innerHTML = '';
+                        
                         if (hasil.status === 'berjaya') {
-                            if (hasil.data.length === 0) {
-                                kotakPilihan.innerHTML = '<option>Tiada rekod pelanggan</option>';
-                            } else {
-                                hasil.data.forEach(nama => {
-                                    let opt = document.createElement('option');
-                                    opt.value = nama;
-                                    opt.textContent = nama;
-                                    kotakPilihan.appendChild(opt);
-                                });
-                            }
+                            hasil.data.forEach(nama => {
+                                let opt = document.createElement('option');
+                                opt.value = nama; 
+                                opt.textContent = nama;
+                                kotakPilihan.appendChild(opt);
+                            });
                         } else {
                             kotakPilihan.innerHTML = `<option>❌ Ralat: ${hasil.mesej}</option>`;
                         }
@@ -110,19 +229,27 @@
                     .catch(err => {
                         document.getElementById('pilih-pelanggan').innerHTML = `<option>❌ Gagal bersambung ke backend</option>`;
                     });
-                    
-            } else if (namaMenu === 'harga') {
-                kawasanKandungan.innerHTML = `
-                    <h4 class="text-success mb-3"><i class="bi bi-tags-fill me-2"></i>Katalog Harga</h4>
-                    <p class="small text-muted">Senarai harga cucian mengikut saiz karpet.</p>
+
+            } else if (jenisMenu === 'scan') {
+                kawasanKandungan.innerHTML = tombolBalik + `
+                    <h4 style="color: #ef4444; font-weight:700;"><i class="bi bi-qr-code-scan me-2"></i>Scan QR Code</h4> 
+                    <p class="small text-muted">Gunakan kamera telefon pintar untuk mengimbas kod QR karpet.</p> 
+                    <div class="p-5 bg-dark text-white rounded-4 text-center">
+                        <i class="bi bi-camera-fill d-block fs-1 mb-2"></i> Mengaktifkan Kamera Phone...
+                    </div>
                 `;
-            } else if (namaMenu === 'kewangan') {
-                kawasanKandungan.innerHTML = `
-                    <h4 class="text-warning mb-3"><i class="bi bi-wallet2 me-2"></i>Laporan Kewangan</h4>
-                    <p class="small text-muted">Ringkasan untung rugi kedai karpet kamu.</p>
+
+            } else if (jenisMenu === 'barcode') {
+                kawasanKandungan.innerHTML = tombolBalik + `
+                    <h4 style="color: #4b5563; font-weight:700;"><i class="bi bi-barcode me-2"></i>Cetak Barcode Label</h4> 
+                    <p class="small text-muted">Jana kod bar untuk dilekatkan pada karpet pelanggan.</p> 
+                    <button class="btn btn-secondary w-100 py-2" style="border-radius:12px;">🏷️ Jana Barcode Baru</button>
+                `;
+
+            } else if (jenisMenu === 'kewangan') {
+                kawasanKandungan.innerHTML = tombolBalik + `
+                    <h4 style="color: #f59e0b; font-weight:700;"><i class="bi bi-wallet2 me-2"></i>Kewangan & Katalog Harga</h4> 
+                    <p class="small text-muted">Analisis keuntungan kedai dan tetapan harga semasa.</p> 
+                    <div class="p-3 bg-light rounded-3 text-center text-muted small">💰 Laporan kewangan korporat dimuatkan dari Google Sheets.</div>
                 `;
             }
-        }
-    </script>
-</body>
-</html>
