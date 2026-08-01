@@ -24,8 +24,8 @@ app.add_middleware(
 
 def sambung_google_sheets():
     # Ambil maklumat terus daripada 2 variable bersih di Vercel
-    client_email = os.environ.get("GOOGLE_CLIENT_EMAIL")
-    private_key = os.environ.get("GOOGLE_PRIVATE_KEY")
+    client_email = os.environ.get("aplikasi-cuci-karpet@projek-karpet.iam.gserviceaccount.com")
+    private_key = os.environ.get("-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDhWaLw9BrHTWph\nP4a1MqfGXNUQ1J/6aSG5pUgLzINJE8tU7nNdlFymVX/49mQGttZhmQYQUMRrGf0N\nIAzQ7SR2y95rspzb1cNsnGLGy+WPYsdv/glidZj4fLM34OmT9aBzwlmIx54rqU7q\n/F9w4kHSql1LdqTrZX9YwfTYl/uXlywqHmlovMt9dFD0S9nN7rw+QYxTNWyJwHvs\nYSvB5M5uRuMrv5It45pHI8bK7DoKzQYZMp4yXh5xdGQAwUbNeoq0KHi8Twlp515P\naTQLepX5NHaNx5NTxQsv+QwRFKeUvJ4Cz6LpU9OEKb96zbSUJg374O2aRr8nACZ+\nluHdFjOtAgMBAAECggEAC0odkOM1zTrKY81WLxE22QfxD6sLSbUHIMEQQzEPebOB\nagOZKXzDiHy7kMotOC3kPxb2uA4HzRLL++KZacUboMz1W2FjHNtQc0pBY5K28TBC\nbBCmwTVBgN9kbh35LbWuQGZh7GmNucO9ZaXXlTTslcR9sIhk2jsnPlfXL5urmcw7\nscV6xBGs+iGqJZiYG8DRZ7NQbg98qHcBNpWohDPLvMQjZniYj67vVombzVLk9fmS\nHKrln4FrUYYBsiIVL7UpITLYnPuQ5R8pf5yBXPpAMEXzUdiHQnC++rrzSbevsedc\ngVsW0SaUNrqKBsXikgqaGvrpuUqigxlLkrSAkvVgIQKBgQD20Feicu6sSijYw2xe\nwNBhxD5kwZGtyRBLAY8iGSkm0WFgtMHD7jo4hyVmB2pBmp5XljqenespPCxhI9l2\nKBxXLBgM76XK3vbdDxGXUtAYpLUTsxP5OKdQMv4urVxgudeJsu+/e7HgVEVYf7pK\nQws/QMu8bK28Nr6T9mnZ9dEA4QKBgQDpvMln471ktSA2a8z3SpDcnBGbraNMmyvX\nDFG6S4NiLKWPXE5UBqot66lwxcrkABiH76QPEJiNyItNkXdB+XPj2wcZQq0xAAJe\n2DYCKeQn8wq2yXtRXGW5UExI/yN5lodnVbIRD9dLBHs34ZEKJQmQe861ncVQinq2\nTSVFOybwTQKBgQDY2fK1Uz/qdnnvAby8f7JWw+KCCiShyS+chzEoJ20lov9oxUgd\nirjyo6MzQr6UB3Kpx9+XL27HWwwvCR1umA1WdfJno0NKvJ2vWib9ipA1prlGJqgc\n5y7x4uu7PSwV/BKo9GN7HQYK8F/BQu/9gWxnVdnropz+6iaFwBH+o+DPYQKBgDvW\nsxE/wprnq+mCy6R7mH6CDhf26hmQmDaj1sCE2IvntjLvhLYKRsMe0/AlEv4v8BfN\nCAk7THLv5onjNc7UGBE7X6Pd6AzlXbX+UEVZiCmaFSIajtGTgA9jOURu3Rwhp2ST\nEdVAYvO3n/v8aW9ZcAtnRtJEI+GssiG9uk7xB9T5AoGBAI1Afzt4BC/uYZAaLkcM\nK3VvAXdXp82njbMtkZCWKbJuT0PBQotMq/tit7i60iUR29EROTGujGaeT/DBAcS5\nOajQrQaPIMm2T4tX3E3znwuz+fg1CbWyOMu5rw2ltpPF0UXkPA1F9NVoQnEEv9ca\njh2OMhiYb3PmmuOwVLyg7Wuh\n-----END PRIVATE KEY-----\n")
     
     if not client_email or not private_key:
         return None
