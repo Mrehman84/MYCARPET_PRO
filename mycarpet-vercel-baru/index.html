@@ -4,58 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MYCARPET PRO v2.0</title>
-    <!-- CSS Korporat Premium & Ikon Moden -->
-    <link rel="stylesheet" href="https://jsdelivr.net">
-    <link rel="stylesheet" href="https://jsdelivr.net">
     <style>
-        :root {
-            --warna-korporat: #0a2540; /* Biru Gelap Premium */
-            --warna-background: #f4f6f9;
-        }
+        /* REKA BENTUK KORPORAT SECARA DALAMAN */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body { 
-            background-color: var(--warna-background); 
-            padding-bottom: 100px; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding-bottom: 100px;
         }
         .header-korporat { 
-            background: linear-gradient(135deg, var(--warna-korporat) 0%, #1e3a8a 100%); 
+            background: linear-gradient(135deg, #0a2540 0%, #1e3a8a 100%); 
             color: white; 
-            padding: 20px 15px; 
+            padding: 25px 15px; 
             text-align: center; 
             border-bottom-left-radius: 20px;
             border-bottom-right-radius: 20px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
+        .header-korporat h1 { font-size: 20px; margin-bottom: 5px; letter-spacing: 0.5px; }
+        .header-korporat small { font-size: 12px; opacity: 0.85; }
+        
+        .container { max-width: 480px; margin: 0 auto; padding: 15px; }
+        
         .kad-premium { 
             background: white; 
             padding: 22px; 
             border-radius: 18px; 
             box-shadow: 0px 6px 15px rgba(0,0,0,0.03); 
             border: 1px solid rgba(0,0,0,0.05);
-            margin-top: 15px; 
+            margin-top: 5px; 
         }
-        /* Gaya Butang Grid Besar Mesra Telefon */
-        .butang-grid {
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 16px;
-            padding: 15px;
-            text-align: center;
-            color: var(--warna-korporat);
-            font-weight: 600;
-            font-size: 13px;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.01);
-        }
-        .butang-grid:active {
-            transform: scale(0.95);
-            background-color: #eff6ff;
-            border-color: #bfdbfe;
-        }
-        .butang-grid i {
-            font-size: 24px;
-            display: block;
-            margin-bottom: 8px;
+        .judul-dashboard {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 17px;
+            color: #0a2540;
+            font-weight: bold;
+            margin-bottom: 5px;
         }
         .badge-status {
             background-color: #e0f2fe;
@@ -63,132 +49,152 @@
             padding: 4px 10px;
             border-radius: 20px;
             font-size: 11px;
-            font-weight: bold;
         }
+        .sub-judul { font-size: 13px; color: #6b7280; margin-bottom: 20px; }
+
+        /* GRID BUTANG BESAR PHONE FRIENDLY */
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .butang-grid {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 20px 10px;
+            text-align: center;
+            color: #0a2540;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.01);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .butang-grid:active { background-color: #eff6ff; transform: scale(0.96); }
+        .icon-emoji { font-size: 26px; margin-bottom: 8px; }
+
+        /* BORANG INPUT KORPORAT */
+        .label-borang { display: block; font-size: 13px; font-weight: bold; margin-bottom: 6px; color: #374151; }
+        .input-borang { w-100; width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 12px; font-size: 14px; margin-bottom: 15px; background-color: #f9fafb; }
+        .btn-utama { width: 100%; padding: 14px; border: none; border-radius: 12px; color: white; font-weight: bold; font-size: 14px; cursor: pointer; }
+        .btn-kembali { background: none; border: 1px solid #d1d5db; padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; margin-bottom: 15px; color: #4b5563; }
+
+        /* NAVIGASI BAWAH */
+        .menu-bawah { position: fixed; bottom: 0; left: 0; right: 0; background: #ffffff; border-top: 2px solid #e5e7eb; padding: 12px 10px; box-shadow: 0px -4px 15px rgba(0,0,0,0.05); z-index: 1000; }
+        .nav-flex { display: flex; justify-content: space-around; max-width: 480px; margin: 0 auto; }
+        .butang-nav-bawah { flex: 1; border: none; background: none; color: #9ca3af; font-size: 13px; font-weight: bold; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        .nav-active { color: #2563eb !important; }
     </style>
 </head>
 <body>
 
-    <!-- BAHAGIAN ATAS: Kad Header Korporat -->
+    <!-- KAD HEADER KORPORAT -->
     <div class="header-korporat">
-        <h1 style="font-size: 22px; margin: 0; letter-spacing: 0.5px;">🏢 MYCARPET CORPORATION</h1>
-        <small style="opacity: 0.85; font-size: 12px;">Sistem Pengurusan & Invois Cucian Karpet</small>
+        <h1>🏢 MYCARPET CORPORATION</h1>
+        <small>Sistem Pengurusan & Invois Cucian Karpet</small>
     </div>
 
-    <!-- BAHAGIAN UTAMA -->
-    <div class="container" style="max-width: 480px;">
+    <!-- KANDUNGAN UTAMA -->
+    <div class="container">
         <div id="kandungan-sistem" class="kad-premium">
-            <!-- Halaman Utama Dashboard Korporat -->
-            <h3 class="d-flex justify-content-between align-items-center" style="font-size: 18px; color: var(--warna-korporat); font-weight: 700;">
+            
+            <div class="judul-dashboard">
                 <span>📊 Dashboard Utama</span>
                 <span class="badge-status">Sistem Aktif</span>
-            </h3>
-            <p style="font-size: 13px; color: #6b7280; margin-bottom: 20px;">Ringkasan operasi kedai cuci karpet kamu hari ini.</p>
-            
-            <!-- Grid Butang Besar Mesra Telefon Pintar -->
-            <div class="row g-3">
-                <div class="col-6">
-                    <button onclick="bukaSubMenu('tempahan')" class="w-100 butang-grid">
-                        <i class="bi bi-file-earmark-plus-fill text-primary"></i> Tempahan Baru
-                    </button>
-                </div>
-                <div class="col-6">
-                    <button onclick="bukaSubMenu('temujanji')" class="w-100 butang-grid">
-                        <i class="bi bi-calendar-event-fill text-info"></i> Slot Temujanji
-                    </button>
-                </div>
-                <div class="col-6">
-                    <button onclick="bukaSubMenu('invois')" class="w-100 butang-grid">
-                        <i class="bi bi-printer-fill" style="color: #8b5cf6;"></i> Cetak Invois
-                    </button>
-                </div>
-                <div class="col-6">
-                    <button onclick="bukaSubMenu('scan')" class="w-100 butang-grid">
-                        <i class="bi bi-qr-code-scan text-danger"></i> Scan QR Code
-                    </button>
-                </div>
-                <div class="col-6">
-                    <button onclick="bukaSubMenu('barcode')" class="w-100 butang-grid">
-                        <i class="bi bi-barcode text-secondary"></i> Cetak Barcode
-                    </button>
-                </div>
-                <div class="col-6">
-                    <button onclick="bukaSubMenu('kewangan')" class="w-100 butang-grid">
-                        <i class="bi bi-wallet2 text-warning"></i> Kewangan & Harga
-                    </button>
-                </div>
             </div>
+            <p class="sub-judul">Ringkasan operasi kedai cuci karpet kamu hari ini.</p>
+            
+            <!-- GRID ENAM BUTANG BESAR -->
+            <div class="grid-container">
+                <button onclick="bukaSubMenu('tempahan')" class="butang-grid">
+                    <span class="icon-emoji">📝</span> Tempahan Baru
+                </button>
+                <button onclick="bukaSubMenu('temujanji')" class="butang-grid">
+                    <span class="icon-emoji">🗓️</span> Slot Temujanji
+                </button>
+                <button onclick="bukaSubMenu('invois')" class="butang-grid">
+                    <span class="icon-emoji">🖨️</span> Cetak Invois
+                </button>
+                <button onclick="bukaSubMenu('scan')" class="butang-grid">
+                    <span class="icon-emoji">🔍</span> Scan QR Code
+                </button>
+                <button onclick="bukaSubMenu('barcode')" class="butang-grid">
+                    <span class="icon-emoji">🏷️</span> Cetak Barcode
+                </button>
+                <button onclick="bukaSubMenu('kewangan')" class="butang-grid">
+                    <span class="icon-emoji">💰</span> Kewangan & Harga
+                </button>
+            </div>
+
         </div>
     </div>
 
-    <!-- BAHAGIAN BAWAH: Menu Navigasi Bawah Yang Gerenti Melintang Cantik -->
-    <div class="menu-bawah" style="position: fixed; bottom: 0; left: 0; right: 0; background: #ffffff; border-top: 2px solid #e5e7eb; padding: 12px 10px; box-shadow: 0px -4px 15px rgba(0,0,0,0.1); z-index: 1000;">
-        <div style="display: flex; justify-content: space-around; max-width: 480px; margin: 0 auto;">
-            
-            <button onclick="location.reload()" style="flex: 1; border: none; background: none; color: #2563eb; font-size: 14px; font-weight: bold; display: flex; flex-direction: column; align-items: center; padding: 5px;">
-                <i class="bi bi-house-door-fill" style="font-size: 20px; margin-bottom: 2px;"></i>
-                <span>🏠 Utama</span>
+    <!-- NAVIGASI BAWAH TELEFON -->
+    <div class="menu-bawah">
+        <div class="nav-flex">
+            <button onclick="location.reload()" class="butang-nav-bawah nav-active">
+                <span style="font-size: 18px; margin-bottom: 2px;">🏠</span>
+                <span>Utama</span>
             </button>
-            
-            <button onclick="bukaSubMenu('tempahan')" style="flex: 1; border: none; background: none; color: #9ca3af; font-size: 14px; font-weight: bold; display: flex; flex-direction: column; align-items: center; padding: 5px;">
-                <i class="bi bi-file-earmark-plus-fill" style="font-size: 20px; margin-bottom: 2px;"></i>
-                <span>📝 Borang</span>
+            <button onclick="bukaSubMenu('tempahan')" class="butang-nav-bawah">
+                <span style="font-size: 18px; margin-bottom: 2px;">📝</span>
+                <span>Borang</span>
             </button>
-            
-            <button onclick="bukaSubMenu('invois')" style="flex: 1; border: none; background: none; color: #9ca3af; font-size: 14px; font-weight: bold; display: flex; flex-direction: column; align-items: center; padding: 5px;">
-                <i class="bi bi-printer-fill" style="font-size: 20px; margin-bottom: 2px;"></i>
-                <span>🖨️ Invois</span>
+            <button onclick="bukaSubMenu('invois')" class="butang-nav-bawah">
+                <span style="font-size: 18px; margin-bottom: 2px;">🖨️</span>
+                <span>Invois</span>
             </button>
-
         </div>
     </div>
 
-    <!-- SKRIPT LOGIK UI/UX & PANGGIL BACKEND PYTHON -->
+    <!-- SKRIPT OPERASI SUB-MENU -->
     <script>
         function bukaSubMenu(jenisMenu) {
             let kawasanKandungan = document.getElementById('kandungan-sistem');
-            let tombolBalik = `<button onclick="location.reload()" class="btn btn-sm btn-outline-secondary mb-3"><i class="bi bi-arrow-left"></i> Kembali ke Dashboard</button>`;
+            let tombolBalik = `<button onclick="location.reload()" class="btn-kembali">⬅️ Kembali ke Dashboard</button>`;
 
             if (jenisMenu === 'tempahan') {
                 kawasanKandungan.innerHTML = tombolBalik + `
-                    <h4 style="color: #2563eb; font-weight:700;"><i class="bi bi-file-earmark-plus-fill me-2"></i>Borang Tempahan Baru</h4>
-                    <p class="small text-muted">Sila isi maklumat cuci karpet pelanggan di bawah.</p>
-                    <div class="mb-3"><label class="form-label small font-weight-bold">Nama Pelanggan</label><input type="text" class="form-content form-control form-control-md" placeholder="Contoh: Ahmad"></div>
-                    <div class="mb-3"><label class="form-label small">No Telefon</label><input type="tel" class="form-control" placeholder="Contoh: 0123456789"></div>
-                    <button class="btn btn-primary w-100 py-2" style="border-radius:12px; background-color:#2563eb;">Simpan ke Google Sheets</button>
+                    <h4 style="color: #2563eb; font-size: 16px; margin-bottom: 10px;">📝 Borang Tempahan Baru</h4>
+                    <p style="font-size: 13px; color: #6b7280; margin-bottom: 15px;">Sila isi maklumat cuci karpet pelanggan di bawah.</p>
+                    <div><label class="label-borang">Nama Pelanggan</label><input type="text" class="input-borang" placeholder="Contoh: Ahmad"></div>
+                    <div><label class="label-borang">No Telefon</label><input type="tel" class="input-borang" placeholder="Contoh: 0123456789"></div>
+                    <button class="btn-utama" style="background-color: #2563eb;">Simpan ke Google Sheets</button>
                 `;
             } else if (jenisMenu === 'temujanji') {
                 kawasanKandungan.innerHTML = tombolBalik + `
-                    <h4 style="color: #06b6d4; font-weight:700;"><i class="bi bi-calendar-event-fill me-2"></i>Slot Temujanji</h4>
-                    <p class="small text-muted">Jadual tarikh hantar dan ambil karpet pelanggan.</p>
-                    <div class="p-3 bg-light rounded-3 text-center text-muted small">📅 Tiada temujanji untuk hari ini.</div>
+                    <h4 style="color: #06b6d4; font-size: 16px; margin-bottom: 10px;">🗓️ Slot Temujanji</h4>
+                    <p style="font-size: 13px; color: #6b7280; margin-bottom: 15px;">Jadual tarikh hantar dan ambil karpet pelanggan.</p>
+                    <div style="padding: 20px; background-color: #f9fafb; border: 1px dashed #d1d5db; border-radius: 12px; text-align: center; color: #9ca3af; font-size: 13px;">📅 Tiada temujanji untuk hari ini.</div>
                 `;
             } else if (jenisMenu === 'invois') {
                 kawasanKandungan.innerHTML = tombolBalik + `
-                    <h4 style="color: #8b5cf6; font-weight:700;"><i class="bi bi-printer-fill me-2"></i>Cetak Invois & Resit</h4>
-                    <p class="small text-muted mb-2">Sila pilih rekod pelanggan dari Google Sheets:</p>
-                    <select id="pilih-pelanggan" class="form-select mb-3 bg-light" style="padding:12px; border-radius:12px;">
+                    <h4 style="color: #8b5cf6; font-size: 16px; margin-bottom: 10px;">🖨️ Cetak Invois & Resit</h4>
+                    <p style="font-size: 13px; color: #6b7280; margin-bottom: 10px;">Sila pilih rekod pelanggan dari Google Sheets:</p>
+                    <select id="pilih-pelanggan" class="input-borang">
                         <option>🔄 Sedang memuatkan nama pelanggan...</option>
                     </select>
-                    <button class="btn btn-purple w-100 py-2 text-white" style="background-color:#8b5cf6; border-radius:12px;">🖨️ Cetak PDF Invois</button>
+                    <button class="btn-utama" style="background-color: #8b5cf6;">🖨️ Cetak PDF Invois</button>
                 `;
                 
-                // Ambil data pelanggan dari API Python FastAPI di Vercel
+                // Panggil backend Python FastAPI
                 fetch('/api/pelanggan')
                     .then(res => res.json())
                     .then(hasil => {
                         let kotakPilihan = document.getElementById('pilih-pelanggan');
                         kotakPilihan.innerHTML = '';
-                        
                         if (hasil.status === 'berjaya') {
                             if (hasil.data.length === 0) {
                                 kotakPilihan.innerHTML = '<option>Tiada rekod pelanggan dijumpai</option>';
                             } else {
-                                    hasil.data.forEach(nama => {
-                                        let opt = document.createElement('option');
-                                        opt.value = nama; 
-                                        opt.textContent = nama;
-                                        kotakPilihan.appendChild(opt);
+                                hasil.data.forEach(nama => {
+                                    let opt = document.createElement('option');
+                                    opt.value = nama; opt.textContent = nama;
+                                    kotakPilihan.appendChild(opt);
                                 });
                             }
                         } else {
@@ -201,24 +207,27 @@
                     
             } else if (jenisMenu === 'scan') {
                 kawasanKandungan.innerHTML = tombolBalik + `
-                    <h4 style="color: #ef4444; font-weight:700;"><i class="bi bi-qr-code-scan me-2"></i>Scan QR Code</h4>
-                    <p class="small text-muted">Gunakan kamera telefon pintar untuk mengimbas kod QR karpet.</p>
-                    <div class="p-5 bg-dark text-white rounded-4 text-center">
-                        <i class="bi bi-camera-fill d-block fs-1 mb-2"></i> Mengaktifkan Kamera Phone...
+                    <h4 style="color: #ef4444; font-size: 16px; margin-bottom: 10px;">🔍 Scan QR Code</h4>
+                    <p style="font-size: 13px; color: #6b7280; margin-bottom: 15px;">Gunakan kamera telefon pintar untuk mengimbas kod QR karpet.</p>
+                    <div style="padding: 40px 20px; background-color: #1f2937; color: white; border-radius: 12px; text-align: center; font-size: 14px;">
+                        📷 Mengaktifkan Kamera Phone...
                     </div>
                 `;
 
             } else if (jenisMenu === 'barcode') {
                 kawasanKandungan.innerHTML = tombolBalik + `
-                    <h4 style="color: #4b5563; font-weight:700;"><i class="bi bi-barcode me-2"></i>Cetak Barcode Label</h4>
-                    <p class="small text-muted">Jana kod bar untuk dilekatkan pada karpet pelanggan.</p>
-                    <button class="btn btn-secondary w-100 py-2" style="border-radius:12px;">🏷️ Jana Barcode Baru</button>
+                    <h4 style="color: #4b5563; font-size: 16px; margin-bottom: 10px;">🏷️ Cetak Barcode Label</h4>
+                    <p style="font-size: 13px; color: #6b7280; margin-bottom: 15px;">Jana kod bar untuk dilekatkan pada karpet pelanggan.</p>
+                    <button class="btn-utama" style="background-color: #4b5563;">🏷️ Jana Barcode Baru</button>
                 `;
 
             } else if (jenisMenu === 'kewangan') {
                 kawasanKandungan.innerHTML = tombolBalik + `
-                    <h4 style="color: #f59e0b; font-weight:700;"><i class="bi bi-wallet2 me-2"></i>Kewangan & Katalog Harga</h4>
-                    <p class="small text-muted">Analisis keuntungan kedai dan tetapan harga semasa.</p>
-                    <div class="p-3 bg-light rounded-3 text-center text-muted small">💰 Laporan kewangan korporat dimuatkan dari Google Sheets.</div>
+                    <h4 style="color: #f59e0b; font-size: 16px; margin-bottom: 10px;">💰 Kewangan & Katalog Harga</h4>
+                    <p style="font-size: 13px; color: #6b7280; margin-bottom: 15px;">Analisis keuntungan kedai dan tetapan harga semasa.</p>
+                    <div style="padding: 15px; background-color: #f9fafb; border-radius: 12px; text-align: center; color: #6b7280; font-size: 13px;">
+                        💰 Laporan kewangan korporat dimuatkan dari Google Sheets.
+                    </div>
                 `;
             }
+        }
