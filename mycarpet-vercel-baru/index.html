@@ -212,28 +212,48 @@
         </div>
     </div>
 
-    <script>
-        function tukarMenu(targetScreen) {
-                    // Fungsi Otomatis Ambil Angka Dashboard saat halaman dibuka
+     <script>
+        // 1. Fungsi Otomatis Ambil Angka Dashboard saat halaman dibuka (Kalis Ralat)
         window.onload = function() {
             fetch('/api/dashboard')
-                .then(res => res.json())
-                .then(hasil => {
-                    if(hasil.status === 'berjaya') {
-                        document.getElementById('status-sistem').innerText = 'Sistem Aktif';
-                        document.getElementById('num-proses').innerText = hasil.dalam_proses + ' Pcs';
-                        document.getElementById('num-kering').innerText = hasil.pengeringan + ' Pcs';
-                        document.getElementById('num-ready').innerText = hasil.ready_deliver + ' Pcs';
-                        document.getElementById('num-selesai').innerText = hasil.selesai + ' Pcs';
-                    } else {
-                        document.getElementById('status-sistem').innerText = 'Ralat Data';
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error('Pelayan Python memberikan ralat status ' + res.status);
                     }
-                }).catch(err => {
-                    document.getElementById('status-sistem').innerText = 'Offline';
+                    return res.json();
+                })
+                .then(hasil => {
+                    let statusBadge = document.getElementById('status-sistem');
+                    if (statusBadge) {
+                        if (hasil && hasil.status === 'berjaya') {
+                            statusBadge.innerText = 'Sistem Aktif';
+                            statusBadge.style.backgroundColor = '#dcfce7';
+                            statusBadge.style.color = '#15803d';
+                            
+                            document.getElementById('num-proses').innerText = (hasil.dalam_proses || 0) + ' Pcs';
+                            document.getElementById('num-kering').innerText = (hasil.pengeringan || 0) + ' Pcs';
+                            document.getElementById('num-ready').innerText = (hasil.ready_deliver || 0) + ' Pcs';
+                            document.getElementById('num-selesai').innerText = (hasil.selesai || 0) + ' Pcs';
+                        } else {
+                            statusBadge.innerText = '❌ Ralat Kunci';
+                            statusBadge.style.backgroundColor = '#fee2e2';
+                            statusBadge.style.color = '#991b1b';
+                            console.log('Mesej ralat Python:', hasil.mesej);
+                        }
+                    }
+                })
+                .catch(err => {
+                    let statusBadge = document.getElementById('status-sistem');
+                    if (statusBadge) {
+                        statusBadge.innerText = '⚠️ Offline';
+                    }
+                    console.log('Gagal panggil API:', err);
                 });
         };
 
-            // 1. Sembunyikan semua skrin terlebih dahulu
+
+        // 2. Fungsi Tukar Skrin Sub-Menu (Kalis Ralat)
+        function tukarMenu(targetScreen) {
             document.getElementById('screen-dashboard').style.display = 'none';
             document.getElementById('screen-tempahan').style.display = 'none';
             document.getElementById('screen-temujanji').style.display = 'none';
@@ -242,37 +262,40 @@
             document.getElementById('screen-barcode').style.display = 'none';
             document.getElementById('screen-kewangan').style.display = 'none';
 
-            // 2. Hanya paparkan skrin yang kita ketuk sahaja
             document.getElementById('screen-' + targetScreen).style.display = 'block';
 
-            // 3. Jika pengguna membuka menu Invois, panggil data Google Sheets
             if (targetScreen === 'invois') {
                 fetch('/api/pelanggan')
                     .then(res => res.json())
                     .then(hasil => {
                         let kotakPilihan = document.getElementById('pilih-pelanggan');
-                        kotakPilihan.innerHTML = '';
-                        
-                        if (hasil.status === 'berjaya') {
-                            if (hasil.data.length === 0) {
-                                kotakPilihan.innerHTML = '<option>Tiada rekod pelanggan dijumpai</option>';
+                        if (kotakPilihan) {
+                            kotakPilihan.innerHTML = '';
+                            if (hasil.status === 'berjaya') {
+                                if (!hasil.data || hasil.data.length === 0) {
+                                    kotakPilihan.innerHTML = '<option>Tiada rekod pelanggan dijumpai</option>';
+                                } else {
+                                    hasil.data.forEach(nama => {
+                                        let opt = document.createElement('option');
+                                        opt.value = nama; 
+                                        opt.textContent = nama;
+                                        kotakPilihan.appendChild(opt);
+                                    });
+                                }
                             } else {
-                                hasil.data.forEach(nama => {
-                                    let opt = document.createElement('option');
-                                    opt.value = nama; 
-                                    opt.textContent = nama;
-                                    kotakPilihan.appendChild(opt);
-                                });
+                                kotakPilihan.innerHTML = `<option>❌ Ralat API: Kunci Google Tidak Sah</option>`;
                             }
-                        } else {
-                            kotakPilihan.innerHTML = `<option>❌ Ralat API: ${hasil.mesej}</option>`;
                         }
                     })
                     .catch(err => {
-                        document.getElementById('pilih-pelanggan').innerHTML = `<option>❌ Gagal bersambung ke backend</option>`;
+                        let kotakPilihan = document.getElementById('pilih-pelanggan');
+                        if (kotakPilihan) {
+                            kotakPilihan.innerHTML = `<option>❌ Gagal bersambung ke backend</option>`;
+                        }
                     });
             }
         }
+
     </script>
 </body>
 </html>
