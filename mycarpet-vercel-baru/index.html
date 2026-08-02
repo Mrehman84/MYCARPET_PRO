@@ -8,15 +8,15 @@
         body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f0fdf4; color: #1e293b; margin: 0; padding: 20px; }
         .container { max-width: 600px; background: white; margin: 0 auto; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         h1 { color: #0284c7; text-align: center; margin-bottom: 5px; }
-        p.subtitle { text-align: center; color: #1266db; margin-top: 0; margin-bottom: 25px; }
+        p.subtitle { text-align: center; color: #64748b; margin-top: 0; margin-bottom: 25px; }
         
         /* Gaya Kad Kategori Karpet */
         .category-box { border: 2px solid #e2e8f0; border-radius: 10px; padding: 15px; margin-bottom: 15px; background: #f8fafc; text-align: center; }
         .category-title { font-weight: bold; font-size: 1.1em; color: #0f172a; margin-bottom: 5px; text-align: left; }
         .carpet-desc { font-size: 0.85em; color: #64748b; margin-bottom: 12px; text-align: left; }
         
-        /* Gaya Gambar Karpet */
-        .carpet-img { width: 100%; max-height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 12px; border: 1px solid #cbd5e1; }
+        /* Gaya Visual Emoji Box */
+        .carpet-emoji-box { font-size: 4rem; padding: 15px; background: #e2e8f0; border-radius: 8px; margin-bottom: 12px; display: inline-block; width: 80px; height: 80px; line-height: 80px; text-align: center; }
         
         select, input, textarea { width: 100%; padding: 10px; margin-top: 5px; margin-bottom: 15px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-size: 1em; }
         label { font-weight: bold; font-size: 0.9em; color: #334155; display: block; text-align: left; }
@@ -37,8 +37,8 @@
     <div class="category-box">
         <div class="category-title">🦁 1. Karpet Keras & Tebal (Turkey / Belgium / Shaggy)</div>
         <div class="carpet-desc">Jenis karpet berbulu, tebal, berat, atau jenis standard ruang tamu rumah.</div>
-        <!-- Gambar Contoh Karpet Tebal -->
-        <img class="carpet-img" src="https://unsplash.com" alt="Karpet Tebal">
+        <!-- Ganti Gambar Dengan Emoji Singa Karpet Tebal -->
+        <div class="carpet-emoji-box">🦁</div>
         <label>Pilih Saiz Karpet:</label>
         <select id="saiz_tebal">
             <option value="Tiada">-- Tiada Tempahan Untuk Jenis Ini --</option>
@@ -53,8 +53,8 @@
     <div class="category-box">
         <div class="category-title">🍃 2. Karpet Nipis / Aladdin / Velvet / 3D</div>
         <div class="carpet-desc">Jenis karpet kain nipis, mudah dilipat, ringkas, atau jenis karpet moden 3D.</div>
-        <!-- Gambar Contoh Karpet Nipis -->
-        <img class="carpet-img" src="https://unsplash.com" alt="Karpet Nipis">
+        <!-- Ganti Gambar Dengan Emoji Daun Karpet Nipis -->
+        <div class="carpet-emoji-box">🍃</div>
         <label>Pilih Saiz Karpet:</label>
         <select id="saiz_nipis">
             <option value="Tiada">-- Tiada Tempahan Untuk Jenis Ini --</option>
@@ -69,8 +69,8 @@
     <div class="category-box">
         <div class="category-title">🧼 3. Karpet Sponge / Tatami</div>
         <div class="carpet-desc">Jenis karpet berlapik span lembut di dalam, selesa untuk kanak-kanak merangkak.</div>
-        <!-- Gambar Contoh Karpet Sponge -->
-        <img class="carpet-img" src="https://unsplash.com" alt="Karpet Sponge">
+        <!-- Ganti Gambar Dengan Emoji Span Karpet Sponge -->
+        <div class="carpet-emoji-box">🧼</div>
         <label>Pilih Saiz Karpet:</label>
         <select id="saiz_sponge">
             <option value="Tiada">-- Tiada Tempahan Untuk Jenis Ini --</option>
@@ -153,8 +153,9 @@ function hantarKeWhatsApp() {
     mesej += `\n=========================\n`;
     mesej += `_Mohon pihak MYCARPET PRO mengesahkan slot temujanji di atas. Terima kasih!_`;
 
+    // 🚀 ALAMAT LINK WHATSAPP PENGENDALIAN BARU (PASTI BERJAYA)
     const no_kedai = "60174050336";
-    const url_wa = "https://wa.me" + no_kedai + "?text=" + encodeURIComponent(mesej);
+    const url_wa = "https://whatsapp.com" + no_kedai + "&text=" + encodeURIComponent(mesej);
     
     window.open(url_wa, '_blank');
 }
