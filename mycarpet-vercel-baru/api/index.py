@@ -21,7 +21,7 @@ class handler(BaseHTTPRequestHandler):
                 laporan += "❌ RALAT: Kunci 'GOOGLE_CLIENT_EMAIL' TIADA/KOSONG!\n\n"
                 
             # 🕵️‍♂️ Menyemak Kunci Kedua: GOOGLE_PRIVATE_KEY
-            kunci_private = os.environ.get("GOOGLE_PRIVATE_KEY")
+            kunci_private = os.environ.get("GOOGLE_PRIVATE_KEY").replace('\\n', '\n')
             if kunci_private:
                 laporan += "✅ BERJAYA: Kunci 'GOOGLE_PRIVATE_KEY' dijumpai!\n"
                 laporan += f"   Panjang teks kunci: {len(kunci_private)} huruf\n\n"
