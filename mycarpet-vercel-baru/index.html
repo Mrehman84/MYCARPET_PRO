@@ -3,299 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MYCARPET PRO v2.0</title>
+    <title>MYCARPET PRO KULIM</title>
     <style>
-        /* REKA BENTUK KORPORAT DALAMAN (GERENTI LEPAS SEKATAN VERCEL) */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { 
-            background-color: #f4f6f9; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            padding-bottom: 100px;
-        }
-        .header-korporat { 
-            background: linear-gradient(135deg, #0a2540 0%, #1e3a8a 100%); 
-            color: white; 
-            padding: 25px 15px; 
-            text-align: center; 
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        .header-korporat h1 { font-size: 20px; margin-bottom: 5px; letter-spacing: 0.5px; }
-        .header-korporat small { font-size: 12px; opacity: 0.85; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f0fdf4; color: #1e293b; margin: 0; padding: 20px; }
+        .container { max-width: 600px; background: white; margin: 0 auto; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h1 { color: #0284c7; text-align: center; margin-bottom: 5px; }
+        p.subtitle { text-align: center; color: #64748b; margin-top: 0; margin-bottom: 25px; }
         
-        .container { max-width: 480px; margin: 0 auto; padding: 15px; }
+        /* Gaya Kad Kategori Karpet */
+        .category-box { border: 2px solid #e2e8f0; border-radius: 10px; padding: 15px; margin-bottom: 15px; background: #f8fafc; }
+        .category-title { font-weight: bold; font-size: 1.1em; color: #0f172a; margin-bottom: 5px; display: flex; align-items: center; gap: 8px; }
+        .carpet-desc { font-size: 0.85em; color: #64748b; margin-bottom: 10px; }
+        select, input, textarea { width: 100%; padding: 10px; margin-top: 5px; margin-bottom: 15px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-size: 1em; }
         
-        .kad-premium { 
-            background: white; 
-            padding: 22px; 
-            border-radius: 18px; 
-            box-shadow: 0px 6px 15px rgba(0,0,0,0.03); 
-            border: 1px solid rgba(0,0,0,0.05);
-            margin-top: 5px; 
-        }
-        .judul-dashboard {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 17px;
-            color: #0a2540;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        .badge-status {
-            background-color: #e0f2fe;
-            color: #0369a1;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-        }
-        .sub-judul { font-size: 13px; color: #6b7280; margin-bottom: 20px; }
-
-        /* GRID ENAM BUTANG BESAR MESRA TELEFON */
-        .grid-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-        .butang-grid {
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 16px;
-            padding: 20px 10px;
-            text-align: center;
-            color: #0a2540;
-            font-weight: bold;
-            font-size: 13px;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.01);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .butang-grid:active { background-color: #eff6ff; transform: scale(0.96); }
-        .icon-emoji { font-size: 26px; margin-bottom: 8px; }
-
-        /* GAYA SUBSCREEN BORANG */
-        .subscreen { display: none; }
-        .label-borang { display: block; font-size: 13px; font-weight: bold; margin-bottom: 6px; color: #374151; }
-        .input-borang { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 12px; font-size: 14px; margin-bottom: 15px; background-color: #f9fafb; }
-        .btn-utama { width: 100%; padding: 14px; border: none; border-radius: 12px; color: white; font-weight: bold; font-size: 14px; cursor: pointer; }
-        .btn-kembali { background: none; border: 1px solid #d1d5db; padding: 8px 14px; border-radius: 8px; font-size: 12px; cursor: pointer; margin-bottom: 15px; color: #4b5563; font-weight: bold; }
-
-        /* NAVIGASI BAWAH */
-        .menu-bawah { position: fixed; bottom: 0; left: 0; right: 0; background: #ffffff; border-top: 2px solid #e5e7eb; padding: 12px 10px; box-shadow: 0px -4px 15px rgba(0,0,0,0.05); z-index: 1000; }
-        .nav-flex { display: flex; justify-content: space-around; max-width: 480px; margin: 0 auto; }
-        .butang-nav-bawah { flex: 1; border: none; background: none; color: #9ca3af; font-size: 13px; font-weight: bold; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
-        .nav-active { color: #2563eb !important; }
+        label { font-weight: bold; font-size: 0.9em; color: #334155; }
+        .row { display: flex; gap: 10px; }
+        
+        /* Butang WhatsApp Hijau Besar */
+        .btn-whatsapp { background-color: #22c55e; color: white; border: none; padding: 15px; font-size: 1.1em; font-weight: bold; border-radius: 10px; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 10px rgba(34, 197, 94, 0.3); }
+        .btn-whatsapp:hover { background-color: #16a34a; }
     </style>
 </head>
 <body>
 
-    <!-- KAD HEADER KORPORAT -->
-    <div class="header-korporat">
-        <h1>🏢 MYCARPET CORPORATION</h1>
-        <small>Sistem Pengurusan & Invois Cucian Karpet</small>
+<div class="container">
+    <h1>🧺 MYCARPET PRO KULIM</h1>
+    <p class="subtitle">Sistem Tempahan Slot Lori Ambil Karpet Rumah Anda</p>
+
+    <!-- 1. KATEGORI KARPET TEBAL -->
+    <div class="category-box">
+        <div class="category-title">🦁 1. Karpet Keras & Tebal (Turkey / Belgium / Shaggy)</div>
+        <div class="carpet-desc">Jenis karpet berbulu, tebal, berat, atau jenis standard ruang tamu rumah.</div>
+        <label>Pilih Saiz Karpet:</label>
+        <select id="saiz_tebal">
+            <option value="Tiada">-- Tiada Tempahan Untuk Jenis Ini --</option>
+            <option value="Kecil (4x6 kaki) - RM28.80">Kecil (4x6 kaki) - RM28.80</option>
+            <option value="Sederhana (5x7 kaki) - RM42.00">Sederhana (5x7 kaki) - RM42.00</option>
+            <option value="Besar (6x9 kaki) - RM64.80">Besar (6x9 kaki) - RM64.80</option>
+            <option value="Sangat Besar (7x10 kaki) - RM84.00">Sangat Besar (7x10 kaki) - RM84.00</option>
+        </select>
     </div>
 
-    <!-- KANDUNGAN UTAMA -->
-    <div class="container">
-        <div class="kad-premium">
-            
-                        <!-- SCREEN 1: DASHBOARD UTAMA DENGAN DATA LIVE -->
-            <div id="screen-dashboard">
-                <div class="judul-dashboard">
-                    <span>📊 Status Operasi Karpet Semasa</span>
-                    <span class="badge-status" id="status-sistem">Memuatkan...</span>
-                </div>
-                <p class="sub-judul">Ringkasan basuhan real-time dari Google Sheets.</p>
-                
-                <!-- KOTAK STATISTIK LIVE -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
-                    <div style="background: #fef3c7; padding: 12px; border-radius: 12px; text-align: center;">
-                        <span style="font-size: 11px; color: #b45309; font-weight: bold;">⏳ Dalam Proses</span>
-                        <h2 id="num-proses" style="font-size: 22px; color: #78350f; margin-top: 5px;">0 Pcs</h2>
-                    </div>
-                    <div style="background: #e0f2fe; padding: 12px; border-radius: 12px; text-align: center;">
-                        <span style="font-size: 11px; color: #0369a1; font-weight: bold;">☀️ Pengeringan</span>
-                        <h2 id="num-kering" style="font-size: 22px; color: #0c4a6e; margin-top: 5px;">0 Pcs</h2>
-                    </div>
-                    <div style="background: #dcfce7; padding: 12px; border-radius: 12px; text-align: center;">
-                        <span style="font-size: 11px; color: #15803d; font-weight: bold;">🚚 Ready to Deliver</span>
-                        <h2 id="num-ready" style="font-size: 22px; color: #14532d; margin-top: 5px;">0 Pcs</h2>
-                    </div>
-                    <div style="background: #f3f4f6; padding: 12px; border-radius: 12px; text-align: center;">
-                        <span style="font-size: 11px; color: #4b5563; font-weight: bold;">✅ Selesai</span>
-                        <h2 id="num-selesai" style="font-size: 22px; color: #1f2937; margin-top: 5px;">0 Pcs</h2>
-                    </div>
-                </div>
+    <!-- 2. KATEGORI KARPET NIPIS -->
+    <div class="category-box">
+        <div class="category-title">🍃 2. Karpet Nipis / Aladdin / Velvet / 3D</div>
+        <div class="carpet-desc">Jenis karpet kain nipis, mudah dilipat, ringkas, atau jenis karpet moden 3D.</div>
+        <label>Pilih Saiz Karpet:</label>
+        <select id="saiz_nipis">
+            <option value="Tiada">-- Tiada Tempahan Untuk Jenis Ini --</option>
+            <option value="Kecil (4x6 kaki) - RM12.00">Kecil (4x6 kaki) - RM12.00</option>
+            <option value="Sederhana (5x7 kaki) - RM17.50">Sederhana (5x7 kaki) - RM17.50</option>
+            <option value="Besar (6x8 kaki) - RM24.00">Besar (6x8 kaki) - RM24.00</option>
+            <option value="Sangat Besar (7x10 kaki) - RM35.00">Sangat Besar (7x10 kaki) - RM35.00</option>
+        </select>
+    </div>
 
-                <!-- MENU GRID UTAMA -->
-                <div class="grid-container">
-                    <button onclick="tukarMenu('tempahan')" class="butang-grid"><span class="icon-emoji">📝</span> Tempahan Baru</button>
-                    <button onclick="tukarMenu('temujanji')" class="butang-grid"><span class="icon-emoji">🗓️</span> Slot Temujanji</button>
-                    <button onclick="tukarMenu('invois')" class="butang-grid"><span class="icon-emoji">🖨️</span> Cetak Invois</button>
-                    <button onclick="tukarMenu('scan')" class="butang-grid"><span class="icon-emoji">🔍</span> Scan QR Code</button>
-                    <button onclick="tukarMenu('barcode')" class="butang-grid"><span class="icon-emoji">🏷️</span> Cetak Barcode</button>
-                    <button onclick="tukarMenu('kewangan')" class="butang-grid"><span class="icon-emoji">💰</span> Kewangan & Harga</button>
-                </div>
+    <!-- 3. KATEGORI KARPET SPONGE -->
+    <div class="category-box">
+        <div class="category-title">🧼 3. Karpet Sponge / Tatami</div>
+        <div class="carpet-desc">Jenis karpet berlapik span lembut di dalam, selesa untuk kanak-kanak merangkak.</div>
+        <label>Pilih Saiz Karpet:</label>
+        <select id="saiz_sponge">
+            <option value="Tiada">-- Tiada Tempahan Untuk Jenis Ini --</option>
+            <option value="Kecil (4x6 kaki) - RM12.00">Kecil (4x6 kaki) - RM12.00</option>
+            <option value="Sederhana (5x7 kaki) - RM17.50">Sederhana (5x7 kaki) - RM17.50</option>
+            <option value="Besar (6x8 kaki) - RM24.00">Besar (6x8 kaki) - RM24.00</option>
+            <option value="Sangat Besar (7x10 kaki) - RM35.00">Sangat Besar (7x10 kaki) - RM35.00</option>
+        </select>
+    </div>
+
+    <!-- BORANG MAKLUMAT PELANGGAN -->
+    <div style="margin-top: 25px;">
+        <label for="nama">Nama Penuh Pelanggan:</label>
+        <input type="text" id="nama" placeholder="Contoh: Muhammad Ali">
+
+        <label for="telefon">No. Telefon WhatsApp:</label>
+        <input type="tel" id="telefon" placeholder="Contoh: 0123456789">
+
+        <label for="alamat">Alamat Rumah Penuh (Zon Kulim):</label>
+        <textarea id="alamat" rows="3" placeholder="Masukkan alamat lengkap rumah anda untuk kutipan lori..."></textarea>
+
+        <div class="row">
+            <div style="flex: 1;">
+                <label for="tarikh">Tarikh Temujanji:</label>
+                <input type="date" id="tarikh">
             </div>
-
-
-            <!-- SCREEN 2: TEMPAHAN BARU -->
-            <div id="screen-tempahan" class="subscreen">
-                <button onclick="tukarMenu('dashboard')" class="btn-kembali">⬅️ Kembali ke Dashboard</button>
-                <h4 style="color: #2563eb; font-size: 16px; margin-bottom: 10px;">📝 Borang Tempahan Baru</h4>
-                <p style="font-size: 13px; color: #6b7280; margin-bottom: 15px;">Sila isi maklumat cuci karpet pelanggan di bawah.</p>
-                <div><label class="label-borang">Nama Pelanggan</label><input type="text" class="input-borang" placeholder="Contoh: Ahmad"></div>
-                <div><label class="label-borang">No Telefon</label><input type="tel" class="input-borang" placeholder="Contoh: 0123456789"></div>
-                <button class="btn-utama" style="background-color: #2563eb;">Simpan ke Google Sheets</button>
-            </div>
-
-            <!-- SCREEN 3: SLOT TEMUJANJI -->
-            <div id="screen-temujanji" class="subscreen">
-                <button onclick="tukarMenu('dashboard')" class="btn-kembali">⬅️ Kembali ke Dashboard</button>
-                <h4 style="color: #06b6d4; font-size: 16px; margin-bottom: 10px;">🗓️ Slot Temujanji</h4>
-                <p style="font-size: 13px; color: #6b7280; margin-bottom: 15px;">Jadual tarikh hantar dan ambil karpet pelanggan.</p>
-                <div style="padding: 20px; background-color: #f9fafb; border: 1px dashed #d1d5db; border-radius: 12px; text-align: center; color: #9ca3af; font-size: 13px;">📅 Tiada temujanji untuk hari ini.</div>
-            </div>
-
-            <!-- SCREEN 4: CETAK INVOIS -->
-            <div id="screen-invois" class="subscreen">
-                <button onclick="tukarMenu('dashboard')" class="btn-kembali">⬅️ Kembali ke Dashboard</button>
-                <h4 style="color: #8b5cf6; font-size: 16px; margin-bottom: 10px;">🖨️ Cetak Invois & Resit</h4>
-                <p style="font-size: 13px; color: #6b7280; margin-bottom: 10px;">Sila pilih rekod pelanggan dari Google Sheets:</p>
-                <select id="pilih-pelanggan" class="input-borang">
-                    <option>🔄 Sedang memuatkan nama pelanggan...</option>
+            <div style="flex: 1;">
+                <label for="masa">Waktu Pilihan Ambil:</label>
+                <select id="masa">
+                    <option value="Pagi (10:00 AM - 12:30 PM)">Pagi (10:00 AM - 12:30 PM)</option>
+                    <option value="Petang (2:30 PM - 5:00 PM)">Petang (2:30 PM - 5:00 PM)</option>
+                    <option value="Malam (8:00 PM - 10:00 PM)">Malam (8:00 PM - 10:00 PM)</option>
                 </select>
-                <button class="btn-utama" style="background-color: #8b5cf6;">🖨️ Cetak PDF Invois</button>
             </div>
-
-            <!-- SCREEN 5: SCAN QR -->
-            <div id="screen-scan" class="subscreen">
-                <button onclick="tukarMenu('dashboard')" class="btn-kembali">⬅️ Kembali ke Dashboard</button>
-                <h4 style="color: #ef4444; font-size: 16px; margin-bottom: 10px;">🔍 Scan QR Code</h4>
-                <p style="font-size: 13px; color: #6b7280; margin-bottom: 15px;">Gunakan kamera telefon pintar untuk mengimbas kod QR karpet.</p>
-                <div style="padding: 40px 20px; background-color: #1f2937; color: white; border-radius: 12px; text-align: center; font-size: 14px;">📷 Mengaktifkan Kamera Phone...</div>
-            </div>
-
-            <!-- SCREEN 6: CETAK BARCODE -->
-            <div id="screen-barcode" class="subscreen">
-                <button onclick="tukarMenu('dashboard')" class="btn-kembali">⬅️ Kembali ke Dashboard</button>
-                <h4 style="color: #4b5563; font-size: 16px; margin-bottom: 10px;">🏷️ Cetak Barcode Label</h4>
-                <p style="font-size: 13px; color: #6b7280; margin-bottom: 15px;">Jana kod bar untuk dilekatkan pada karpet pelanggan.</p>
-                <button class="btn-utama" style="background-color: #4b5563;">🏷️ Jana Barcode Baru</button>
-            </div>
-
-            <!-- SCREEN 7: KEWANGAN -->
-            <div id="screen-kewangan" class="subscreen">
-                <button onclick="tukarMenu('dashboard')" class="btn-kembali">⬅️ Kembali ke Dashboard</button>
-                <h4 style="color: #f59e0b; font-size: 16px; margin-bottom: 10px;">💰 Kewangan & Harga</h4>
-                <p style="font-size: 13px; color: #6b7280; margin-bottom: 15px;">Analisis keuntungan kedai dan tetapan harga semasa.</p>
-                <div style="padding: 15px; background-color: #f9fafb; border-radius: 12px; text-align: center; color: #6b7280; font-size: 13px;">💰 Laporan kewangan korporat dimuatkan dari Google Sheets.</div>
-            </div>
-
         </div>
+
+        <!-- BUTANG HANTAR WHATSAPP -->
+        <button class="btn-whatsapp" onclick="hantarKeWhatsApp()">
+            📲 Hantar Tempahan via WhatsApp
+        </button>
     </div>
-    <div class="menu-bawah" style="position: fixed; bottom: 0; left: 0; right: 0; background: #ffffff; border-top: 2px solid #e5e7eb; padding: 12px 10px; box-shadow: 0px -4px 15px rgba(0,0,0,0.05); z-index: 1000;">
-        <div class="nav-flex" style="display: flex; justify-content: space-around; max-width: 480px; margin: 0 auto;">
-            <button onclick="tukarMenu('dashboard')" class="butang-nav-bawah nav-active" style="flex: 1; border: none; background: none; color: #2563eb; font-size: 13px; font-weight: bold; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
-                <span style="font-size: 18px; margin-bottom: 2px;">🏠</span><span>Utama</span>
-            </button>
-            <button onclick="tukarMenu('tempahan')" class="butang-nav-bawah" style="flex: 1; border: none; background: none; color: #9ca3af; font-size: 13px; font-weight: bold; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
-                <span style="font-size: 18px; margin-bottom: 2px;">📝</span><span>Borang</span>
-            </button>
-            <button onclick="tukarMenu('invois')" class="butang-nav-bawah" style="flex: 1; border: none; background: none; color: #9ca3af; font-size: 13px; font-weight: bold; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
-                <span style="font-size: 18px; margin-bottom: 2px;">🖨️</span><span>Invois</span>
-            </button>
-        </div>
-    </div>
+</div>
 
-     <script>
-        // 1. Fungsi Otomatis Ambil Angka Dashboard saat halaman dibuka (Kalis Ralat)
-        window.onload = function() {
-            fetch('/api/dashboard')
-                .then(res => {
-                    if (!res.ok) {
-                        throw new Error('Pelayan Python memberikan ralat status ' + res.status);
-                    }
-                    return res.json();
-                })
-                .then(hasil => {
-                    let statusBadge = document.getElementById('status-sistem');
-                    if (statusBadge) {
-                        if (hasil && hasil.status === 'berjaya') {
-                            statusBadge.innerText = 'Sistem Aktif';
-                            statusBadge.style.backgroundColor = '#dcfce7';
-                            statusBadge.style.color = '#15803d';
-                            
-                            document.getElementById('num-proses').innerText = (hasil.dalam_proses || 0) + ' Pcs';
-                            document.getElementById('num-kering').innerText = (hasil.pengeringan || 0) + ' Pcs';
-                            document.getElementById('num-ready').innerText = (hasil.ready_deliver || 0) + ' Pcs';
-                            document.getElementById('num-selesai').innerText = (hasil.selesai || 0) + ' Pcs';
-                        } else {
-                            statusBadge.innerText = '❌ Ralat Kunci';
-                            statusBadge.style.backgroundColor = '#fee2e2';
-                            statusBadge.style.color = '#991b1b';
-                            console.log('Mesej ralat Python:', hasil.mesej);
-                        }
-                    }
-                })
-                .catch(err => {
-                    let statusBadge = document.getElementById('status-sistem');
-                    if (statusBadge) {
-                        statusBadge.innerText = '⚠️ Offline';
-                    }
-                    console.log('Gagal panggil API:', err);
-                });
-        };
+<script>
+function hantarKeWhatsApp() {
+    // Mengambil data input pelanggan
+    const nama = document.getElementById('nama').value.strip ? document.getElementById('nama').value.strip() : document.getElementById('nama').value;
+    const telefon = document.getElementById('telefon').value;
+    const alamat = document.getElementById('alamat').value;
+    const tarikh = document.getElementById('tarikh').value;
+    const masa = document.getElementById('masa').value;
+    
+    // Mengambil pilihan saiz karpet
+    const tebal = document.getElementById('saiz_tebal').value;
+    const nipis = document.getElementById('saiz_nipis').value;
+    const sponge = document.getElementById('saiz_sponge').value;
 
+    // Semakan jika kotak penting kosong
+    if(!nama || !telefon || !alamat || !tarikh) {
+        alert("❌ Sila isi Nama, No Telefon, Alamat dan Tarikh temujanji terlebih dahulu ya!");
+        return;
+    }
 
-        // 2. Fungsi Tukar Skrin Sub-Menu (Kalis Ralat)
-        function tukarMenu(targetScreen) {
-            document.getElementById('screen-dashboard').style.display = 'none';
-            document.getElementById('screen-tempahan').style.display = 'none';
-            document.getElementById('screen-temujanji').style.display = 'none';
-            document.getElementById('screen-invois').style.display = 'none';
-            document.getElementById('screen-scan').style.display = 'none';
-            document.getElementById('screen-barcode').style.display = 'none';
-            document.getElementById('screen-kewangan').style.display = 'none';
+    // Membina ayat pesanan teks WhatsApp yang kemas
+    let mesej = `*TEMPAHAN BARU CUCIAN KARPET KULIM*\n`;
+    mesej += `=========================\n\n`;
+    mesej += `👤 *Nama:* ${nama}\n`;
+    mesej += `📞 *Tel:* ${telefon}\n`;
+    mesej += `🏠 *Alamat:* ${alamat}\n\n`;
+    mesej += `🗓️ *Tarikh Ambil:* ${tarikh}\n`;
+    mesej += `⏰ *Waktu:* ${masa}\n\n`;
+    mesej += `📦 *JENIS & SAIZ KARPET:* \n`;
+    
+    let adaItem = false;
+    if(tebal !== "Tiada") { mesej += `• Keras/Tebal: ${tebal}\n`; adaItem = true; }
+    if(nipis !== "Tiada") { mesej += `• Nipis/Aladdin: ${nipis}\n`; adaItem = true; }
+    if(sponge !== "Tiada") { mesej += `• Sponge/Tatami: ${sponge}\n`; adaItem = true; }
+    
+    if(!adaItem) {
+        alert("❌ Sila pilih sekurang-kurangnya satu saiz karpet sebelum menempah!");
+        return;
+    }
 
-            document.getElementById('screen-' + targetScreen).style.display = 'block';
+    mesej += `\n=========================\n`;
+    mesej += `_Mohon pihak MYCARPET PRO mengesahkan slot temujanji di atas. Terima kasih!_`;
 
-            if (targetScreen === 'invois') {
-                fetch('/api/pelanggan')
-                    .then(res => res.json())
-                    .then(hasil => {
-                        let kotakPilihan = document.getElementById('pilih-pelanggan');
-                        if (kotakPilihan) {
-                            kotakPilihan.innerHTML = '';
-                            if (hasil.status === 'berjaya') {
-                                if (!hasil.data || hasil.data.length === 0) {
-                                    kotakPilihan.innerHTML = '<option>Tiada rekod pelanggan dijumpai</option>';
-                                } else {
-                                    hasil.data.forEach(nama => {
-                                        let opt = document.createElement('option');
-                                        opt.value = nama; 
-                                        opt.textContent = nama;
-                                        kotakPilihan.appendChild(opt);
-                                    });
-                                }
-                            } else {
-                                kotakPilihan.innerHTML = `<option>❌ Ralat API: Kunci Google Tidak Sah</option>`;
-                            }
-                        }
-                    })
-                    .catch(err => {
-                        let kotakPilihan = document.getElementById('pilih-pelanggan');
-                        if (kotakPilihan) {
-                            kotakPilihan.innerHTML = `<option>❌ Gagal bersambung ke backend</option>`;
-                        }
-                    });
-            }
-        }
+    // No telefon kedai kamu yang ditetapkan
+    const no_kedai = "60174050336";
+    
+    // Membina url pautan WhatsApp yang sah
+    const url_wa = `https://wa.me{no_kedai}?text=${encodeURIComponent(mesej)}`;
+    
+    // Membuka tab WhatsApp secara automatik
+    window.open(url_wa, '_blank');
+}
+</script>
 
-    </script>
 </body>
 </html>
