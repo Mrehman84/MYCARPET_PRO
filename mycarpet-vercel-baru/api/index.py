@@ -12,7 +12,7 @@ class handler(BaseHTTPRequestHandler):
         try:
             # 🔍 [BAHAGIAN SEMAKAN KUNCI]
             # Tukar 'KUNCI_SAYA' kepada nama kunci rahsia (Environment Variable) yang kamu guna di Vercel
-            nama_kunci = "KUNCI_SAYA" 
+            nama_kunci = "mycarpet-pro" 
             kunci_rahsia = os.environ.get(nama_kunci)
             
             # Membina mesej laporan untuk dipaparkan di skrin
