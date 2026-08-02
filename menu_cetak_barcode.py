@@ -6,8 +6,9 @@ import base64
 
 
 @st.cache_data(ttl=600)
-def fetch_data(worksheet):
-    return worksheet.get_all_values()
+def fetch_data(_worksheet):  # Tambah underscore '_' di depan nama parameter
+    return _worksheet.get_all_values()
+
 
 # Usage in your menu
 #data_t = fetch_data(t_tempahan) if t_tempahan else []
