@@ -15,16 +15,16 @@
         .category-title { font-weight: bold; font-size: 1.1em; color: #0f172a; margin-bottom: 5px; text-align: left; }
         .carpet-desc { font-size: 0.85em; color: #64748b; margin-bottom: 12px; text-align: left; }
         
-        /* Gaya Visual Emoji Box */
-        .carpet-emoji-box { font-size: 4rem; padding: 15px; background: #e2e8f0; border-radius: 8px; margin-bottom: 12px; display: inline-block; width: 80px; height: 80px; line-height: 80px; text-align: center; }
+        /* Gaya Gambar Karpet Realistik */
+        .carpet-img { width: 100%; max-height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 12px; border: 1px solid #cbd5e1; display: block; }
         
         select, input, textarea { width: 100%; padding: 10px; margin-top: 5px; margin-bottom: 15px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-size: 1em; }
         label { font-weight: bold; font-size: 0.9em; color: #334155; display: block; text-align: left; }
         .row { display: flex; gap: 10px; }
         
-        /* Butang WhatsApp Hijau */
-        .btn-whatsapp { background-color: #22c55e; color: white; border: none; padding: 15px; font-size: 1.1em; font-weight: bold; border-radius: 10px; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 10px rgba(34, 197, 94, 0.3); }
-        .btn-whatsapp:hover { background-color: #16a34a; }
+        /* Gaya Butang Pautan WhatsApp Baharu */
+        .btn-whatsapp-link { display: flex; align-items: center; justify-content: center; gap: 10px; background-color: #22c55e; color: white; text-decoration: none; padding: 15px; font-size: 1.1em; font-weight: bold; border-radius: 10px; width: 100%; box-sizing: border-box; box-shadow: 0 4px 10px rgba(34, 197, 94, 0.3); cursor: pointer; border: none; }
+        .btn-whatsapp-link:hover { background-color: #16a34a; }
     </style>
 </head>
 <body>
@@ -37,8 +37,8 @@
     <div class="category-box">
         <div class="category-title">🦁 1. Karpet Keras & Tebal (Turkey / Belgium / Shaggy)</div>
         <div class="carpet-desc">Jenis karpet berbulu, tebal, berat, atau jenis standard ruang tamu rumah.</div>
-        <!-- Ganti Gambar Dengan Emoji Singa Karpet Tebal -->
-        <div class="carpet-emoji-box">🦁</div>
+        <!-- 📸 Gambar Real Karpet Tebal (Shaggy) -->
+        <img class="carpet-img" src="https://unsplash.com" alt="Karpet Tebal">
         <label>Pilih Saiz Karpet:</label>
         <select id="saiz_tebal">
             <option value="Tiada">-- Tiada Tempahan Untuk Jenis Ini --</option>
@@ -53,8 +53,8 @@
     <div class="category-box">
         <div class="category-title">🍃 2. Karpet Nipis / Aladdin / Velvet / 3D</div>
         <div class="carpet-desc">Jenis karpet kain nipis, mudah dilipat, ringkas, atau jenis karpet moden 3D.</div>
-        <!-- Ganti Gambar Dengan Emoji Daun Karpet Nipis -->
-        <div class="carpet-emoji-box">🍃</div>
+        <!-- 📸 Gambar Real Karpet Corak Nipis Aladdin -->
+        <img class="carpet-img" src="https://unsplash.com" alt="Karpet Nipis">
         <label>Pilih Saiz Karpet:</label>
         <select id="saiz_nipis">
             <option value="Tiada">-- Tiada Tempahan Untuk Jenis Ini --</option>
@@ -69,8 +69,8 @@
     <div class="category-box">
         <div class="category-title">🧼 3. Karpet Sponge / Tatami</div>
         <div class="carpet-desc">Jenis karpet berlapik span lembut di dalam, selesa untuk kanak-kanak merangkak.</div>
-        <!-- Ganti Gambar Dengan Emoji Span Karpet Sponge -->
-        <div class="carpet-emoji-box">🧼</div>
+        <!-- 📸 Gambar Real Karpet Sponge Tatami Lembut -->
+        <img class="carpet-img" src="https://unsplash.com" alt="Karpet Sponge">
         <label>Pilih Saiz Karpet:</label>
         <select id="saiz_sponge">
             <option value="Tiada">-- Tiada Tempahan Untuk Jenis Ini --</option>
@@ -107,15 +107,15 @@
             </div>
         </div>
 
-        <!-- BUTANG HANTAR WHATSAPP -->
-        <button class="btn-whatsapp" onclick="hantarKeWhatsApp()">
+        <!-- BUTANG LINK WHATSAPP AKTIF 100% -->
+        <a id="link_whatsapp" class="btn-whatsapp-link" href="#" onclick="binaMesejWhatsApp(event)">
             📲 Hantar Tempahan via WhatsApp
-        </button>
+        </a>
     </div>
 </div>
 
 <script>
-function hantarKeWhatsApp() {
+function binaMesejWhatsApp(event) {
     const nama = document.getElementById('nama').value.trim();
     const telefon = document.getElementById('telefon').value;
     const alamat = document.getElementById('alamat').value;
@@ -128,6 +128,7 @@ function hantarKeWhatsApp() {
 
     if(!nama || !telefon || !alamat || !tarikh) {
         alert("❌ Sila isi Nama, No Telefon, Alamat dan Tarikh temujanji terlebih dahulu ya!");
+        event.preventDefault(); // Menghalang pautan kosong terbuka
         return;
     }
 
@@ -147,17 +148,22 @@ function hantarKeWhatsApp() {
     
     if(!adaItem) {
         alert("❌ Sila pilih sekurang-kurangnya satu saiz karpet sebelum menempah!");
+        event.preventDefault();
         return;
     }
 
     mesej += `\n=========================\n`;
     mesej += `_Mohon pihak MYCARPET PRO mengesahkan slot temujanji di atas. Terima kasih!_`;
 
-    // 🚀 ALAMAT LINK WHATSAPP PENGENDALIAN BARU (PASTI BERJAYA)
     const no_kedai = "60174050336";
-    const url_wa = "https://whatsapp.com" + no_kedai + "&text=" + encodeURIComponent(mesej);
     
-    window.open(url_wa, '_blank');
+    // Membina url pautan langsung tanpa sekat window.open
+    const pautan_akhir = "https://whatsapp.com" + no_kedai + "&text=" + encodeURIComponent(mesej);
+    
+    // Menghasut elemen <a> untuk melompat terus ke link WhatsApp
+    const elemenA = document.getElementById('link_whatsapp');
+    elemenA.href = pautan_akhir;
+    elemenA.target = "_blank";
 }
 </script>
 
