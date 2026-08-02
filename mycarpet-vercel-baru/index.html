@@ -336,6 +336,7 @@ function pilihSaiz(kategori, saiz, elemen) {
         if (adikBeradik[i] === elemen && elemen.classList.contains('active')) {
             elemen.classList.remove('active');
             pilihanSistem[kategori] = "Tiada";
+            kemaskiniPautanWhatsApp();
             return;
         }
         adikBeradik[i].classList.remove('active');
@@ -343,54 +344,71 @@ function pilihSaiz(kategori, saiz, elemen) {
     // Mengaktifkan butang kotak saiz yang baru ditekan
     elemen.classList.add('active');
     pilihanSistem[kategori] = saiz;
+    
+    // Setiap kali pelanggan klik saiz, kita kemaskini pautan WhatsApp siap-siap!
+    kemaskiniPautanWhatsApp();
 }
 
-function binaMesejWhatsApp(event) {
+// Kita pasang "Intipan" automatik pada kotak input supaya pautan sentiasa dikemaskini
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById('nama').addEventListener('input', kemaskiniPautanWhatsApp);
+    document.getElementById('telefon').addEventListener('input', kemaskiniPautanWhatsApp);
+    document.getElementById('alamat').addEventListener('input', kemaskiniPautanWhatsApp);
+    document.getElementById('tarikh').addEventListener('change', kemaskiniPautanWhatsApp);
+    document.getElementById('masa').addEventListener('change', kemaskiniPautanWhatsApp);
+});
+
+function kemaskiniPautanWhatsApp() {
     const nama = document.getElementById('nama').value.trim();
     const telefon = document.getElementById('telefon').value.trim();
     const alamat = document.getElementById('alamat').value.trim();
     const tarikh = document.getElementById('tarikh').value;
     const masa = document.getElementById('masa').value;
 
-    // Semakan jika ada kotak kosong yang terlupa diisi
+    let teksItem = "";
+    if (pilihanSistem.tebal !== "Tiada") { teksItem += "• Keras/Tebal: " + pilihanSistem.tebal + "\n"; }
+    if (pilihanSistem.nipis !== "Tiada") { teksItem += "• Nipis/Aladdin: " + pilihanSistem.nipis + "\n"; }
+    if (pilihanSistem.sponge !== "Tiada") { teksItem += "• Sponge/Tatami: " + pilihanSistem.sponge + "\n"; }
+    
+    // Membina ayat WhatsApp korporat yang sangat cantik
+    let mesej = "*TEMPAHAN BARU CUCIAN KARPET KULIM*\n";
+    mesej += "=========================\n\n";
+    mesej += "👤 *Nama:* " + (nama || "-") + "\n";
+    mesej += "📞 *Tel:* " + (telefon || "-") + "\n";
+    mesej += "🏠 *Alamat:* " + (alamat || "-") + "\n\n";
+    mesej += "🗓️ *Tarikh Ambil:* " + (tarikh || "-") + "\n";
+    mesej += "⏰ *Waktu:* " + masa + "\n\n";
+    mesej += "📦 *JENIS & SAIZ KARPET:* \n" + (teksItem || "• Belum pilih saiz\n");
+    mesej += "\n=========================\n";
+    mesej += "_Mohon pihak MYCARPET PRO mengesahkan slot jadual di atas. Terima kasih._";
+
+    const no_kedai = "60174050336";
+    const pautan_akhir = "https://whatsapp.com" + no_kedai + "&text=" + encodeURIComponent(mesej);
+    
+    // Suap terus pautan ke dalam butang HTML tanpa tunggu butang ditekan!
+    const elemenA = document.getElementById('link_whatsapp');
+    elemenA.href = pautan_akhir;
+    elemenA.target = "_blank";
+}
+
+// Fungsi amaran jika pelanggan tekan butang sebelum isi maklumat penuh
+function binaMesejWhatsApp(event) {
+    const nama = document.getElementById('nama').value.trim();
+    const telefon = document.getElementById('telefon').value.trim();
+    const alamat = document.getElementById('alamat').value.trim();
+    const tarikh = document.getElementById('tarikh').value;
+
     if (!nama || !telefon || !alamat || !tarikh) {
         alert("❌ Sila lengkapkan Nama, No Telefon, Alamat dan Tarikh terlebih dahulu.");
         event.preventDefault();
         return;
     }
 
-    let adaItem = false;
-    let teksItem = "";
-    if (pilihanSistem.tebal !== "Tiada") { teksItem += "• Keras/Tebal: " + pilihanSistem.tebal + "\n"; adaItem = true; }
-    if (pilihanSistem.nipis !== "Tiada") { teksItem += "• Nipis/Aladdin: " + pilihanSistem.nipis + "\n"; adaItem = true; }
-    if (pilihanSistem.sponge !== "Tiada") { teksItem += "• Sponge/Tatami: " + pilihanSistem.sponge + "\n"; adaItem = true; }
-    
-    // Semakan jika pelanggan terlupa klik kotak saiz karpet
-    if (!adaItem) {
+    if (pilihanSistem.tebal === "Tiada" && pilihanSistem.nipis === "Tiada" && pilihanSistem.sponge === "Tiada") {
         alert("❌ Sila pilih sekurang-kurangnya satu saiz karpet dengan menekan kotak saiz.");
         event.preventDefault();
         return;
     }
-
-    // Membina susunan ayat WhatsApp korporat yang sangat cantik
-    let mesej = "*TEMPAHAN BARU CUCIAN KARPET KULIM*\n";
-    mesej += "=========================\n\n";
-    mesej += "👤 *Nama:* " + nama + "\n";
-    mesej += "📞 *Tel:* " + telefon + "\n";
-    mesej += "🏠 *Alamat:* " + alamat + "\n\n";
-    mesej += "🗓️ *Tarikh Ambil:* " + tarikh + "\n";
-    mesej += "⏰ *Waktu:* " + masa + "\n\n";
-    mesej += "📦 *JENIS & SAIZ KARPET:* \n" + teksItem;
-    mesej += "\n=========================\n";
-    mesej += "_Mohon pihak MYCARPET PRO mengesahkan slot jadual di atas. Terima kasih._";
-
-    const no_kedai = "60174050336";
-    // Pautan rasmi global yang kalis daripada sekatan pop-up browser
-    const pautan_akhir = "https://whatsapp.com" + no_kedai + "&text=" + encodeURIComponent(mesej);
-    
-    const elemenA = document.getElementById('link_whatsapp');
-    elemenA.href = pautan_akhir;
-    elemenA.target = "_blank";
 }
 </script>
 
