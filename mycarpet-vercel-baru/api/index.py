@@ -26,32 +26,23 @@ app.add_middleware(
 )
 
 def sambung_google_sheets():
-    client_email = os.environ.get("GOOGLE_CLIENT_EMAIL")
-    private_key = os.environ.get("GOOGLE_PRIVATE_KEY")
-    
-    if not client_email or not private_key:
-        return None
-        
     skop_akses = [
         "https://google.com",
         "https://googleapis.com"
     ]
     
-    # 🌟 PEMBERSIHAN TOTAL: Membuang tanda pembuka kata tersembunyi jika terikut di Vercel
-    private_key_bersih = private_key.strip()
-    if private_key_bersih.startswith('"') and private_key_bersih.endswith('"'):
-        private_key_bersih = private_key_bersih[1:-1]
-        
-    # Membetulkan ralat baris baru \\n menjadi \n yang sebenar
-    private_key_bersih = private_key_bersih.replace("\\n", "\n")
-    
-    kunci_manual = {
-        "type": "service_account",
-        "client_email": client_email.strip().replace('"', ''),
-        "private_key": private_key_bersih
-    }
-        
-    kredential = Credentials.from_service_account_info(kunci_manual, scopes=skop_akses)
+    # 🌟 CARA KALIS RALAT: Membaca terus kunci daripada tetapan fail config kamu!
+    # Sila pastikan fail config.py kamu mengandungi maklumat kunci yang betul.
+    try:
+        # Jika config kamu menggunakan fail JSON luaran:
+        kredential = Credentials.from_service_account_file("config.py", scopes=skop_akses)
+    except Exception:
+        # Jika config kamu menyimpan json_info di dalam pembolehubah:
+        if hasattr(config, 'json_info'):
+            kredential = Credentials.from_service_account_info(config.json_info, scopes=skop_akses)
+        else:
+            return None
+            
     client = gspread.authorize(kredential)
     return client
 
