@@ -27,9 +27,9 @@ app.add_middleware(
 
 def sambung_google_sheets():
     client_email = os.environ.get("GOOGLE_CLIENT_EMAIL")
-    private_key_b64 = os.environ.get("GOOGLE_PRIVATE_KEY")
+    private_key = os.environ.get("GOOGLE_PRIVATE_KEY")
     
-    if not client_email or not private_key_b64:
+    if not client_email or not private_key:
         return None
         
     skop_akses = [
@@ -37,30 +37,24 @@ def sambung_google_sheets():
         "https://googleapis.com"
     ]
     
-    try:
-        # Kod magik untuk menterjemah semula kunci rahsia yang selamat
-        private_key_decode = base64.b64decode(private_key_b64).decode("utf-8")
+    # 🌟 PEMBERSIHAN TOTAL: Membuang tanda pembuka kata tersembunyi jika terikut di Vercel
+    private_key_bersih = private_key.strip()
+    if private_key_bersih.startswith('"') and private_key_bersih.endswith('"'):
+        private_key_bersih = private_key_bersih[1:-1]
         
-        kunci_manual = {
-            "type": "service_account",
-            "client_email": client_email,
-            "private_key": private_key_decode
-        }
-            
-        kredential = Credentials.from_service_account_info(kunci_manual, scopes=skop_akses)
-        client = gspread.authorize(kredential)
-        return client
-    except Exception:
-        # Jika kunci belum ditukar ke Base64, ia akan guna cara biasa
-        private_key_bersih = private_key_b64.replace("\\n", "\n")
-        kunci_manual = {
-            "type": "service_account",
-            "client_email": client_email,
-            "private_key": private_key_bersih
-        }
-        kredential = Credentials.from_service_account_info(kunci_manual, scopes=skop_akses)
-        client = gspread.authorize(kredential)
-        return client
+    # Membetulkan ralat baris baru \\n menjadi \n yang sebenar
+    private_key_bersih = private_key_bersih.replace("\\n", "\n")
+    
+    kunci_manual = {
+        "type": "service_account",
+        "client_email": client_email.strip().replace('"', ''),
+        "private_key": private_key_bersih
+    }
+        
+    kredential = Credentials.from_service_account_info(kunci_manual, scopes=skop_akses)
+    client = gspread.authorize(kredential)
+    return client
+
 
 
 
