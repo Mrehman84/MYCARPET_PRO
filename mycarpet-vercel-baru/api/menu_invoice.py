@@ -4,6 +4,14 @@ import streamlit as st
 from fpdf import FPDF
 
 
+# KOD BAHARU YANG BIJAK 🚀
+import os
+# Kita panggil fungsi selamat dari fail config.py yang kita baiki semalam!
+from config import hubung_google_sheets, URL_OPERASI_SHEET
+
+# Sekarang fail invois kamu automatik akan dapat kunci Google yang betul!
+client = hubung_google_sheets()
+sheet = client.open_by_url(URL_OPERASI_SHEET).worksheet("Pelanggan") # Ganti nama sheet mengikut jadual kamu
 
 
 
