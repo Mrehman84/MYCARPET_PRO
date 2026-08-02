@@ -10,7 +10,7 @@ def fetch_data(worksheet):
     return worksheet.get_all_values()
 
 # Usage in your menu
-data_t = fetch_data(t_tempahan) if t_tempahan else []
+#data_t = fetch_data(t_tempahan) if t_tempahan else []
 # ===================================================================
 # 1. FUNGSI JANA GAMBAR QR CODE (STABIL)
 # ===================================================================
@@ -34,6 +34,7 @@ def papar_menu_cetak_barcode(t_tempahan, t_karpet, t_pelanggan):
     st.title("🖨️ Cetak QR Code Carpet")
     st.caption("Sistem pengurusan cetakan tag stiker QR Carpet (Format Kertas A6 Grid).")
 
+    data_t = fetch_data(t_tempahan) if t_tempahan else []
     # Ambil data dari Google Sheets
     data_t = t_tempahan.get_all_values() if t_tempahan else []
     data_k = t_karpet.get_all_values() if t_karpet else []
