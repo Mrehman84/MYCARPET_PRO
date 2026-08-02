@@ -10,213 +10,214 @@
     
     <style>
         :root {
-            --primary: #0284c7;
-            --primary-dark: #0369a1;
-            --success: #10b981;
-            --bg-global: #f8fafc;
-            --text-main: #0f172a;
-            --text-muted: #475569;
-            --card-border: #e2e8f0;
+            --primary: #38bdf8;
+            --primary-dark: #0284c7;
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-glow: rgba(56, 189, 248, 0.2);
         }
 
+        /* 🌌 LATAR BELAKANG MEWAH KORPORAT */
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: var(--bg-global); 
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
             color: var(--text-main); 
             margin: 0; 
             padding: 40px 20px;
             display: flex;
             justify-content: center;
+            min-height: 100vh;
+            box-sizing: border-box;
         }
 
+        /* KAD UTAMA KACA (GLASSMORPHISM) */
         .container { 
             width: 100%;
-            max-width: 650px; 
-            background: #ffffff; 
-            padding: 40px; 
-            border-radius: 24px; 
-            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.02);
-            border: 1px solid var(--card-border);
+            max-width: 600px; 
+            background: var(--card-bg); 
+            padding: 40px 30px; 
+            border-radius: 28px; 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
         }
 
-        /* Rekabentuk Header Korporat */
         .brand-header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 35px;
         }
         .brand-logo {
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 700;
-            color: var(--text-main);
+            color: #ffffff;
             letter-spacing: -0.5px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            margin-bottom: 8px;
+            gap: 12px;
+            margin-bottom: 6px;
         }
         .brand-logo span { color: var(--primary); }
         .subtitle { 
             font-size: 0.95rem; 
             color: var(--text-muted); 
             margin: 0;
-            font-weight: 400;
         }
 
         .section-title {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 600;
-            color: var(--text-main);
-            margin-bottom: 20px;
+            color: #ffffff;
+            margin: 35px 0 20px 0;
             display: flex;
             align-items: center;
             gap: 10px;
-            border-bottom: 1px solid var(--card-border);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             padding-bottom: 10px;
         }
 
-        /* Kad Kategori Gempak */
+        /* KAD KATEGORI PREMIUM DENGAN GAMBAR DALAMAN */
         .service-card { 
-            background: #ffffff;
-            border: 1px solid var(--card-border);
-            border-radius: 16px; 
-            padding: 24px; 
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px; 
+            padding: 20px; 
             margin-bottom: 20px; 
-            transition: all 0.25s ease;
+            overflow: hidden;
         }
-        .service-card:hover {
-            border-color: #cbd5e1;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
-        }
-        .card-header-flex {
+        
+        /* 📸 GAMBAR REALISTIK ALTERNATIF (MENGGUNKAN BLOK VISUAL TEXTURE YANG DIJAMIN KELUAR) */
+        .carpet-visual-box {
+            width: 100%;
+            height: 110px;
+            border-radius: 12px;
+            margin-bottom: 15px;
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
         }
+        .img-tebal { background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://transparenttextures.com'), #451a03; color: #fcd34d; }
+        .img-nipis { background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://transparenttextures.com'), #0369a1; color: #38bdf8; }
+        .img-sponge { background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://transparenttextures.com'), #115e59; color: #2dd4bf; }
+        .visual-tag { font-size: 0.75rem; font-weight: 400; opacity: 0.8; margin-top: 4px; text-transform: uppercase; }
+
         .card-meta h3 { 
             margin: 0; 
             font-size: 1.1rem; 
             font-weight: 600; 
-            color: var(--text-main);
+            color: #ffffff;
         }
         .card-meta p { 
-            margin: 4px 0 0 0; 
+            margin: 5px 0 15px 0; 
             font-size: 0.85rem; 
             color: var(--text-muted);
             line-height: 1.4;
         }
-        .card-icon {
-            background: #f0f9ff;
-            color: var(--primary);
-            width: 42px;
-            height: 42px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-        }
 
-        /* Papan Grid Pemilihan Saiz */
+        /* BUTANG SELEKSI SAIZ MODEN GRID */
         .size-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 10px;
-            margin-top: 15px;
         }
         .size-btn {
-            background: #ffffff;
-            border: 1px solid var(--card-border);
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 12px;
-            border-radius: 10px;
-            font-size: 0.9rem;
+            border-radius: 12px;
+            font-size: 0.88rem;
             font-weight: 500;
-            color: var(--text-muted);
+            color: #cbd5e1;
             cursor: pointer;
             transition: all 0.2s ease;
             text-align: center;
         }
         .size-btn:hover {
-            background: #f8fafc;
-            border-color: #cbd5e1;
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
         }
         .size-btn.active {
-            background: #f0f9ff;
+            background: rgba(56, 189, 248, 0.15);
             border-color: var(--primary);
-            color: var(--primary-dark);
+            color: #ffffff;
             font-weight: 600;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
         }
 
-        /* Elemen Borang Input Premium */
-        .form-group {
-            margin-bottom: 20px;
-        }
+        /* BORANG INPUT PREMIUM KORPORAT */
+        .form-group { margin-bottom: 22px; }
         .form-group label {
             display: block;
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             font-weight: 600;
-            color: var(--text-main);
+            color: #cbd5e1;
             margin-bottom: 8px;
         }
         .input-style { 
             width: 100%; 
             padding: 14px 16px; 
-            border: 1px solid var(--card-border); 
-            border-radius: 12px; 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            border-radius: 14px; 
             box-sizing: border-box; 
             font-size: 0.95rem; 
             font-family: inherit;
-            background: #f8fafc;
+            background: rgba(15, 23, 42, 0.4);
+            color: #ffffff;
             transition: all 0.2s ease;
         }
         .input-style:focus {
             outline: none;
             border-color: var(--primary);
-            background: #ffffff;
-            box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.1);
+            background: rgba(15, 23, 42, 0.6);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
         }
         textarea.input-style { resize: none; }
-        
         .form-row { 
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 16px; 
         }
 
-        /* Butang Hantar Eksklusif */
-        .btn-submit-container {
-            margin-top: 32px;
-        }
+        /* BUTANG WHATSAPP EXCLUSIVE GREEN GLOW */
+        .btn-submit-container { margin-top: 35px; }
         .btn-professional-whatsapp { 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             gap: 12px; 
-            background-color: #0f172a; 
+            background: #22c55e; 
             color: #ffffff; 
             text-decoration: none; 
             padding: 16px; 
-            font-size: 1rem; 
+            font-size: 1.05rem; 
             font-weight: 600; 
-            border-radius: 12px; 
+            border-radius: 14px; 
             width: 100%; 
             box-sizing: border-box; 
             transition: all 0.2s ease;
             cursor: pointer; 
             border: none; 
+            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.3);
         }
         .btn-professional-whatsapp:hover { 
-            background-color: #1e293b;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
+            background-color: #16a34a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(34, 197, 94, 0.45);
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- Bahagian Atas Logo Syarikat -->
     <div class="brand-header">
         <div class="brand-logo"><i class="fa-solid fa-wand-magic-sparkles"></i> MYCARPET <span>PRO</span></div>
         <p class="subtitle">Premium Carpet Care & Logistics System — Kulim</p>
@@ -226,14 +227,16 @@
 
     <!-- KATEGORI 1 -->
     <div class="service-card">
-        <div class="card-header-flex">
-            <div class="card-meta">
-                <h3>Karpet Keras & Tebal</h3>
-                <p>Premium Turkey, Belgium weave, & Shaggy long pile standard ruang tamu.</p>
-            </div>
-            <div class="card-icon"><i class="fa-solid fa-gem"></i></div>
+        <!-- 📸 STRUKTUR GAMBAR TEKSTUR REAL YANG DIJAMIN KELUAR DI VERCEL -->
+        <div class="carpet-visual-box img-tebal">
+            <div>🦁 TURKEY PREMIUM</div>
+            <div class="visual-tag">Tekstur: Bulu Tebal & Keras</div>
         </div>
-        <div class="size-grid" id="grid_tebal">
+        <div class="card-meta">
+            <h3>Karpet Keras & Tebal</h3>
+            <p>Sesuai untuk jenis Premium Turkey, Belgium weave, & Shaggy long pile standard ruang tamu.</p>
+        </div>
+        <div class="size-grid">
             <div class="size-btn" onclick="pilihSaiz('tebal', 'Kecil (4x6 kaki)', this)">Kecil (4x6 kaki)</div>
             <div class="size-btn" onclick="pilihSaiz('tebal', 'Sederhana (5x7 kaki)', this)">Sederhana (5x7 kaki)</div>
             <div class="size-btn" onclick="pilihSaiz('tebal', 'Besar (6x9 kaki)', this)">Besar (6x9 kaki)</div>
@@ -243,14 +246,15 @@
 
     <!-- KATEGORI 2 -->
     <div class="service-card">
-        <div class="card-header-flex">
-            <div class="card-meta">
-                <h3>Karpet Nipis & Klasik</h3>
-                <p>Aladdin design, velvet texture, kain nipis ringkas, & moden 3D prints.</p>
-            </div>
-            <div class="card-icon"><i class="fa-solid fa-scroll"></i></div>
+        <div class="carpet-visual-box img-nipis">
+            <div>🍃 ALADDIN 3D PRINT</div>
+            <div class="visual-tag">Tekstur: Kain Nipis Velvet</div>
         </div>
-        <div class="size-grid" id="grid_nipis">
+        <div class="card-meta">
+            <h3>Karpet Nipis & Klasik</h3>
+            <p>Sesuai untuk jenis Aladdin design, velvet texture, kain nipis ringkas, & moden 3D prints.</p>
+        </div>
+        <div class="size-grid">
             <div class="size-btn" onclick="pilihSaiz('nipis', 'Kecil (4x6 kaki)', this)">Kecil (4x6 kaki)</div>
             <div class="size-btn" onclick="pilihSaiz('nipis', 'Sederhana (5x7 kaki)', this)">Sederhana (5x7 kaki)</div>
             <div class="size-btn" onclick="pilihSaiz('nipis', 'Besar (6x8 kaki)', this)">Besar (6x8 kaki)</div>
@@ -260,14 +264,22 @@
 
     <!-- KATEGORI 3 -->
     <div class="service-card">
-        <div class="card-header-flex">
-            <div class="card-meta">
-                <h3>Karpet Sponge & Tatami</h3>
-                <p>Berlapik span lembut dalaman, mesra bayi merangkak, & lapik Japanese Tatami.</p>
-            </div>
-            <div class="card-icon"><i class="fa-solid fa-mattress-pillow"></i></div>
+        <div class="carpet-visual-box img-sponge">
+    <!-- ===================================================================== -->
+    <!-- 🧼 KATEGORI 3: KARPET SPONGE & TATAMI                                 -->
+    <!-- ===================================================================== -->
+    <div class="service-card">
+        <!-- Kotak Tekstur Visual Span Lembut (Dijamin Keluar di Vercel!) -->
+        <div class="carpet-visual-box img-sponge">
+            <div>🧼 SPONGE TATAMI</div>
+            <div class="visual-tag">Tekstur: Span Lembut Berlapik</div>
         </div>
-        <div class="size-grid" id="grid_sponge">
+        <div class="card-meta">
+            <h3>Karpet Sponge & Tatami</h3>
+            <p>Sesuai untuk jenis berlapik span lembut dalaman, mesra bayi, & lapik Japanese Tatami.</p>
+        </div>
+        <!-- Pilihan Saiz Interaktif Bentuk Butang Kotak -->
+        <div class="size-grid">
             <div class="size-btn" onclick="pilihSaiz('sponge', 'Kecil (4x6 kaki)', this)">Kecil (4x6 kaki)</div>
             <div class="size-btn" onclick="pilihSaiz('sponge', 'Sederhana (5x7 kaki)', this)">Sederhana (5x7 kaki)</div>
             <div class="size-btn" onclick="pilihSaiz('sponge', 'Besar (6x8 kaki)', this)">Besar (6x8 kaki)</div>
@@ -275,10 +287,10 @@
         </div>
     </div>
 
-        <!-- ===================================================================== -->
-    <!-- 🚚 2. MAKLUMAT LOGISTIK & KUTIPAN KULIM                               -->
     <!-- ===================================================================== -->
-    <div class="section-title" style="margin-top: 40px;"><i class="fa-solid fa-truck-ramp-box"></i> 2. Maklumat Logistik & Kutipan</div>
+    <!-- 🚚 2. MAKLUMAT LOGISTIK & KUTIPAN ZON KULIM                           -->
+    <!-- ===================================================================== -->
+    <div class="section-title"><i class="fa-solid fa-truck-ramp-box"></i> 2. Maklumat Logistik & Kutipan</div>
 
     <!-- Kotak Input Nama -->
     <div class="form-group">
@@ -292,13 +304,13 @@
         <input type="tel" id="telefon" class="input-style" placeholder="Contoh: 0174050336">
     </div>
 
-    <!-- Kotak Input Alamat -->
+    <!-- Kotak Input Alamat Rumah -->
     <div class="form-group">
         <label for="alamat">Alamat Rumah Lengkap (Zon Kutipan Kulim)</label>
         <textarea id="alamat" class="input-style" rows="3" placeholder="Sila tulis alamat rumah penuh untuk panduan lori pemandu"></textarea>
     </div>
 
-    <!-- Susunan Tarikh & Masa Sebaris -->
+    <!-- Kotak Pilihan Tarikh & Masa Sebaris Moden -->
     <div class="form-row">
         <div class="form-group">
             <label for="tarikh">Tarikh Kutipan</label>
@@ -314,104 +326,83 @@
         </div>
     </div>
 
-    <!-- Butang Hantar Eksklusif Charcoal Black -->
+    <!-- Butang WhatsApp Eksklusif Green Glow -->
     <div class="btn-submit-container">
-        <a id="link_whatsapp" class="btn-professional-whatsapp" href="#" onclick="binaMesejWhatsApp(event)">
+        <button id="link_whatsapp" class="btn-professional-whatsapp" onclick="binaMesejWhatsAppDirect()">
             <i class="fa-brands fa-whatsapp" style="font-size: 1.25rem;"></i> Sahkan & Hantar Tempahan via WhatsApp
-        </a>
+        </button>
     </div>
-</div> <!-- Penutup bagi kelas container web -->
+</div> <!-- Penutup kelas container utama web -->
+
 
 <!-- ===================================================================== -->
-<!-- 🧠 SISTEM ROBOT JAVASCRIPT DI BELAKANG TAB                            -->
+<!-- 🧠 ROBOT JAVASCRIPT: LOGIK PEMILIHAN & HANTAR DATA                    -->
 <!-- ===================================================================== -->
 <script>
-// Menyimpan pilihan saiz secara senyap di belakang tab
+// Memori rahsia untuk simpan saiz yang pelanggan klik
 let pilihanSistem = { tebal: "Tiada", nipis: "Tiada", sponge: "Tiada" };
 
 function pilihSaiz(kategori, saiz, elemen) {
-    // Memadam status aktif lama dalam kategori yang sama
     const adikBeradik = elemen.parentNode.getElementsByClassName('size-btn');
     for (let i = 0; i < adikBeradik.length; i++) {
+        // Jika pelanggan klik butang yang sama, kita padam pilihan (cancel select)
         if (adikBeradik[i] === elemen && elemen.classList.contains('active')) {
             elemen.classList.remove('active');
             pilihanSistem[kategori] = "Tiada";
-            kemaskiniPautanWhatsApp();
             return;
         }
         adikBeradik[i].classList.remove('active');
     }
-    // Mengaktifkan butang kotak saiz yang baru ditekan
+    // Tukar warna kotak saiz menjadi biru menyala tanda aktif
     elemen.classList.add('active');
     pilihanSistem[kategori] = saiz;
-    
-    // Setiap kali pelanggan klik saiz, kita kemaskini pautan WhatsApp siap-siap!
-    kemaskiniPautanWhatsApp();
 }
 
-// Kita pasang "Intipan" automatik pada kotak input supaya pautan sentiasa dikemaskini
-document.addEventListener("DOMContentLoaded", function() {
-    document.getElementById('nama').addEventListener('input', kemaskiniPautanWhatsApp);
-    document.getElementById('telefon').addEventListener('input', kemaskiniPautanWhatsApp);
-    document.getElementById('alamat').addEventListener('input', kemaskiniPautanWhatsApp);
-    document.getElementById('tarikh').addEventListener('change', kemaskiniPautanWhatsApp);
-    document.getElementById('masa').addEventListener('change', kemaskiniPautanWhatsApp);
-});
-
-function kemaskiniPautanWhatsApp() {
+// Fungsi magik melompat direct ke WhatsApp (Kalis sekat Chrome!)
+function binaMesejWhatsAppDirect() {
     const nama = document.getElementById('nama').value.trim();
     const telefon = document.getElementById('telefon').value.trim();
     const alamat = document.getElementById('alamat').value.trim();
     const tarikh = document.getElementById('tarikh').value;
     const masa = document.getElementById('masa').value;
 
+    // Amaran jika ada borang kosong
+    if (!nama || !telefon || !alamat || !tarikh) {
+        alert("❌ Sila lengkapkan Nama, No Telefon, Alamat dan Tarikh terlebih dahulu ya.");
+        return;
+    }
+
+    let adaItem = false;
     let teksItem = "";
-    if (pilihanSistem.tebal !== "Tiada") { teksItem += "• Keras/Tebal: " + pilihanSistem.tebal + "\n"; }
-    if (pilihanSistem.nipis !== "Tiada") { teksItem += "• Nipis/Aladdin: " + pilihanSistem.nipis + "\n"; }
-    if (pilihanSistem.sponge !== "Tiada") { teksItem += "• Sponge/Tatami: " + pilihanSistem.sponge + "\n"; }
+    if (pilihanSistem.tebal !== "Tiada") { teksItem += "• Keras/Tebal: " + pilihanSistem.tebal + "\n"; adaItem = true; }
+    if (pilihanSistem.nipis !== "Tiada") { teksItem += "• Nipis/Aladdin: " + pilihanSistem.nipis + "\n"; adaItem = true; }
+    if (pilihanSistem.sponge !== "Tiada") { teksItem += "• Sponge/Tatami: " + pilihanSistem.sponge + "\n"; adaItem = true; }
     
-    // Membina ayat WhatsApp korporat yang sangat cantik
+    // Amaran jika terlupa klik kotak saiz karpet
+    if (!adaItem) {
+        alert("❌ Sila pilih sekurang-kurangnya satu saiz karpet dengan menekan kotak saiz.");
+        return;
+    }
+
+    // Membina susunan ayat laporan WhatsApp yang sangat kemas
     let mesej = "*TEMPAHAN BARU CUCIAN KARPET KULIM*\n";
     mesej += "=========================\n\n";
-    mesej += "👤 *Nama:* " + (nama || "-") + "\n";
-    mesej += "📞 *Tel:* " + (telefon || "-") + "\n";
-    mesej += "🏠 *Alamat:* " + (alamat || "-") + "\n\n";
-    mesej += "🗓️ *Tarikh Ambil:* " + (tarikh || "-") + "\n";
+    mesej += "👤 *Nama:* " + nama + "\n";
+    mesej += "📞 *Tel:* " + telefon + "\n";
+    mesej += "🏠 *Alamat:* " + alamat + "\n\n";
+    mesej += "🗓️ *Tarikh Ambil:* " + tarikh + "\n";
     mesej += "⏰ *Waktu:* " + masa + "\n\n";
-    mesej += "📦 *JENIS & SAIZ KARPET:* \n" + (teksItem || "• Belum pilih saiz\n");
+    mesej += "📦 *JENIS & SAIZ KARPET:* \n" + teksItem;
     mesej += "\n=========================\n";
     mesej += "_Mohon pihak MYCARPET PRO mengesahkan slot jadual di atas. Terima kasih._";
 
     const no_kedai = "60174050336";
     const pautan_akhir = "https://whatsapp.com" + no_kedai + "&text=" + encodeURIComponent(mesej);
     
-    // Suap terus pautan ke dalam butang HTML tanpa tunggu butang ditekan!
-    const elemenA = document.getElementById('link_whatsapp');
-    elemenA.href = pautan_akhir;
-    elemenA.target = "_blank";
-}
-
-// Fungsi amaran jika pelanggan tekan butang sebelum isi maklumat penuh
-function binaMesejWhatsApp(event) {
-    const nama = document.getElementById('nama').value.trim();
-    const telefon = document.getElementById('telefon').value.trim();
-    const alamat = document.getElementById('alamat').value.trim();
-    const tarikh = document.getElementById('tarikh').value;
-
-    if (!nama || !telefon || !alamat || !tarikh) {
-        alert("❌ Sila lengkapkan Nama, No Telefon, Alamat dan Tarikh terlebih dahulu.");
-        event.preventDefault();
-        return;
-    }
-
-    if (pilihanSistem.tebal === "Tiada" && pilihanSistem.nipis === "Tiada" && pilihanSistem.sponge === "Tiada") {
-        alert("❌ Sila pilih sekurang-kurangnya satu saiz karpet dengan menekan kotak saiz.");
-        event.preventDefault();
-        return;
-    }
+    // Lompat terus tukar halaman web ke link WhatsApp tanpa disekat pop-up!
+    window.location.href = pautan_akhir;
 }
 </script>
 
 </body>
 </html>
-
