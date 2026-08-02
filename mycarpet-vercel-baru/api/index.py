@@ -1,121 +1,46 @@
+from http.server import BaseHTTPRequestHandler
 import os
-import sys
-import json
-import base64
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-import gspread
-from google.oauth2.service_account import Credentials
+import traceback
 
-# Ketuk dinding folder supaya Python boleh nampak fail config.py di luar folder api
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import config
-
-# Hidupkan aplikasi FastAPI (Otak Backend Vercel)
-app = FastAPI()
-
-# Benarkan frontend HTML bersembang dengan backend Python ini
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# Fungsi khas menterjemah kunci Base64 dari peti besi Vercel
-def sambung_google_sheets():
-    client_email = os.environ.get("GOOGLE_CLIENT_EMAIL")
-    private_key_b64 = os.environ.get("GOOGLE_PRIVATE_KEY")
-    
-    if not client_email or not private_key_b64:
-        return None
+class handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        # 1. Hantar isyarat kepada pelayan bahawa kod kita sedia berjalan
+        self.send_response(200)
+        self.send_header('Content-type', 'text/plain; charset=utf-8')
+        self.end_headers()
         
-    skop_akses = [
-        "https://google.com",
-        "https://googleapis.com"
-    ]
-    
-    try:
-        # Terjemah semula kunci rahsia Base64 menjadi kunci Google yang asal
-        private_key_decode = base64.b64decode(private_key_b64).decode("utf-8")
-        
-        kunci_manual = {
-            "type": "service_account",
-            "client_email": client_email.strip(),
-            "private_key": private_key_decode.strip()
-        }
+        try:
+            # 🔍 [BAHAGIAN SEMAKAN KUNCI]
+            # Tukar 'KUNCI_SAYA' kepada nama kunci rahsia (Environment Variable) yang kamu guna di Vercel
+            nama_kunci = "KUNCI_SAYA" 
+            kunci_rahsia = os.environ.get(nama_kunci)
             
-        kredential = Credentials.from_service_account_info(kunci_manual, scopes=skop_akses)
-        client = gspread.authorize(kredential)
-        return client
-    except Exception as e:
-        return None
-
-# API Route untuk Dashboard Utama
-@app.get("/api/dashboard")
-def ambil_data_dashboard():
-    try:
-        client = sambung_google_sheets()
-        if not client:
-            return {"status": "ralat", "mesej": "Kunci GOOGLE_CREDENTIALS tidak sah atau tiada!"}
+            # Membina mesej laporan untuk dipaparkan di skrin
+            laporan = "=== SISTEM DETEKTIF RALAT INDEX.PY ===\n\n"
             
-        if hasattr(config, 'SHEET_URL'):
-            buku_data = client.open_by_url(config.SHEET_URL)
-        elif hasattr(config, 'SPREADSHEET_URL'):
-            buku_data = client.open_by_url(config.SPREADSHEET_URL)
-        else:
-            buku_data = client.open("MYCARPET_PRO_DATA")
-            
-        helaian_tempahan = buku_data.worksheet("Tempahan") 
-        semua_data = helaian_tempahan.get_all_records()
-        
-        dalam_proses = 0
-        pengeringan = 0
-        ready_deliver = 0
-        selesai = 0
-        
-        for rekod in semua_data:
-            status_karpet = str(rekod.get("STATUS", rekod.get("Status", ""))).lower()
-            if "proses" in status_karpet:
-                dalam_proses += 1
-            elif "pengeringan" in status_karpet or "kering" in status_karpet:
-                pengeringan += 1
-            elif "ready" in status_karpet or "hantar" in status_karpet:
-                ready_deliver += 1
-            elif "selesai" in status_karpet or "siap" in status_karpet:
-                selesai += 1
+            if kunci_rahsia:
+                laporan += f"✅ BERJAYA: Kunci '{nama_kunci}' dijumpai!\n"
+                laporan += f"Isi kunci kamu (3 huruf pertama): {kunci_rahsia[:3]}***\n\n"
                 
-        return {
-            "status": "berjaya",
-            "dalam_proses": dalam_proses,
-            "pengeringan": pengeringan,
-            "ready_deliver": ready_deliver,
-            "selesai": selesai
-        }
-    except Exception as ralat:
-        return {"status": "ralat", "mesej": str(ralat)}
+                # 🚀 TULIS KOD UTAMA KAMU DI SINI:
+                # (Sila letakkan fungsi atau kod Python kamu yang lain di bawah baris ini)
+                
+                laporan += "Status Aplikasi: Berjalan dengan baik tanpa ralat."
+            else:
+                laporan += f"❌ RALAT: Kunci '{nama_kunci}' TIADA atau KOSONG di dalam Vercel!\n"
+                laporan += "Sila pastikan kamu sudah memasukkannya di menu Settings > Environment Variables pada Vercel."
 
-# API Route untuk Ambil Nama Pelanggan bagi Invois
-@app.get("/api/pelanggan")
-def ambil_senarai_pelanggan():
-    try:
-        client = sambung_google_sheets()
-        if not client:
-            return {"status": "ralat", "mesej": "Kunci GOOGLE_CREDENTIALS tidak sah!"}
+            # Memaparkan hasil laporan yang berjaya ke skrin web
+            self.wfile.write(laporan.encode('utf-8'))
             
-        if hasattr(config, 'SHEET_URL'):
-            buku_data = client.open_by_url(config.SHEET_URL)
-        elif hasattr(config, 'SPREADSHEET_URL'):
-            buku_data = client.open_by_url(config.SPREADSHEET_URL)
-        else:
-            buku_data = client.open("MYCARPET_PRO_DATA")
+        except Exception as e:
+            # 🚨 JIKA ADA RALAT LAIN, BAHAGIAN INI AKAN MENANGKAPNYA
+            mesej_ralat = "=== ⚠️ RALAT DIKESAN PADA KOD PYTHON ===\n\n"
+            mesej_ralat += f"Jenis Masalah: {str(e)}\n\n"
+            mesej_ralat += "--- Laporan Kerosakan Penuh (Traceback) ---\n"
+            mesej_ralat += traceback.format_exc() # Menukar ralat penuh menjadi teks
             
-        helaian_tempahan = buku_data.worksheet("Tempahan") 
-        semua_data = helaian_tempahan.get_all_records()
-        
-        senarai_nama = [rekod.get("Nama Pelanggan", rekod.get("NAMA", "Tiada Nama")) for rekod in semua_data if rekod.get("Nama Pelanggan") or rekod.get("NAMA")]
-        
-        return {"status": "berjaya", "data": senarai_nama}
-    except Exception as ralat:
-        return {"status": "ralat", "mesej": str(ralat)}
+            # Memaparkan teks ralat berwarna merah/putih terus ke skrin web kamu
+            self.wfile.write(mesej_ralat.encode('utf-8'))
+            
+        return
