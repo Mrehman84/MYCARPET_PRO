@@ -599,27 +599,53 @@ if semak_login():
         # -------------------------------------------------------------------------
         # Paparan Komponen Mesej Rasmi (Jarak Tepi 8 Spacebar Dari Dinding Kiri)
         # -------------------------------------------------------------------------
-        if st.session_state.get("data_tersimpan_state", False):
-            # Paparkan notifikasi kejayaan berwarna hijau di atas kotak teks
-            st.success(st.session_state.get("nota_sukses", "🎉 Simpanan Berjaya!"))
+# -------------------------------------------------------------------------
+# Paparan Komponen Mesej Rasmi (Jarak Tepi Mengikut Blok Utama)
+# -------------------------------------------------------------------------
+if st.session_state.get("data_tersimpan_state", False):
+    # Paparkan notifikasi kejayaan berwarna hijau di atas kotak teks
+    st.success(st.session_state.get("nota_sukses", "🎉 Simpanan Berjaya!"))
 
-            st.markdown("### 📋 Salinan Mesej WhatsApp Resit")
-            st.info("💡 Sila klik butang ikon salin (Copy) di penjuru kanan atas kotak teks di bawah ini, kemudian buka aplikasi WhatsApp di laptop abang dan tekan 'Ctrl + V' untuk hantar kepada pelanggan.")
+    # =========================================================================
+    # 🟢 BAHAGIAN TAMBAHAN: BUTANG TERUS KE WHATSAPP SECARA AUTOMATIK
+    # =========================================================================
+    try:
+        import urllib.parse
+        # Bersihkan nombor telefon daripada sebarang simbol atau spasi kosong
+        no_tel_wa = "".join(c for c in str(telefon_input).strip() if c.isdigit())
+        
+        # Memastikan format kod negara Malaysia (60) adalah betul
+        if no_tel_wa.startswith("0"):
+            no_tel_wa = "6" + no_tel_wa
+        elif not no_tel_wa.startswith("60") and no_tel_wa:
+            no_tel_wa = "60" + no_tel_wa
+            
+        # Menukarkan teks mesej resit menjadi pautan URL WhatsApp yang sah (Dibetulkan condong /)
+        link_whatsapp_tempahan = f"https://wa.me{no_tel_wa}?text={urllib.parse.quote(st.session_state.get('teks_resit_salinan', ''))}"
+        
+        # Memaparkan butang hijau WhatsApp secara rasmi di atas kotak text code
+        st.link_button("🟢 Hantar Resit Tempahan Baru ke WhatsApp", link_whatsapp_tempahan, use_container_width=True)
+    except Exception as wa_error:
+        st.warning(f"Nota: Butang WhatsApp gagal dibina kerana isu data nombor: {wa_error}")
+    # =========================================================================
 
-            # KOTAK TEKS BESAR UNTUK ABANG COPY MANUAL (Mempunyai butang salin otomatis di penjuru kanan kotak)
-            st.write("Butiran teks resit pesanan pelanggan sedia untuk disalin:")
-            st.code(st.session_state.get("teks_resit_salinan", ""), language="text")
+    st.markdown("### 📋 Salinan Mesej WhatsApp Resit")
+    st.info("💡 Sila klik butang ikon salin (Copy) di penjuru kanan atas kotak teks di bawah ini, kemudian buka aplikasi WhatsApp di laptop abang dan tekan 'Ctrl + V' untuk hantar kepada pelanggan.")
+
+    # KOTAK TEKS BESAR UNTUK ABANG COPY MANUAL
+    st.write("Butiran teks resit pesanan pelanggan sedia untuk disalin:")
+    st.code(st.session_state.get("teks_resit_salinan", ""), language="text")
 
             
 
-            st.markdown("---")
-            # Sediakan butang reset borang manual untuk diklik apabila urusan salinan selesai
-            if st.button("🔄 Buka Borang Baru (Reset Skrin)", use_container_width=True):
-                st.session_state.bilangan_karpet = 1
-                st.session_state["data_tersimpan_state"] = False
-                if "id_pelanggan_dipilih" in st.session_state:
-                    del st.session_state["id_pelanggan_dipilih"]
-                st.rerun()
+    st.markdown("---")
+    # Sediakan butang reset borang manual untuk diklik apabila urusan salinan selesai
+    if st.button("🔄 Buka Borang Baru (Reset Skrin)", use_container_width=True):
+        st.session_state.bilangan_karpet = 1
+        st.session_state["data_tersimpan_state"] = False
+        if "id_pelanggan_dipilih" in st.session_state:
+            del st.session_state["id_pelanggan_dipilih"]
+        st.rerun()
 
 
 #===================================
