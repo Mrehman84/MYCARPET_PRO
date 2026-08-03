@@ -810,19 +810,33 @@ if semak_login():
                                 lajur_status_index_sheets = [str(c).upper().strip() for c in nama_lajur_k].index('STATUS') + 1
 
                                 
-                                with st.spinner("Sedang mengemaskini data ke Google Sheets..."):
-                                    for q_id in qr_terpilih:
-                                        try:
-                                            indeks_baris_sheets = semua_qr_id_mentah.index(str(q_id).upper().strip()) + 2
-                                            t_karpet.update_cell(indeks_baris_sheets, lajur_status_index_sheets, status_baru)
-                                            kemas_kini_berjaya += 1
-                                        except ValueError:
-                                            st.error(f"❌ Ralat: Gagal mencari baris untuk QR ID {q_id} di Google Sheets.")
-                                
-                                if kemas_kini_berjaya > 0:
-                                    st.success(f"🎉 Sukses! Status bagi {kemas_kini_berjaya} karpet telah ditukar kepada '{status_baru}'!")
-                                    st.rerun()
-                else:
+                                # =========================================================
+        # KOD SELAMAT (BATCH UPDATE) UNTUK GANTIAN DIRECT
+        # =========================================================
+        with st.spinner("Menjalankan kemaskini selamat Google API..."):
+            senarai_sel_kemaskini = []
+            
+            # 1. Kumpul semua sel yang terlibat ke dalam memori dahulu
+            for q_id in qr_terpilih:
+                try:
+                    indeks_baris_sheets = semua_qr_id_mentah.index(str(q_id).upper().strip()) + 2
+                    
+                    # Cipta objek sel gspread sedia ada tanpa ubah struktur asal
+                    sel = gspread.cell.Cell(row=indeks_baris_sheets, col=lajur_status_index_sheets, value=status_baru)
+                    senarai_sel_kemaskini.append(sel)
+                except ValueError:
+                    pass
+
+            # 2. Tembak semua data serentak dalam SATU klik (Kalis Banned)
+            if senarai_sel_kemaskini:
+                try:
+                    t_karpet.update_cells(senarai_sel_kemaskini)
+                    st.success(f"🎉 Sukses! Status bagi {len(senarai_sel_kemaskini)} karpet telah ditukar kepada '{status_baru}' dengan selamat!")
+                    time.sleep(1)
+                    st.rerun()
+                except Exception as ralat_api:
+                    st.error(f"❌ Gagal mengemaskini secara pukal: {ralat_api}")
+
                     st.info("ℹ️ Semua karpet di bawah No Invois / Rekod ini telah berstatus 'SELESAI' atau 'SELESAI DIHANTAR'.")
             else:
                 st.error("❌ Lajur 'QR ID' atau 'STATUS' tidak ditemui dalam fail Google Sheets anda.")
