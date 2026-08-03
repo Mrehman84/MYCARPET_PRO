@@ -811,21 +811,21 @@ if semak_login():
 
                                 
                                 # =========================================================
-        # KOD SELAMAT (BATCH UPDATE) UNTUK GANTIAN DIRECT
-        # =========================================================
-        with st.spinner("Menjalankan kemaskini selamat Google API..."):
-            senarai_sel_kemaskini = []
-            
-            # 1. Kumpul semua sel yang terlibat ke dalam memori dahulu
-            for q_id in qr_terpilih:
-                try:
-                    indeks_baris_sheets = semua_qr_id_mentah.index(str(q_id).upper().strip()) + 2
-                    
-                    # Cipta objek sel gspread sedia ada tanpa ubah struktur asal
-                    sel = gspread.cell.Cell(row=indeks_baris_sheets, col=lajur_status_index_sheets, value=status_baru)
-                    senarai_sel_kemaskini.append(sel)
-                except ValueError:
-                    pass
+                            # KOD SELAMAT (BATCH UPDATE) UNTUK GANTIAN DIRECT
+                            # =========================================================
+                            with st.spinner("Menjalankan kemaskini selamat Google API..."):
+                                senarai_sel_kemaskini = []
+                                
+                                # 1. Kumpul semua sel yang terlibat ke dalam memori dahulu
+                                for q_id in qr_terpilih:
+                                    try:
+                                        indeks_baris_sheets = semua_qr_id_mentah.index(str(q_id).upper().strip()) + 2
+                                        
+                                        # Cipta objek sel gspread sedia ada tanpa ubah struktur asal
+                                        sel = gspread.cell.Cell(row=indeks_baris_sheets, col=lajur_status_index_sheets, value=status_baru)
+                                        senarai_sel_kemaskini.append(sel)
+                                    except ValueError:
+                                        pass
 
             # 2. Tembak semua data serentak dalam SATU klik (Kalis Banned)
             if senarai_sel_kemaskini:
