@@ -828,7 +828,21 @@ if semak_login():
                                         pass
 
             # 2. Tembak semua data serentak dalam SATU klik (Kalis Banned)
-            if senarai_sel_kemaskini:
+            
+            senarai_sel_kemaskini = []
+
+            for q_id in qr_terpilih:
+                try:
+                    indeks_baris_sheets = semua_qr_id_mentah.index(str(q_id)).upper() # pastikan logik indeks anda betul di sini
+                    
+                    # Cipta objek sel gspread sedia ada tanpa ubah struktur asal
+                    sel = gspread.cell.Cell(row=indeks_baris_sheets, col=lajur_...)
+                    senarai_sel_kemaskini.append(sel)
+                except ValueError:
+                    pass
+
+            # 2. Tembak semua data serentak dalam SATU klik (Kalis Banned)
+            if senarai_sel_kemaskini:                
                 try:
                     t_karpet.update_cells(senarai_sel_kemaskini)
                     st.success(f"🎉 Sukses! Status bagi {len(senarai_sel_kemaskini)} karpet telah ditukar kepada '{status_baru}' dengan selamat!")
