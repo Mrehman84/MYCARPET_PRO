@@ -829,12 +829,17 @@ if semak_login():
 
             # 2. Tembak semua data serentak dalam SATU klik (Kalis Banned)
             
+        # =========================================================
+# KOD SELAMAT (BATCH UPDATE) UNTUK GANTIAN DIRECT
+    # =========================================================
+    if qr_terpilih:
         with st.spinner("Menjalankan kemaskini selamat Google API..."):
             senarai_sel_kemaskini = []
-
+            
             # 1. Kumpul semua sel yang terlibat ke dalam memori dahulu
             for q_id in qr_terpilih:
                 try:
+                    # Pembersihan teks .upper() & .strip() diletakkan BETUL di dalam str(q_id)
                     indeks_baris_sheets = semua_qr_id_mentah.index(str(q_id).upper().strip()) + 2
                     
                     # Cipta objek sel gspread sedia ada tanpa ubah struktur asal
@@ -843,7 +848,7 @@ if semak_login():
                 except ValueError:
                     pass
 
-            # 2. Tembak semua data serentak dalam SATU klik (Kalis Banned)
+            # 2. Tembak semua data serentak dalam SATU klik (Kalis Banned API)
             if senarai_sel_kemaskini:
                 try:
                     t_karpet.update_cells(senarai_sel_kemaskini)
@@ -852,6 +857,7 @@ if semak_login():
                     st.rerun()
                 except Exception as ralat_api:
                     st.error(f"❌ Gagal mengemaskini secara pukal: {ralat_api}")
+
 
 
                     st.info("ℹ️ Semua karpet di bawah No Invois / Rekod ini telah berstatus 'SELESAI' atau 'SELESAI DIHANTAR'.")
