@@ -1,4 +1,0 @@
-fastapi
-gspread
-google-auth
-cryptography

@@ -876,21 +876,32 @@ def jalankan_automasi_aliran_tunai():
     # =========================================================================
     # OPERASI UTAMA MASTER ENGINE RUNNER
     # =========================================================================
-# Rapatkan ke dinding kiri sekali (Tiada spasi langsung di permulaan baris)
 if __name__ == "__main__":
-    start_time = time.time()
-    print("\n=====================================================")
-    print("🤖 AUTOMATION ENG: 4-IN-1 MASTER FINANCIAL SYNC")
-    print("=====================================================\n")
-
-    # Jalankan 4 enjin secara berturutan dengan selamat
-    jalankan_automasi_analisis_jualan()
-    time.sleep(3)
-    jalankan_automasi_matriks_belanja()
-    time.sleep(3)
-    jalankan_automasi_aliran_tunai()
-
-    print(f"\n✨ [SUKSES] Semua selesai diselaraskan dalam {round(time.time() - start_time, 2)} saat!")
+    import time
+    
+    print("🤖 ENJIN KEWANGAN AUTOMATIK (BACKGROUND WORKER) DIHIDUPKAN...")
+    
+    while True:
+        print("\n=====================================================")
+        print("⏳ Semakan berkala data baharu bermula...")
+        
+        # 1. Tarik data baharu dari Payment ke Raw_Revenue
+        try:
+            migrasi_payment_ke_revenue()
+        except Exception as e:
+            print(f"❌ Gagal migrasi data: {str(e)}")
+            
+        # 2. Kemas kini dashboard ikut tahun di sel O2
+        try:
+            jalankan_automasi_analisis_jualan()
+            jalankan_automasi_matriks_belanja()
+            jalankan_automasi_aliran_tunai()
+            print("✅ Kemas kini dashboard selesai!")
+        except Exception as e:
+            print(f"❌ Gagal kemas kini dashboard: {str(e)}")
+            
+        print("😴 Enjin tidur selama 10 minit sebelum semakan seterusnya...")
+        time.sleep(600)  # 600 saat = 10 minit
 
 
 
