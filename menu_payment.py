@@ -15,7 +15,8 @@ def hantar_ke_lejar_revenue(id_invois, nama_pelanggan, saluran_masuk, amount_dib
     try:
         # Hubungkan ke Google Sheet baru menggunakan kunci rahsia kewangan
         scope = ["https://googleapis.com", "https://googleapis.com"]
-        creds = Credentials.from_service_account_info(st.secrets["gcp_service_account"], scopes=scope)
+        creds = Credentials.from_service_account_info(st.secrets["gcp_service_account_finance"], scopes=scope)
+
         client = gspread.authorize(creds)
         sheet = client.open("https://docs.google.com/spreadsheets/d/1xCSGuFUQjSp33kRSSOJpYP2AIMKdTemg5wWi8jyPm_o/edit?gid=314909126#gid=314909126")
         revenue_sheet = sheet.worksheet("Raw_Revenue")
